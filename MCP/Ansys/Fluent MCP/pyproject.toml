@@ -1,0 +1,19 @@
+[project]
+name = "ansys-fluent-mcp"
+version = "0.1.0"
+description = "MCP server for ANSYS Fluent batch journals and PyFluent live sessions"
+requires-python = ">=3.10"
+dependencies = [
+    "fastmcp>=2.0,<3",
+    "python-dotenv>=1.0,<2",
+]
+
+[project.optional-dependencies]
+pyfluent = ["ansys-fluent-core>=0.38"]
+dev = ["pytest>=8.0,<9"]
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+
+[tool.uv]
+package = false

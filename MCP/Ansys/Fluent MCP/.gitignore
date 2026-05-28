@@ -1,0 +1,15 @@
+.venv/
+__pycache__/
+.pytest_cache/
+*.egg-info/
+*.pyc
+.env
+jobs/
+*.cas
+*.cas.h5
+*.dat
+*.dat.h5
+*.msh
+*.trn
+*.jou.trn
+*.log

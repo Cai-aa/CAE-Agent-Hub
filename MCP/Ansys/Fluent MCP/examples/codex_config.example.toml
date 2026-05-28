@@ -1,0 +1,9 @@
+[mcp_servers.ansys-fluent]
+command = 'C:\path\to\text-to-cae\MCP\Ansys\Fluent MCP\.venv\Scripts\python.exe'
+args = [ 'C:\path\to\text-to-cae\MCP\Ansys\Fluent MCP\server.py' ]
+cwd = 'C:\path\to\text-to-cae\MCP\Ansys\Fluent MCP'
+
+[mcp_servers.ansys-fluent.env]
+ANSYS_ROOT = 'C:\Program Files\ANSYS Inc\v261'
+FLUENT_EXE = 'C:\Program Files\ANSYS Inc\v261\fluent\ntbin\win64\fluent.exe'
+FLUENT_MCP_JOBS_DIR = 'C:\path\to\text-to-cae\MCP\Ansys\Fluent MCP\jobs'
