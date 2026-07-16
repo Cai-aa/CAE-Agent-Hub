@@ -17,7 +17,6 @@ async def smoke() -> None:
             {
                 "PYTHONPATH": str(root / "src"),
                 "PYTHONUTF8": "1",
-                "HYPERWORKS_HOME": r"G:\Program Files\Altair\2026",
                 "HYPERWORKS_MCP_WORKSPACE": workspace,
             }
         )

@@ -39,13 +39,16 @@ def _candidate_roots(settings: Settings) -> Iterable[Path]:
             raw_candidates.append(Path(value))
     if settings.installation_root:
         raw_candidates.append(settings.installation_root)
-    raw_candidates.extend(
-        [
-            Path(r"G:\Program Files\Altair\2026"),
-            Path(r"C:\Program Files\Altair\2026"),
-        ]
-    )
-    for base in (Path(r"G:\Program Files\Altair"), Path(r"C:\Program Files\Altair")):
+    standard_bases: list[Path] = []
+    for key in ("ProgramFiles", "ProgramW6432", "ProgramFiles(x86)"):
+        value = os.environ.get(key, "").strip()
+        if value:
+            standard_bases.append(Path(value) / "Altair")
+    system_drive = os.environ.get("SystemDrive", "").strip()
+    if system_drive:
+        standard_bases.append(Path(system_drive + "\\") / "Altair")
+
+    for base in standard_bases:
         if base.is_dir():
             raw_candidates.extend(
                 sorted(

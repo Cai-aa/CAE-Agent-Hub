@@ -17,19 +17,40 @@
 - 实时读取会话、模型、实体、用户 mark、质量/质量中心等模型信息。
 - 交互式实体选择、实体属性修改以及将实时模型安全保存到 MCP 工作区。
 
-## 本机探测结果
+## 查找你的 HyperWorks 安装目录
 
-已确认的桌面组件：
+不要照抄其他计算机的安装路径。`HYPERWORKS_HOME` 应指向包含 `hwdesktop` 的 Altair
+版本目录；安装求解器后，该目录通常还包含 `hwsolvers`。典型目录结构如下：
 
 ```text
-G:\Program Files\Altair\2026\hwdesktop\hwx\bin\win64\runhwx.exe
-G:\Program Files\Altair\2026\hwdesktop\hm\bin\win64\hmbatch.exe
-G:\Program Files\Altair\2026\hwdesktop\hst\bin\win64\hstbatch.exe
+<HYPERWORKS_INSTALL_ROOT>\
+  hwdesktop\hwx\bin\win64\runhwx.exe
+  hwdesktop\hm\bin\win64\hmbatch.exe
+  hwdesktop\hst\bin\win64\hstbatch.exe
+  hwsolvers\scripts\optistruct.bat        # 可选
+  hwsolvers\scripts\radioss.bat           # 可选
 ```
 
-当前安装树没有发现 `hwsolvers\scripts\optistruct.bat` 或
-`hwsolvers\scripts\radioss.bat`。这不会影响 HyperMesh 批处理，但真正求解前需要安装
-HyperWorks Solvers，或通过环境变量指定外部启动器。
+优先查看 HyperWorks/HyperMesh 桌面快捷方式属性中的**目标**。也可以用 PowerShell
+搜索 Windows 常见安装位置：
+
+```powershell
+$searchRoots = @(
+  "$env:ProgramFiles\Altair"
+  "$env:ProgramW6432\Altair"
+  "$env:SystemDrive\Altair"
+) | Where-Object { Test-Path -LiteralPath $_ } | Select-Object -Unique
+
+Get-ChildItem -Path $searchRoots -Filter runhwx.exe -File -Recurse `
+  -ErrorAction SilentlyContinue |
+  Where-Object FullName -Match '\\hwdesktop\\hwx\\bin\\win64\\runhwx\.exe$' |
+  Select-Object -ExpandProperty FullName
+```
+
+如果安装在自定义位置，请把其上级目录作为搜索范围。将搜索结果末尾的
+`\hwdesktop\hwx\bin\win64\runhwx.exe` 去掉，即得到
+`<HYPERWORKS_INSTALL_ROOT>`。`probe_environment.py` 会根据当前计算机的实际安装，
+报告桌面、批处理及求解器能力；不会把维护者计算机上的探测结果当成通用结论。
 
 ## 安装
 
@@ -42,7 +63,9 @@ uv sync --extra dev
 环境探测：
 
 ```powershell
-$env:HYPERWORKS_HOME = 'G:\Program Files\Altair\2026'
+$env:HYPERWORKS_HOME = '<HYPERWORKS_INSTALL_ROOT>'
+$env:HYPERWORKS_MCP_WORKSPACE = Join-Path `
+  ([Environment]::GetFolderPath('MyDocuments')) 'HyperWorksMCP\workspace'
 .\.venv\Scripts\python.exe .\probe_environment.py
 ```
 
@@ -62,7 +85,10 @@ $env:PYTHONPATH = 'src'
 Codex 配置，或执行：
 
 ```powershell
-.\register_codex_mcp.ps1 -PythonExe "$PWD\.venv\Scripts\python.exe"
+.\register_codex_mcp.ps1 `
+  -PythonExe "$PWD\.venv\Scripts\python.exe" `
+  -HyperWorksHome $env:HYPERWORKS_HOME `
+  -Workspace $env:HYPERWORKS_MCP_WORKSPACE
 ```
 
 重启 Codex 或新建任务后，先调用 `get_environment` 验证真实能力。
@@ -71,7 +97,7 @@ Codex 配置，或执行：
 
 ```powershell
 .\install_hyperworks_extension.ps1 `
-  -Workspace 'E:\CAE\hyperworks-mcp-workspace'
+  -Workspace $env:HYPERWORKS_MCP_WORKSPACE
 ```
 
 安装器会：

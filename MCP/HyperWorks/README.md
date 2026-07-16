@@ -8,24 +8,50 @@ HyperView, submits typed OptiStruct/Radioss jobs, and exposes real status, bound
 cancellation, and artifact inventory. It also includes an authenticated in-application
 Extension that runs allowlisted `hm` API operations on the HyperWorks Qt main thread.
 
-## Local installation detected
+## Find your HyperWorks installation
+
+Do not copy another machine's installation path. `HYPERWORKS_HOME` must point to the
+Altair version directory that contains `hwdesktop` and, when solvers are installed,
+`hwsolvers`. A typical layout is:
 
 ```text
-G:\Program Files\Altair\2026\hwdesktop\hwx\bin\win64\runhwx.exe
-G:\Program Files\Altair\2026\hwdesktop\hm\bin\win64\hmbatch.exe
-G:\Program Files\Altair\2026\hwdesktop\hst\bin\win64\hstbatch.exe
+<HYPERWORKS_INSTALL_ROOT>\
+  hwdesktop\hwx\bin\win64\runhwx.exe
+  hwdesktop\hm\bin\win64\hmbatch.exe
+  hwdesktop\hst\bin\win64\hstbatch.exe
+  hwsolvers\scripts\optistruct.bat        # optional
+  hwsolvers\scripts\radioss.bat           # optional
 ```
 
-No `hwsolvers/scripts/optistruct.bat` or `radioss.bat` was found in this installation
-tree. HyperMesh Batch is usable, but solver submission remains capability-gated until
-HyperWorks Solvers is installed or the corresponding executable environment variable is
-set.
+First check the **Target** of the HyperWorks/HyperMesh desktop shortcut. You can also
+search the standard Windows installation locations with PowerShell:
+
+```powershell
+$searchRoots = @(
+  "$env:ProgramFiles\Altair"
+  "$env:ProgramW6432\Altair"
+  "$env:SystemDrive\Altair"
+) | Where-Object { Test-Path -LiteralPath $_ } | Select-Object -Unique
+
+Get-ChildItem -Path $searchRoots -Filter runhwx.exe -File -Recurse `
+  -ErrorAction SilentlyContinue |
+  Where-Object FullName -Match '\\hwdesktop\\hwx\\bin\\win64\\runhwx\.exe$' |
+  Select-Object -ExpandProperty FullName
+```
+
+For a custom installation location, search its parent directory instead. Remove the
+trailing `\hwdesktop\hwx\bin\win64\runhwx.exe` from the result to obtain
+`<HYPERWORKS_INSTALL_ROOT>`. `probe_environment.py` reports which desktop, batch, and
+solver launchers are actually available; missing solver launchers are reported as a
+capability limitation rather than assumed from this repository.
 
 ## Setup
 
 ```powershell
 uv sync --extra dev
-$env:HYPERWORKS_HOME = 'G:\Program Files\Altair\2026'
+$env:HYPERWORKS_HOME = '<HYPERWORKS_INSTALL_ROOT>'
+$env:HYPERWORKS_MCP_WORKSPACE = Join-Path `
+  ([Environment]::GetFolderPath('MyDocuments')) 'HyperWorksMCP\workspace'
 .\.venv\Scripts\python.exe .\probe_environment.py
 $env:PYTHONPATH = 'src'
 .\.venv\Scripts\python.exe -m unittest discover -s tests -v
@@ -37,13 +63,17 @@ $env:PYTHONPATH = 'src'
 Use [`examples/codex_config.example.toml`](examples/codex_config.example.toml), or run:
 
 ```powershell
-.\register_codex_mcp.ps1 -PythonExe "$PWD\.venv\Scripts\python.exe"
+.\register_codex_mcp.ps1 `
+  -PythonExe "$PWD\.venv\Scripts\python.exe" `
+  -HyperWorksHome $env:HYPERWORKS_HOME `
+  -Workspace $env:HYPERWORKS_MCP_WORKSPACE
 ```
 
 Install the in-application Extension:
 
 ```powershell
-.\install_hyperworks_extension.ps1 -Workspace 'E:\CAE\hyperworks-mcp-workspace'
+.\install_hyperworks_extension.ps1 `
+  -Workspace $env:HYPERWORKS_MCP_WORKSPACE
 ```
 
 The installer also registers `HyperWorks MCP Bridge` in the current user's Altair

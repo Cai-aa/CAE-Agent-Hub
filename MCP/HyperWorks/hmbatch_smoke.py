@@ -22,9 +22,6 @@ async def smoke(timeout_seconds: int) -> None:
         {
             "PYTHONPATH": str(root / "src"),
             "PYTHONUTF8": "1",
-            "HYPERWORKS_HOME": environment.get(
-                "HYPERWORKS_HOME", r"G:\Program Files\Altair\2026"
-            ),
             "HYPERWORKS_MCP_WORKSPACE": environment.get(
                 "HYPERWORKS_MCP_WORKSPACE", str(root / "workspace")
             ),
