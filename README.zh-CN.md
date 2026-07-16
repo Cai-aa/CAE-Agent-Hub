@@ -45,6 +45,7 @@ AI client
 | [ANSYS Fluent MCP](MCP/Ansys/Fluent%20MCP) | Active | 检测 Fluent、启动 batch journal、跟踪 job/log，并可管理 live PyFluent session 执行 Scheme、TUI 和 Python 探测。 | `server.py`, `tools/fluent_bridge.py`, `tools/pyfluent_session.py` | Fluent, PyFluent, journal, TUI, CFD |
 | [ANSYS Workbench MCP](MCP/Ansys/Workbench%20MCP) | Active | 通过 Python helper 和 Mechanical ACT bridge 控制 Workbench / Mechanical，支持 file queue 和 socket timer 两种通信方式。 | `server.py`, `tools/`, `workbench_plugin/` | Workbench, Mechanical, ACT, LS-DYNA |
 | [Ansys AEDT MCP](MCP/Ansys/AEDT%20MCP) | Active | 通过 raw TCP JSON bridge 连接 Ansys Electronics Desktop / HFSS；可查看工程、创建 HFSS design、保存工程、执行小段 AEDT Python。 | `mcp_server.py`, `aedt_mcp_bridge.py`, `scripts/install_aedt_toolkit_button.ps1` | AEDT, HFSS, Electronics Desktop, antenna |
+| [Altair HyperWorks MCP](MCP/HyperWorks) | Active | 通过类型化、工作区隔离的工具和经过认证的应用内 Python bridge 控制 HyperWorks 与 live HyperMesh 会话；支持模型与实体检查、受控 batch Tcl 和求解任务管理。 | `src/hyperworks_mcp/server.py`, `hyperworks_extension/`, `install_hyperworks_extension.ps1` | HyperWorks, HyperMesh, HyperView, OptiStruct, Radioss, live Python bridge |
 
 > 新增 MCP 时，建议保留可复用源码、示例、测试和中英文 README；不要提交虚拟环境、求解结果、私有路径、许可证或生成的工程数据。
 
