@@ -1,0 +1,147 @@
+# HyperWorks MCP
+
+用于让 Codex 通过可审计、限定工作区的工具控制本机 Altair HyperWorks 2026。
+
+当前 0.2 版已实现混合架构：
+
+- 自动发现 HyperMesh GUI、`hmbatch`、HyperStudy、OptiStruct 和 Radioss。
+- 创建隔离项目并导入 CAD、`.hm`、`.fem`、`.rad` 或结果文件。
+- 写入经过安全检查的 HyperMesh Tcl 脚本。
+- 异步运行 HyperMesh Batch，返回任务 ID，而不是阻塞 MCP。
+- 启动 HyperMesh 或 HyperView 图形界面。
+- 异步提交 OptiStruct/Radioss，限制 CPU 数并复制完整项目输入目录。
+- 查询实际进程状态、读取日志、取消任务、列出产物。
+- FastMCP tools、resources 和标准预处理/求解 prompt。
+- HyperWorks Python Extension，通过随机令牌保护的 `127.0.0.1` 桥接访问实时会话。
+- 在 Qt 主线程执行 `hm` API，socket 工作线程不直接操作模型。
+- 实时读取会话、模型、实体、用户 mark、质量/质量中心等模型信息。
+- 交互式实体选择、实体属性修改以及将实时模型安全保存到 MCP 工作区。
+
+## 本机探测结果
+
+已确认的桌面组件：
+
+```text
+G:\Program Files\Altair\2026\hwdesktop\hwx\bin\win64\runhwx.exe
+G:\Program Files\Altair\2026\hwdesktop\hm\bin\win64\hmbatch.exe
+G:\Program Files\Altair\2026\hwdesktop\hst\bin\win64\hstbatch.exe
+```
+
+当前安装树没有发现 `hwsolvers\scripts\optistruct.bat` 或
+`hwsolvers\scripts\radioss.bat`。这不会影响 HyperMesh 批处理，但真正求解前需要安装
+HyperWorks Solvers，或通过环境变量指定外部启动器。
+
+## 安装
+
+在本目录执行：
+
+```powershell
+uv sync --extra dev
+```
+
+环境探测：
+
+```powershell
+$env:HYPERWORKS_HOME = 'G:\Program Files\Altair\2026'
+.\.venv\Scripts\python.exe .\probe_environment.py
+```
+
+运行测试：
+
+```powershell
+$env:PYTHONPATH = 'src'
+.\.venv\Scripts\python.exe -m unittest discover -s tests -v
+.\.venv\Scripts\python.exe .\stdio_smoke.py
+# 以下命令会短暂启动 hmbatch 并可能占用许可证
+.\.venv\Scripts\python.exe .\hmbatch_smoke.py --run
+```
+
+## 注册到 Codex
+
+可复制 [`examples/codex_config.example.toml`](examples/codex_config.example.toml) 到
+Codex 配置，或执行：
+
+```powershell
+.\register_codex_mcp.ps1 -PythonExe "$PWD\.venv\Scripts\python.exe"
+```
+
+重启 Codex 或新建任务后，先调用 `get_environment` 验证真实能力。
+
+## 安装内嵌 Python Extension
+
+```powershell
+.\install_hyperworks_extension.ps1 `
+  -Workspace 'E:\CAE\hyperworks-mcp-workspace'
+```
+
+安装器会：
+
+1. 将 Extension 复制到当前用户文档目录下的 `Altair\CustomPlugins\HyperWorksMCP`。
+2. 在 `%LOCALAPPDATA%\HyperWorksMCP\bridge.json` 创建随机 256-bit 令牌。
+3. 将 MCP 工作区设为实时模型唯一允许保存的根目录。
+4. 将 `HyperWorks MCP Bridge` 写入当前用户的 Altair Extension 注册表。
+
+重启 HyperMesh；若扩展未自动启用，在 `File > Extension Manager` 中打开
+`HyperWorks MCP Bridge` 的开关。验证：
+
+```powershell
+.\.venv\Scripts\python.exe .\probe_live_bridge.py
+```
+
+Extension 使用固定白名单协议，不提供 `eval`、任意 Python、shell 或 Tcl。每个请求都
+验证令牌，socket 线程只负责 JSON 收发，实际 `hm` 调用由 Qt 定时器在应用主线程执行。
+
+## 推荐工作流
+
+1. `get_environment`
+2. `create_project`
+3. `import_project_file`
+4. `write_tcl_script`
+5. 用户确认后调用 `run_hmbatch`
+6. `get_job_status` 与 `tail_job_log`
+7. `list_job_artifacts`
+8. 求解器可用且用户确认后调用 `submit_solver_job`
+
+示例 Tcl（只验证批处理链路）：
+
+```tcl
+puts "HyperWorks MCP batch smoke test"
+```
+
+不要在脚本中写 `*quit`；MCP 运行器负责脚本结束。为避免借 Tcl 绕过 MCP 权限，
+进程/网络/动态加载、直接 Tcl 文件访问、绝对路径、父目录跳转、环境变量访问和嵌套
+`source` 会被拒绝。该过滤器属于纵深防御，不是操作系统级沙箱，运行前仍应审查脚本。
+
+## 工具列表
+
+- `get_environment`
+- `configure_installation`
+- `create_project`
+- `get_project_summary`
+- `import_project_file`
+- `write_tcl_script`
+- `run_hmbatch`
+- `launch_hypermesh`
+- `submit_solver_job`
+- `get_job_status`
+- `tail_job_log`
+- `cancel_job`
+- `list_jobs`
+- `list_job_artifacts`
+- `get_live_bridge_status`
+- `get_live_capabilities`
+- `get_live_session_info`
+- `get_live_model_summary`
+- `list_live_entities`
+- `get_live_entity`
+- `get_live_user_mark`
+- `select_live_entities_interactively`
+- `set_live_entity_attributes`
+- `get_live_model_metrics`
+- `save_live_model`
+
+## 当前边界
+
+0.2 版已经打通 HyperMesh 实时会话和 `hm` API。当前白名单重点覆盖 HyperMesh 模型与
+实体；HyperView 云图、结果查询和截图的专用 handler 尚未加入，`hw.hv` 可用性已纳入
+实时能力探测，后续可沿用同一鉴权协议扩展。

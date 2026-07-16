@@ -1,0 +1,25 @@
+[project]
+name = "hyperworks-mcp"
+version = "0.2.0"
+description = "Local, workspace-scoped MCP server for Altair HyperWorks automation"
+requires-python = ">=3.10"
+dependencies = [
+  "fastmcp>=2.0,<3",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8,<9"]
+
+[project.scripts]
+hyperworks-mcp = "hyperworks_mcp.__main__:main"
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = ["tests"]
+
+[build-system]
+requires = ["setuptools>=69"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["src"]

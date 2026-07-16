@@ -1,0 +1,18 @@
+[mcp_servers.hyperworks]
+command = "E:\\Code\\CAE-Agent-Hub\\MCP\\HyperWorks\\.venv\\Scripts\\python.exe"
+args = ["-m", "hyperworks_mcp"]
+cwd = "E:\\Code\\CAE-Agent-Hub\\MCP\\HyperWorks"
+startup_timeout_sec = 30
+tool_timeout_sec = 300
+
+[mcp_servers.hyperworks.env]
+HYPERWORKS_HOME = "G:\\Program Files\\Altair\\2026"
+HYPERWORKS_MCP_WORKSPACE = "E:\\CAE\\hyperworks-mcp-workspace"
+HYPERWORKS_MCP_BRIDGE_CONFIG = "C:\\Users\\YOUR_NAME\\AppData\\Local\\HyperWorksMCP\\bridge.json"
+HYPERWORKS_DEFAULT_NCPU = "4"
+HYPERWORKS_MAX_NCPU = "32"
+PYTHONUTF8 = "1"
+
+# If solvers are installed outside HYPERWORKS_HOME, add one or both:
+# OPTISTRUCT_EXECUTABLE = "D:\\Altair\\2026\\hwsolvers\\scripts\\optistruct.bat"
+# RADIOSS_EXECUTABLE = "D:\\Altair\\2026\\hwsolvers\\scripts\\radioss.bat"
