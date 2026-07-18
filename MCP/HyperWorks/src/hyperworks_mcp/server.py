@@ -170,6 +170,23 @@ def launch_hypermesh(
     }
 
 
+def _solver_command(
+    executable: Path,
+    run_input: Path,
+    ncpu: int,
+    solver: Literal["optistruct", "radioss"],
+) -> list[str]:
+    solver_args = [str(executable), str(run_input), "-ncpu", str(ncpu)]
+    if solver == "optistruct":
+        solver_args.append("-nobg")
+    if executable.suffix.lower() in {".bat", ".cmd"}:
+        # cmd.exe expects the batch launcher and all of its arguments as one
+        # command string. Passing them as separate argv entries breaks when
+        # either path contains spaces (for example, "Program Files").
+        return ["cmd.exe", "/d", "/s", "/c", subprocess.list2cmdline(solver_args)]
+    return solver_args
+
+
 @mcp.tool()
 def submit_solver_job(
     project_id: str,
@@ -194,12 +211,7 @@ def submit_solver_job(
     )
     run_dir.mkdir(parents=True)
     run_input = stage_solver_input(project_root, source_deck, run_dir / "input")
-    if executable.suffix.lower() in {".bat", ".cmd"}:
-        command = ["cmd.exe", "/d", "/s", "/c", str(executable), str(run_input), "-ncpu", str(ncpu)]
-    else:
-        command = [str(executable), str(run_input), "-ncpu", str(ncpu)]
-    if solver == "optistruct":
-        command.append("-nobg")
+    command = _solver_command(executable, run_input, ncpu, solver)
     return jobs.start(
         "SOLVER",
         project_id,
