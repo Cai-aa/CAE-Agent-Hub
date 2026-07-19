@@ -32,6 +32,11 @@ class MCPContractTests(unittest.IsolatedAsyncioTestCase):
                     "get_live_entity",
                     "select_live_entities_interactively",
                     "set_live_entity_attributes",
+                    "create_live_nodes",
+                    "create_live_elements",
+                    "create_live_material",
+                    "load_live_model",
+                    "refresh_live_view",
                     "get_live_model_metrics",
                     "save_live_model",
                 }.issubset(names)

@@ -15,7 +15,8 @@
 - HyperWorks Python Extension，通过随机令牌保护的 `127.0.0.1` 桥接访问实时会话。
 - 在 Qt 主线程执行 `hm` API，socket 工作线程不直接操作模型。
 - 实时读取会话、模型、实体、用户 mark、质量/质量中心等模型信息。
-- 交互式实体选择、实体属性修改以及将实时模型安全保存到 MCP 工作区。
+- 交互式实体选择、实体属性修改、受控创建节点/单元/材料，以及实时视图刷新。
+- 从 MCP 项目输入目录显式载入 `.hm` 模型，并将实时模型安全保存到 MCP 工作区。
 
 ## 查找你的 HyperWorks 安装目录
 
@@ -163,11 +164,18 @@ puts "HyperWorks MCP batch smoke test"
 - `get_live_user_mark`
 - `select_live_entities_interactively`
 - `set_live_entity_attributes`
+- `create_live_nodes`
+- `create_live_elements`
+- `create_live_material`
+- `load_live_model`
+- `refresh_live_view`
 - `get_live_model_metrics`
 - `save_live_model`
 
 ## 当前边界
 
-0.2 版已经打通 HyperMesh 实时会话和 `hm` API。当前白名单重点覆盖 HyperMesh 模型与
-实体；HyperView 云图、结果查询和截图的专用 handler 尚未加入，`hw.hv` 可用性已纳入
-实时能力探测，后续可沿用同一鉴权协议扩展。
+0.3 版已加入受控实时建模：单次最多创建 5000 个节点或单元，单元必须引用已存在的
+正整数节点 ID，材料属性数量受限；模型载入仅接受 MCP 项目输入目录中的 `.hm` 文件，
+并要求显式设置 `replace_current=true`。视图刷新只执行固定的 `hm_viewfit` 和
+`hm_redraw`，没有开放任意 Python 或 Tcl。HyperView 云图、结果查询和截图的专用
+handler 尚未加入，`hw.hv` 可用性已纳入实时能力探测。

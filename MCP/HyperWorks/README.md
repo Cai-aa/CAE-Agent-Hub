@@ -2,11 +2,12 @@
 
 A local, workspace-scoped FastMCP server for auditable Altair HyperWorks automation.
 
-Version 0.2 discovers the installed HyperMesh/HyperStudy/solver launchers, manages
+Version 0.3 discovers the installed HyperMesh/HyperStudy/solver launchers, manages
 isolated projects, runs screened Tcl through HyperMesh Batch, launches HyperMesh or
 HyperView, submits typed OptiStruct/Radioss jobs, and exposes real status, bounded logs,
 cancellation, and artifact inventory. It also includes an authenticated in-application
-Extension that runs allowlisted `hm` API operations on the HyperWorks Qt main thread.
+Extension that runs allowlisted `hm` API operations on the HyperWorks Qt main thread,
+including bounded node/element/material creation, controlled `.hm` loading, and redraw.
 
 ## Find your HyperWorks installation
 
@@ -102,6 +103,9 @@ Python, or raw command-line tool. See [ARCHITECTURE.md](ARCHITECTURE.md).
 
 ## Current boundary
 
-Version 0.2 controls the live HyperMesh session and entity model through `hm`. Dedicated
-HyperView contour/result/capture handlers remain future work; `hw.hv` availability is
-already included in live capability probing.
+Version 0.3 adds controlled live modeling. A call can create at most 5000 nodes or
+elements; elements must reference existing positive node IDs. Live model loading accepts
+only `.hm` files already staged in an MCP project and requires explicit
+`replace_current=true`. View refresh executes only fixed `hm_viewfit` and `hm_redraw`
+commands; arbitrary Python and Tcl remain unavailable. Dedicated HyperView
+contour/result/capture handlers remain future work.

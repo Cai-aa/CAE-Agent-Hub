@@ -1,10 +1,17 @@
 from __future__ import annotations
 
 import platform
+import math
 import sys
 import threading
 from pathlib import Path
 from typing import Any
+
+
+BRIDGE_VERSION = "0.3.0"
+MAX_NODES_PER_CALL = 5000
+MAX_ELEMENTS_PER_CALL = 5000
+MAX_ELEMENT_NODES = 20
 
 
 ENTITY_CLASS_NAMES = {
@@ -120,6 +127,11 @@ class HandlerRegistry:
             "get_user_mark": self.get_user_mark,
             "interactive_select": self.interactive_select,
             "set_entity_attributes": self.set_entity_attributes,
+            "create_nodes": self.create_nodes,
+            "create_elements": self.create_elements,
+            "create_material": self.create_material,
+            "load_model": self.load_model,
+            "refresh_view": self.refresh_view,
             "get_model_metrics": self.get_model_metrics,
             "save_model": self.save_model,
         }
@@ -194,7 +206,7 @@ class HandlerRegistry:
     def ping(self) -> dict[str, Any]:
         return {
             "bridge": "hyperworks-mcp-extension",
-            "version": "0.2.0",
+            "version": BRIDGE_VERSION,
             "python": sys.version,
             "platform": platform.platform(),
             "execution_thread": threading.current_thread().name,
@@ -214,6 +226,12 @@ class HandlerRegistry:
             "methods": self.allowed_methods,
             "entity_types": sorted(ENTITY_CLASS_NAMES),
             "save_roots": [str(path) for path in self.allowed_roots],
+            "modeling_limits": {
+                "nodes_per_call": MAX_NODES_PER_CALL,
+                "elements_per_call": MAX_ELEMENTS_PER_CALL,
+                "element_nodes": MAX_ELEMENT_NODES,
+                "load_extensions": [".hm"],
+            },
         }
 
     def get_session_info(self) -> dict[str, Any]:
@@ -344,6 +362,201 @@ class HandlerRegistry:
             "before": before,
             "after": after,
         }
+
+    def create_nodes(
+        self,
+        coordinates: list[list[float]],
+        model_name: str | None = None,
+    ) -> dict[str, Any]:
+        if not isinstance(coordinates, list) or not coordinates:
+            raise ValueError("coordinates must be a non-empty list of [x, y, z] triples")
+        if len(coordinates) > MAX_NODES_PER_CALL:
+            raise ValueError(f"At most {MAX_NODES_PER_CALL} nodes may be created per call")
+        clean: list[tuple[float, float, float]] = []
+        for index, point in enumerate(coordinates):
+            if not isinstance(point, (list, tuple)) or len(point) != 3:
+                raise ValueError(f"coordinates[{index}] must contain exactly three values")
+            try:
+                xyz = tuple(float(value) for value in point)
+            except (TypeError, ValueError) as exc:
+                raise ValueError(f"coordinates[{index}] contains a non-numeric value") from exc
+            if not all(math.isfinite(value) for value in xyz):
+                raise ValueError(f"coordinates[{index}] must contain finite values")
+            clean.append(xyz)
+
+        _, ent = self._imports()
+        model = self._model(model_name)
+        created = [ent.Node(model, x=x, y=y, z=z) for x, y, z in clean]
+        return {
+            "created": True,
+            "entity_type": "node",
+            "model_name": model_name,
+            "count": len(created),
+            "ids": [int(node.id) for node in created],
+            "nodes": [
+                self._serialize_entity(node, ["id", "x", "y", "z"])
+                for node in created
+            ],
+        }
+
+    def create_elements(
+        self,
+        node_ids: list[list[int]],
+        config: int,
+        solver_type: int = 1,
+        auto_order: bool = False,
+        model_name: str | None = None,
+    ) -> dict[str, Any]:
+        if not isinstance(node_ids, list) or not node_ids:
+            raise ValueError("node_ids must be a non-empty list of connectivity lists")
+        if len(node_ids) > MAX_ELEMENTS_PER_CALL:
+            raise ValueError(f"At most {MAX_ELEMENTS_PER_CALL} elements may be created per call")
+        config = int(config)
+        solver_type = int(solver_type)
+        if config <= 0 or solver_type < 0:
+            raise ValueError("config must be positive and solver_type must be non-negative")
+
+        connectivities: list[list[int]] = []
+        for index, connectivity in enumerate(node_ids):
+            if not isinstance(connectivity, (list, tuple)):
+                raise ValueError(f"node_ids[{index}] must be a list")
+            if not 2 <= len(connectivity) <= MAX_ELEMENT_NODES:
+                raise ValueError(
+                    f"node_ids[{index}] must contain 2 to {MAX_ELEMENT_NODES} node IDs"
+                )
+            ids = [int(value) for value in connectivity]
+            if any(value <= 0 for value in ids) or len(set(ids)) != len(ids):
+                raise ValueError(f"node_ids[{index}] must contain unique positive node IDs")
+            connectivities.append(ids)
+
+        hm, ent = self._imports()
+        model = self._model(model_name)
+        existing_nodes = {int(node.id) for node in hm.Collection(model, ent.Node)}
+        missing = sorted({value for ids in connectivities for value in ids} - existing_nodes)
+        if missing:
+            preview = missing[:20]
+            suffix = "..." if len(missing) > len(preview) else ""
+            raise ValueError(f"Referenced node IDs do not exist: {preview}{suffix}")
+
+        before = {int(element.id) for element in hm.Collection(model, ent.Element)}
+        call_results = []
+        for connectivity in connectivities:
+            nodes = [ent.Node(model, value) for value in connectivity]
+            call_results.append(
+                _unwrap_hm_call(
+                    model.createelement(
+                        config=config,
+                        type=solver_type,
+                        entitylist=nodes,
+                        auto_order=1 if auto_order else 0,
+                    )
+                )
+            )
+        after = {int(element.id) for element in hm.Collection(model, ent.Element)}
+        created_ids = sorted(after - before)
+        if len(created_ids) != len(connectivities):
+            raise RuntimeError(
+                "HyperMesh completed element creation, but the created IDs could not be "
+                f"identified reliably (expected {len(connectivities)}, found {len(created_ids)})"
+            )
+        return {
+            "created": True,
+            "entity_type": "element",
+            "model_name": model_name,
+            "count": len(created_ids),
+            "ids": created_ids,
+            "config": config,
+            "solver_type": solver_type,
+            "auto_order": bool(auto_order),
+            "call_results": call_results,
+        }
+
+    def create_material(
+        self,
+        name: str,
+        cardimage: str | None = None,
+        values: dict[str, Any] | None = None,
+        model_name: str | None = None,
+    ) -> dict[str, Any]:
+        name = str(name).strip()
+        if not name or len(name) > 128:
+            raise ValueError("name must contain between 1 and 128 characters")
+        values = values or {}
+        if not isinstance(values, dict) or len(values) > 30:
+            raise ValueError("values must be an object containing at most 30 attributes")
+        kwargs: dict[str, Any] = {"name": name}
+        if cardimage is not None:
+            cardimage = str(cardimage).strip()
+            if not cardimage or len(cardimage) > 128:
+                raise ValueError("cardimage must contain between 1 and 128 characters")
+            kwargs["cardimage"] = cardimage
+        for key, value in values.items():
+            if (
+                not isinstance(key, str)
+                or not key
+                or key.startswith("_")
+                or key in {"id", "name", "cardimage"}
+            ):
+                raise ValueError(f"Material creation attribute is not allowed: {key!r}")
+            kwargs[key] = value
+
+        _, ent = self._imports()
+        material = ent.Material(self._model(model_name), **kwargs)
+        attributes = ["id", "name", "cardimage", *values.keys()]
+        return {
+            "created": True,
+            "entity_type": "material",
+            "model_name": model_name,
+            "material": self._serialize_entity(material, attributes),
+        }
+
+    def _safe_input(self, raw_path: str) -> Path:
+        path = self._safe_output(raw_path)
+        if not path.is_file():
+            raise ValueError(f"Input model does not exist: {path}")
+        return path
+
+    def load_model(
+        self,
+        input_file: str,
+        replace_current: bool = False,
+        load_cad_geometry_as_graphics: bool = False,
+        model_name: str | None = None,
+    ) -> dict[str, Any]:
+        if not replace_current:
+            raise ValueError(
+                "Loading replaces the current model state; set replace_current=true after approval"
+            )
+        path = self._safe_input(input_file)
+        if path.suffix.lower() != ".hm":
+            raise ValueError("The controlled live loader currently accepts only .hm files")
+        model = self._model(model_name)
+        model.hm_answernext(answer="yes")
+        result = _unwrap_hm_call(
+            model.readfile(
+                filename=path.as_posix(),
+                load_cad_geometry_as_graphics=1 if load_cad_geometry_as_graphics else 0,
+            )
+        )
+        session = self.get_session_info()
+        return {
+            "loaded": True,
+            "input_file": str(path),
+            "model_name": model_name,
+            "read_result": result,
+            "session": session,
+        }
+
+    def refresh_view(self, fit: bool = True) -> dict[str, Any]:
+        import hw
+
+        commands = []
+        if fit:
+            hw.evalTcl("hm_viewfit")
+            commands.append("hm_viewfit")
+        hw.evalTcl("hm_redraw")
+        commands.append("hm_redraw")
+        return {"refreshed": True, "fit": bool(fit), "commands": commands}
 
     def get_model_metrics(self, model_name: str | None = None) -> dict[str, Any]:
         model = self._model(model_name)

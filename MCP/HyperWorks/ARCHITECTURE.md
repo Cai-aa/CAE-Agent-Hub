@@ -29,8 +29,9 @@ FastMCP typed tools
   access, absolute/parent paths, environment access, nested `source`, or `*quit`.
 - There is no arbitrary shell, PowerShell, Python, or raw command-line tool.
 - Solver options are typed and CPU counts are bounded.
-- Live entity edits, interactive selection, model saving, GUI launch, solver submission,
-  and cancellation are explicit side effects.
+- Live entity edits/creation, controlled model loading, view refresh, interactive
+  selection, model saving, GUI launch, solver submission, and cancellation are explicit
+  side effects.
 - The live bridge binds only to `127.0.0.1`, authenticates every request with a random
   token, limits payload size, and exposes a fixed method allowlist without `eval`.
 - The socket thread never invokes the HyperWorks API. A Qt timer drains requests and
@@ -41,6 +42,7 @@ domain command surface, so scripts must still be reviewed before execution.
 
 ## Current boundary
 
-Version 0.2 combines the live Extension/API path with the existing HyperMesh Batch and
-solver paths. HyperView-specific contour and capture handlers remain a later extension;
-the bridge already probes `hw.hv` capability and retains an allowlisted handler design.
+Version 0.3 combines bounded live node/element/material creation, controlled `.hm`
+loading, and fixed view refresh with the existing HyperMesh Batch and solver paths.
+HyperView-specific contour and capture handlers remain a later extension; the bridge
+already probes `hw.hv` capability and retains an allowlisted handler design.

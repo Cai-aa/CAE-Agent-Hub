@@ -30,7 +30,9 @@ a solver, or cancelling a job. Never infer mesh quality, convergence, solver ava
 or successful completion; read the actual job status and logs. This server does not expose
 arbitrary shell, PowerShell, or Python execution. The live in-application Python bridge is
 available through an authenticated localhost Extension. Live entity modification, model
-saving, interactive selection, GUI launch, solver launch, and cancellation are side effects.
+saving, controlled creation, model loading, view refresh, interactive selection, GUI launch,
+solver launch, and cancellation are side effects. Loading a model requires explicit
+replace_current=true. The live bridge never exposes arbitrary Python or Tcl execution.
 """
 
 settings = Settings.from_env()
@@ -365,6 +367,90 @@ def set_live_entity_attributes(
         },
         timeout=60,
     )
+
+
+@mcp.tool()
+def create_live_nodes(
+    coordinates: list[list[float]], model_name: str | None = None
+) -> dict:
+    """Create up to 5000 nodes in the live model from finite [x, y, z] coordinates."""
+    return live.call(
+        "create_nodes",
+        {"coordinates": coordinates, "model_name": model_name},
+        timeout=120,
+    )
+
+
+@mcp.tool()
+def create_live_elements(
+    node_ids: list[list[int]],
+    config: int,
+    solver_type: int = 1,
+    auto_order: bool = False,
+    model_name: str | None = None,
+) -> dict:
+    """Create live elements from existing node IDs using an explicit HyperMesh config/type."""
+    return live.call(
+        "create_elements",
+        {
+            "node_ids": node_ids,
+            "config": config,
+            "solver_type": solver_type,
+            "auto_order": auto_order,
+            "model_name": model_name,
+        },
+        timeout=300,
+    )
+
+
+@mcp.tool()
+def create_live_material(
+    name: str,
+    cardimage: str | None = None,
+    values: dict | None = None,
+    model_name: str | None = None,
+) -> dict:
+    """Create one live material with explicit solver card image and bounded attributes."""
+    return live.call(
+        "create_material",
+        {
+            "name": name,
+            "cardimage": cardimage,
+            "values": values,
+            "model_name": model_name,
+        },
+        timeout=120,
+    )
+
+
+@mcp.tool()
+def load_live_model(
+    project_id: str,
+    input_name: str,
+    replace_current: bool = False,
+    load_cad_geometry_as_graphics: bool = False,
+    model_name: str | None = None,
+) -> dict:
+    """Load a project .hm file into the live session; replace_current=true is mandatory."""
+    input_file = projects.input_file(project_id, input_name)
+    if input_file.suffix.lower() != ".hm":
+        raise ValueError("input_name must refer to a .hm file in the project input directory")
+    return live.call(
+        "load_model",
+        {
+            "input_file": str(input_file),
+            "replace_current": replace_current,
+            "load_cad_geometry_as_graphics": load_cad_geometry_as_graphics,
+            "model_name": model_name,
+        },
+        timeout=300,
+    )
+
+
+@mcp.tool()
+def refresh_live_view(fit: bool = True) -> dict:
+    """Redraw the live HyperMesh graphics window and optionally fit the visible model."""
+    return live.call("refresh_view", {"fit": fit}, timeout=30)
 
 
 @mcp.tool()

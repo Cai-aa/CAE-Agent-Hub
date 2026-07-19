@@ -1,6 +1,6 @@
 [project]
 name = "hyperworks-mcp"
-version = "0.2.0"
+version = "0.3.0"
 description = "Local, workspace-scoped MCP server for Altair HyperWorks automation"
 requires-python = ">=3.10"
 dependencies = [
