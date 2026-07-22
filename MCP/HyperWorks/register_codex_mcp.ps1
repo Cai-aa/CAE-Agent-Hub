@@ -32,11 +32,16 @@ if (-not (Test-Path -LiteralPath $HyperWorksHome -PathType Container)) {
     throw "HyperWorks installation root not found: $HyperWorksHome"
 }
 
-& codex mcp remove hyperworks 2>$null
-& codex mcp add hyperworks `
+$codexCommand = Get-Command codex.cmd -ErrorAction SilentlyContinue
+if (-not $codexCommand) {
+    $codexCommand = Get-Command codex -ErrorAction Stop
+}
+
+& $codexCommand.Source mcp remove hyperworks 2>$null
+& $codexCommand.Source mcp add hyperworks `
     --env "HYPERWORKS_HOME=$HyperWorksHome" `
     --env "HYPERWORKS_MCP_WORKSPACE=$Workspace" `
     --env "PYTHONUTF8=1" `
     -- $PythonExe -m hyperworks_mcp
 
-Write-Host "Registered hyperworks MCP. Verify it with: codex mcp get hyperworks"
+Write-Host "Registered hyperworks MCP. Verify it with: codex.cmd mcp get hyperworks"

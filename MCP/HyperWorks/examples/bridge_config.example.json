@@ -4,7 +4,7 @@
   "port": 48761,
   "token": "replace-with-at-least-32-random-characters",
   "allowed_roots": [
-    "E:\\CAE\\hyperworks-mcp-workspace"
+    "C:\\path\\to\\your\\hyperworks-mcp-workspace"
   ],
   "request_timeout_seconds": 600
 }
