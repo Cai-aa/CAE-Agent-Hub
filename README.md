@@ -46,6 +46,8 @@ This repository separates responsibilities:
 | [ANSYS Workbench MCP](MCP/Ansys/Workbench%20MCP) | Active | Control Workbench and Mechanical through Python helpers plus an ACT bridge, with file-queue and socket-timer communication modes. | `server.py`, `tools/`, `workbench_plugin/` | Workbench, Mechanical, ACT, LS-DYNA, socket timer |
 | [Ansys AEDT MCP](MCP/Ansys/AEDT%20MCP) | Active | Connect MCP clients to Ansys Electronics Desktop / HFSS through a raw TCP JSON bridge; inspect projects, create HFSS designs, save projects, and run small AEDT Python snippets. | `mcp_server.py`, `aedt_mcp_bridge.py`, `scripts/install_aedt_toolkit_button.ps1` | AEDT, HFSS, Electronics Desktop, antenna, S-parameters |
 | [Altair HyperWorks MCP](MCP/HyperWorks) | Active | Control HyperWorks and a live HyperMesh session through typed, workspace-scoped tools plus an authenticated in-application Python bridge; inspect models and entities, run screened batch Tcl, and manage solver jobs. | `src/hyperworks_mcp/server.py`, `hyperworks_extension/`, `install_hyperworks_extension.ps1` | HyperWorks, HyperMesh, HyperView, OptiStruct, Radioss, live Python bridge |
+| [LAMMPS MCP](MCP/LAMMPS) | Active | Detect a local LAMMPS executable, run explicit input decks, and retain job evidence. | `server.py`, `tools/atomistic_bridge.py` | LAMMPS, molecular dynamics, trajectory |
+| [OVITO MCP](MCP/OVITO) | Active | Detect OVITO scripting support and run explicit postprocessing scripts with evidence logs. | `server.py`, `tools/atomistic_bridge.py` | OVITO, atomistic, visualization |
 
 > Adding a new MCP? Follow this pattern: keep reusable source, examples, tests, and bilingual README files; exclude virtual environments, solver results, private paths, licenses, and generated project data.
 
@@ -80,6 +82,10 @@ This repository separates responsibilities:
 | [abaqus-topology-optimization](Skill/abaqus/optimization/abaqus-topology-optimization) | Active | Topology optimization workflow for reducing mass while preserving stiffness. | topology optimization, weight reduction, stiffness |
 | [fea-structural](Skill/abaqus/reference/fea-structural) | Reference | General structural FEA guidance across static, dynamic, nonlinear, and validation domains. | structural FEA, nonlinear, validation |
 | [fenics-fem](Skill/abaqus/reference/fenics-fem) | Reference | FEniCS/dolfinx finite element reference for weak forms, gmsh meshes, PDEs, and ParaView export. | FEniCS, dolfinx, PDE, weak form, gmsh |
+| [lammps-evidence-md](Skill/lammps/lammps-evidence-md) | Active | Evidence-first LAMMPS molecular-dynamics workflow. | LAMMPS, molecular dynamics, stress-strain |
+| [ovito-evidence-postprocessing](Skill/ovito/ovito-evidence-postprocessing) | Active | Evidence-first OVITO atomistic postprocessing workflow. | OVITO, visualization, atomistic |
+| [ansys-mechanical-evidence-structural](Skill/Ansys/ansys-mechanical-evidence-structural) | Active | Mechanical evidence and acceptance gates, complementary to the Workbench workflow skill. | Mechanical, ACT, PyMechanical, MAPDL |
+| [aedt-evidence-electromagnetics](Skill/Ansys/aedt-evidence-electromagnetics) | Active | Generic AEDT evidence workflow with Maxwell checks. | AEDT, Maxwell, HFSS, PyAEDT |
 
 > Adding a new skill? Keep the complete skill directory together with `SKILL.md`, `metadata.json` when available, upstream attribution, references, assets, and any scripts needed by the workflow.
 

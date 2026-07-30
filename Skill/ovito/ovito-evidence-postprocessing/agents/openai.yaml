@@ -1,0 +1,4 @@
+interface:
+  display_name: "OVITO Evidence Postprocessing"
+  short_description: "Traceable atomistic result visualization"
+  default_prompt: "Use $ovito-evidence-postprocessing to inspect and export an auditable OVITO visualization."

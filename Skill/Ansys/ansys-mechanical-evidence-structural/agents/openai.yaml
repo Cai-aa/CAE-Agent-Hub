@@ -1,0 +1,4 @@
+interface:
+  display_name: "Ansys Mechanical Evidence Structural"
+  short_description: "Auditable Mechanical structural workflows"
+  default_prompt: "Use $ansys-mechanical-evidence-structural to run an evidence-first Mechanical analysis."

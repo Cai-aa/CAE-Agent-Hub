@@ -1,0 +1,18 @@
+[project]
+name = "ovito-mcp"
+version = "0.1.0"
+description = "MCP server for explicit OVITO batch postprocessing and evidence logs"
+requires-python = ">=3.10"
+dependencies = [
+  "fastmcp>=2.0,<3",
+  "python-dotenv>=1.0,<2",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8.0,<9"]
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+
+[tool.uv]
+package = false

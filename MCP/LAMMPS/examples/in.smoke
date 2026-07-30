@@ -1,0 +1,12 @@
+units metal
+atom_style atomic
+lattice fcc 3.615
+region box block 0 2 0 2 0 2
+create_box 1 box
+create_atoms 1 box
+mass 1 63.546
+pair_style zero 8.0
+pair_coeff * *
+thermo 1
+run 0
+print "LAMMPS_SMOKE_TEST_OK"

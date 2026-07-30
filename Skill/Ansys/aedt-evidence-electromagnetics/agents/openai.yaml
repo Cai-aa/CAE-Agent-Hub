@@ -1,0 +1,4 @@
+interface:
+  display_name: "AEDT Evidence Electromagnetics"
+  short_description: "Auditable AEDT and PyAEDT workflows"
+  default_prompt: "Use $aedt-evidence-electromagnetics to run an evidence-first AEDT electromagnetic workflow."

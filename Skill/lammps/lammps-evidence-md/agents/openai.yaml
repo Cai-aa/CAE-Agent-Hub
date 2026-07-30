@@ -1,0 +1,4 @@
+interface:
+  display_name: "LAMMPS Evidence MD"
+  short_description: "Auditable LAMMPS molecular dynamics"
+  default_prompt: "Use $lammps-evidence-md to prepare and run an evidence-first LAMMPS workflow."

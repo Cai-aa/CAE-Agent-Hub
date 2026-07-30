@@ -1,0 +1,12 @@
+.venv/
+__pycache__/
+.pytest_cache/
+*.egg-info/
+*.pyc
+.env
+jobs/
+*.log
+*.lammpstrj
+*.bin
+*.data
+*.restart
