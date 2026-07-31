@@ -46,6 +46,8 @@ AI client
 | [ANSYS Workbench MCP](MCP/Ansys/Workbench%20MCP) | Active | 通过 Python helper 和 Mechanical ACT bridge 控制 Workbench / Mechanical，支持 file queue 和 socket timer 两种通信方式。 | `server.py`, `tools/`, `workbench_plugin/` | Workbench, Mechanical, ACT, LS-DYNA |
 | [Ansys AEDT MCP](MCP/Ansys/AEDT%20MCP) | Active | 通过 raw TCP JSON bridge 连接 Ansys Electronics Desktop / HFSS；可查看工程、创建 HFSS design、保存工程、执行小段 AEDT Python。 | `mcp_server.py`, `aedt_mcp_bridge.py`, `scripts/install_aedt_toolkit_button.ps1` | AEDT, HFSS, Electronics Desktop, antenna |
 | [Altair HyperWorks MCP](MCP/HyperWorks) | Active | 通过类型化、工作区隔离的工具和经过认证的应用内 Python bridge 控制 HyperWorks 与 live HyperMesh 会话；支持模型与实体检查、受控 batch Tcl 和求解任务管理。 | `src/hyperworks_mcp/server.py`, `hyperworks_extension/`, `install_hyperworks_extension.ps1` | HyperWorks, HyperMesh, HyperView, OptiStruct, Radioss, live Python bridge |
+| [LAMMPS MCP](MCP/LAMMPS) | Active | 检测本地 LAMMPS、运行明确输入文件并保存作业证据。 | `server.py`, `tools/atomistic_bridge.py` | LAMMPS, 分子动力学, trajectory |
+| [OVITO MCP](MCP/OVITO) | Active | 检测 OVITO 脚本能力、运行明确后处理脚本并保存证据日志。 | `server.py`, `tools/atomistic_bridge.py` | OVITO, 原子尺度, visualization |
 
 > 新增 MCP 时，建议保留可复用源码、示例、测试和中英文 README；不要提交虚拟环境、求解结果、私有路径、许可证或生成的工程数据。
 
@@ -80,6 +82,10 @@ AI client
 | [abaqus-topology-optimization](Skill/abaqus/optimization/abaqus-topology-optimization) | Active | 拓扑优化工作流，在保持刚度的同时减少质量。 | topology optimization, weight reduction |
 | [fea-structural](Skill/abaqus/reference/fea-structural) | Reference | 通用结构有限元参考，覆盖静力、动力、非线性和验证。 | structural FEA, nonlinear, validation |
 | [fenics-fem](Skill/abaqus/reference/fenics-fem) | Reference | FEniCS/dolfinx 有限元参考，用于弱形式、gmsh 网格、PDE 和 ParaView 导出。 | FEniCS, dolfinx, PDE, gmsh |
+| [lammps-evidence-md](Skill/lammps/lammps-evidence-md) | Active | 证据优先的 LAMMPS 分子动力学工作流。 | LAMMPS, 分子动力学, stress-strain |
+| [ovito-evidence-postprocessing](Skill/ovito/ovito-evidence-postprocessing) | Active | 证据优先的 OVITO 原子尺度后处理工作流。 | OVITO, visualization, atomistic |
+| [ansys-mechanical-evidence-structural](Skill/Ansys/ansys-mechanical-evidence-structural) | Active | 与 Workbench 主工作流互补的 Mechanical 证据和验收门槛。 | Mechanical, ACT, PyMechanical, MAPDL |
+| [aedt-evidence-electromagnetics](Skill/Ansys/aedt-evidence-electromagnetics) | Active | 含 Maxwell 检查的泛用 AEDT 证据工作流。 | AEDT, Maxwell, HFSS, PyAEDT |
 
 > 新增 skill 时，请保留完整 skill 目录，包括 `SKILL.md`、可用的 `metadata.json`、上游来源、references、assets 和工作流脚本。
 
