@@ -34,14 +34,8 @@ from pathlib import Path
 
 logger = logging.getLogger("calculix_mcp.solver")
 
-# Let solver.py import its sibling inp_parser regardless of CWD.
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import inp_parser  # noqa: E402
-
-
-# ──────────────────────────────────────────────────────────────────────────
-# ccx executable detection (single source; mcp_server.fea_health reuses it)
-# ──────────────────────────────────────────────────────────────────────────
 
 
 def detect_ccx() -> str:
@@ -59,18 +53,16 @@ def detect_ccx() -> str:
     return ""
 
 
-# ──────────────────────────────────────────────────────────────────────────
-# run_solver — CalculiX fire-and-forget subprocess
-# ──────────────────────────────────────────────────────────────────────────
-
-
 def run_solver(inp_path: str, timeout: int = 1800) -> dict:
     """Run CalculiX on an ``.inp`` deck; return status + output-file paths.
 
-    Invokes ``ccx -i <jobname>`` with cwd set to the .inp's directory (ccx drops
-    its outputs in cwd). The exit code is NOT trusted (ccx returns 0 even on
-    ``*ERROR``); success is judged by: no ``*ERROR`` in stdout AND the ``.sta``
-    file has at least one data row AND the run did not time out.
+    Invokes ``ccx -i <jobname>`` (ccx appends the ``.inp`` suffix itself, so
+    ``<jobname>`` carries no extension) with cwd set to the .inp's directory
+    (ccx drops its outputs in cwd). ccx writes its diagnostics, including
+    ``*ERROR``, to stdout, so stderr is merged into stdout before scanning. The
+    exit code is NOT trusted (ccx returns 0 even on ``*ERROR``); success is
+    judged by: no ``*ERROR`` in stdout AND the ``.sta`` file has at least one
+    data row AND the run did not time out.
 
     Args:
         inp_path: path to the ``.inp`` (absolute is safest; outputs land in its
@@ -107,18 +99,17 @@ def _run_ccx(inp_path: str, timeout: int) -> dict:
     if not inp.exists():
         raise FileNotFoundError(f"inp not found: {inp_path}")
     job_dir = inp.parent
-    jobname = inp.stem  # ccx appends .inp itself, so jobname carries no extension
+    jobname = inp.stem
 
     cmd = [exe, "-i", jobname]
     env = dict(os.environ)
-    env.setdefault("OMP_NUM_THREADS", "1")  # keep ccx single-threaded (avoid SPOOLES contention)
+    env.setdefault("OMP_NUM_THREADS", "1")
 
     logger.info("run_solver ccx: %s (cwd=%s)", " ".join(cmd), job_dir)
     start = time.monotonic()
     timeout_hit = False
     stdout_text = ""
     try:
-        # Merge stderr into stdout: ccx sends almost everything (incl *ERROR) to stdout.
         proc = subprocess.run(
             cmd,
             cwd=str(job_dir),
@@ -126,7 +117,7 @@ def _run_ccx(inp_path: str, timeout: int) -> dict:
             capture_output=True,
             text=True,
             timeout=timeout,
-            check=False,  # do not raise; exit 0 even on error
+            check=False,
         )
         returncode = proc.returncode
         stdout_text = (proc.stdout or "") + (proc.stderr or "")
@@ -143,7 +134,6 @@ def _run_ccx(inp_path: str, timeout: int) -> dict:
         logger.warning("run_solver ccx timeout after %ds (job=%s)", timeout, jobname)
     elapsed = time.monotonic() - start
 
-    # CRITICAL: scan stdout for *ERROR (the ccx exit code is untrusted).
     errors = [ln.strip() for ln in stdout_text.splitlines() if "*ERROR" in ln.upper()]
 
     sta_path = job_dir / f"{jobname}.sta"
@@ -186,17 +176,11 @@ def _sta_has_data_row(sta_path: Path) -> bool:
         return False
     for ln in text.splitlines():
         s = ln.strip()
-        # Data rows start with a digit; header rows (SUMMARY / STEP) start with a letter.
         if s and s[0].isdigit():
             return True
     return False
 
 
-# ──────────────────────────────────────────────────────────────────────────
-# Result parsing (.dat)
-# ──────────────────────────────────────────────────────────────────────────
-
-# ccx .dat section headers (see _parse_max_von_mises / _parse_max_disp).
 _STRESS_HDR = re.compile(r"^\s*stresses\s*\(elem", re.IGNORECASE)
 _DISP_HDR = re.compile(r"^\s*displacements\s*\(v", re.IGNORECASE)
 
@@ -258,7 +242,7 @@ def _read_ccx_dat(result_path: str) -> dict:
     if n_disp == 0:
         warnings.append("no displacement data rows parsed (check *NODE PRINT NSET=... U)")
 
-    inp_path = dat.with_suffix(".inp")  # meshio computes geometry from the sibling .inp
+    inp_path = dat.with_suffix(".inp")
     volume, mass, density = _compute_volume_mass(inp_path, warnings)
 
     return {
@@ -301,7 +285,7 @@ def _parse_max_von_mises(text: str) -> tuple[float, int]:
                     i += 1
                     continue
                 if len(parts) < 8:
-                    break  # not a stress row -> section ended
+                    break
                 try:
                     int(parts[0])
                     int(parts[1])
@@ -368,11 +352,6 @@ def _parse_max_disp(text: str) -> tuple[float, int]:
     return max_u, count
 
 
-# ──────────────────────────────────────────────────────────────────────────
-# volume / mass — meshio geometry + *DENSITY + shell thickness
-# ──────────────────────────────────────────────────────────────────────────
-
-
 def _compute_volume_mass(
     inp_path: Path, warnings: list[str]
 ) -> tuple[float | None, float | None, float | None]:
@@ -393,7 +372,7 @@ def _compute_volume_mass(
 
     try:
         model = inp_parser.parse_model(str(inp_path))
-    except Exception as e:  # pragma: no cover - defensive
+    except Exception as e:  # pragma: no cover
         warnings.append(f"parse_model failed for volume/mass: {e}")
         return None, None, None
 
@@ -414,11 +393,10 @@ def _compute_volume_mass(
 
     try:
         with inp_parser._suppress_stdio():
-            import meshio  # lazy import
+            import meshio
 
             mesh = meshio.read(str(inp_path), file_format="abaqus")
     except BaseException as e:
-        # NOTE BaseException: meshio sys.exit(1)s on unknown TYPE; degrade gracefully.
         warnings.append(f"meshio.read failed for volume/mass: {type(e).__name__}: {e}")
         return None, None, density
 
@@ -488,11 +466,9 @@ def _shell_areas(points, conn, ctype: str):
     import numpy as np
 
     if ctype == "quad":
-        # Diagonal method (any planar quad): 0.5 * |(p2-p0) x (p3-p1)|.
         d1 = points[conn[:, 2]] - points[conn[:, 0]]
         d2 = points[conn[:, 3]] - points[conn[:, 1]]
         return 0.5 * np.linalg.norm(np.cross(d1, d2), axis=1)
-    # triangle
     v1 = points[conn[:, 1]] - points[conn[:, 0]]
     v2 = points[conn[:, 2]] - points[conn[:, 0]]
     return 0.5 * np.linalg.norm(np.cross(v1, v2), axis=1)

@@ -36,17 +36,20 @@ logger = logging.getLogger("calculix_mcp.inp_parser")
 
 @contextlib.contextmanager
 def _suppress_stdio():
-    """临时把 ``sys.stdout`` / ``sys.stderr`` 指到 devnull（Python 对象级）。
+    """Temporarily redirect ``sys.stdout`` / ``sys.stderr`` to devnull at the Python object level.
 
-    meshio 读到未知单元类型时：``_helpers._read_file`` 用 ``print(e)``（→
-    ``sys.stdout``）+ ``_common.error()``（→ rich ``Console(stderr=True)`` →
-    ``sys.stderr``）输出噪声，再 ``sys.exit(1)``。我们已用文本兜底 graceful 降级，
-    这些噪声对调用方无意义且误导，故屏蔽。
+    On an unknown element type meshio's ``_helpers._read_file`` emits noise via
+    ``print(e)`` (-> ``sys.stdout``) and ``_common.error()`` (-> a rich
+    ``Console(stderr=True)`` -> ``sys.stderr``) before calling ``sys.exit(1)``.
+    We already degrade gracefully with a text fallback, so this noise is
+    meaningless and misleading to the caller and is suppressed here.
 
-    采用 **Python 对象级 swap** 而非 ``dup2`` fd：meshio 的输出全部走 Python 层
-    ``sys.stdout``/``sys.stderr``；swap 不触碰真实 fd 1/2，也**不全局 flush**，所以
-    不会吞掉调用方自己尚未 flush 的 stdio 缓冲。meshio.read 成功时无 stdio 输出，
-    屏蔽安全；失败原因仍记进 ``meshio_error`` 字段。
+    A Python object-level swap is used rather than a ``dup2`` fd redirect: all of
+    meshio's output goes through the Python-layer ``sys.stdout``/``sys.stderr``,
+    the swap never touches real fd 1/2 and never flushes globally, so it cannot
+    swallow the caller's own unflushed stdio buffer. A successful ``meshio.read``
+    produces no stdio output, so suppressing it is safe; the failure reason is
+    still recorded in the ``meshio_error`` field.
     """
     devnull_out = open(os.devnull, "w")
     devnull_err = open(os.devnull, "w")
@@ -59,22 +62,18 @@ def _suppress_stdio():
         devnull_out.close()
         devnull_err.close()
 
-# ──────────────────────────────────────────────────────────────────────────
-# 数据结构
-# ──────────────────────────────────────────────────────────────────────────
-
 
 @dataclass
 class Card:
-    """一个 ``*KEYWORD`` 卡片。
+    """A single ``*KEYWORD`` card.
 
     Attributes:
-        keyword:    大写关键字，如 ``"SHELL SECTION"`` / ``"ELASTIC"``。
-        params:     关键字行参数，如 ``{"ELSET": "UPPER", "MATERIAL": "STEEL"}``。
-                    无值的旗标参数值为 ``None``。
-        data_lines: 数据行原文（已 rstrip，跳过空行/注释）。
-        header_line_no: 关键字行在原文件中的 0-based 行号（诊断/调试用）。
-        data_line_nos:  各数据行的 0-based 行号。
+        keyword:    upper-case keyword, e.g. ``"SHELL SECTION"`` / ``"ELASTIC"``.
+        params:     keyword-line parameters, e.g. ``{"ELSET": "UPPER", "MATERIAL": "STEEL"}``;
+                    flag parameters without a value map to ``None``.
+        data_lines: raw data lines (rstripped; blank/comment lines skipped).
+        header_line_no: 0-based line number of the keyword line in the source file (diagnostics).
+        data_line_nos:  0-based line numbers of each data line.
     """
 
     keyword: str
@@ -84,22 +83,17 @@ class Card:
     data_line_nos: list[int] = field(default_factory=list)
 
 
-# ──────────────────────────────────────────────────────────────────────────
-# 通用 .inp 扫描器
-# ──────────────────────────────────────────────────────────────────────────
-
 _PARAM_KV = re.compile(r"^\s*\*([A-Za-z0-9 _]+)\b")
 
 
 def _parse_keyword_line(line: str) -> tuple[str, dict[str, str | None]]:
-    """解析 ``*KEYWORD, ELSET=UPPER, MATERIAL=STEEL, GENERATE`` 行。
+    """Parse a ``*KEYWORD, ELSET=UPPER, MATERIAL=STEEL, GENERATE`` header line.
 
     Returns:
         (keyword_upper, params_dict)
     """
     body = line.lstrip()
-    body = body[1:]  # 去掉前导 '*'
-    # 按 ',' 分割，第一段是 keyword，其余是参数
+    body = body[1:]
     parts = [p.strip() for p in body.split(",")]
     keyword = parts[0].upper()
     params: dict[str, str | None] = {}
@@ -110,16 +104,17 @@ def _parse_keyword_line(line: str) -> tuple[str, dict[str, str | None]]:
             k, v = p.split("=", 1)
             params[k.strip().upper()] = v.strip()
         else:
-            params[p.upper()] = None  # 旗标参数（如 GENERATE / SRT）
+            params[p.upper()] = None
     return keyword, params
 
 
 def scan_cards(lines: list[str]) -> list[Card]:
-    """扫描整份 ``.inp``，把每个 ``*KEYWORD`` 收成一张 :class:`Card`。
+    """Scan a full ``.inp`` and fold each ``*KEYWORD`` into a :class:`Card`.
 
-    注释行（``**``）和空行被跳过；每个卡片的数据行持续到下一个 ``*`` 关键字
-    （注释 ``**`` 不算）。未知关键字同样被收成 Card（由上层决定是否归入
-    ``unsupported_cards``），保证 graceful。
+    Comment lines (``**``) and blank lines are skipped; a card's data lines run
+    up to the next ``*`` keyword (``**`` comments do not terminate it). Unknown
+    keywords are still collected as Cards (the caller decides whether to file
+    them under ``unsupported_cards``), keeping parsing graceful.
     """
     cards: list[Card] = []
     i = 0
@@ -127,7 +122,6 @@ def scan_cards(lines: list[str]) -> list[Card]:
     while i < n:
         ln = lines[i]
         s = ln.strip()
-        # 注释 or 空行
         if not s or s.startswith("**"):
             i += 1
             continue
@@ -137,14 +131,13 @@ def scan_cards(lines: list[str]) -> list[Card]:
             data_lines: list[str] = []
             data_nos: list[int] = []
             i += 1
-            # 收集数据行直到下一个关键字；注释 ** 与空行跳过
             while i < n:
                 ds = lines[i].strip()
                 if not ds or ds.startswith("**"):
                     i += 1
                     continue
                 if ds.startswith("*"):
-                    break  # 下一个卡片
+                    break
                 data_lines.append(ds)
                 data_nos.append(i)
                 i += 1
@@ -158,27 +151,23 @@ def scan_cards(lines: list[str]) -> list[Card]:
                 )
             )
         else:
-            # 文件级裸数据行（理论上不该出现，跳过）
             i += 1
     return cards
 
 
-# ──────────────────────────────────────────────────────────────────────────
-# meshio 网格概览（带 graceful 文本兜底）
-# ──────────────────────────────────────────────────────────────────────────
-
-
 def _meshio_overview(path: str, lines: list[str]) -> dict:
-    """读网格统计：节点数 + 各单元类型计数（保留**原始 Abaqus TYPE 名**）。
+    """Read mesh statistics: node count + per-element-type counts (preserving the
+    **original Abaqus TYPE names**).
 
-    设计要点：
-      * meshio 把 ``S4`` 归一化成 ``quad``、``B31``→``line``，且 reverse-map 有
-        collision bug —— 所以 ``elements_by_type`` **以文本扫描的原始 TYPE 名为准**
-        （S4/B31/C3D8），meshio 只用来补充 bbox / NSET / ELSET 名。
-      * meshio 对未知 TYPE 硬抛 ReadError；本函数对 meshio 失败 graceful 降级，
-        保证 ``parse_model`` 永不因 meshio 挂。
+    Design notes:
+      * meshio normalizes ``S4`` to ``quad`` and ``B31`` to ``line``, and its
+        reverse map has a collision bug, so ``elements_by_type`` is taken from
+        the text-scanned original TYPE names (S4/B31/C3D8); meshio only fills in
+        the bbox and the NSET/ELSET names.
+      * On an unknown element TYPE meshio calls ``sys.exit(1)`` (a SystemExit,
+        i.e. a BaseException, not a plain Exception), so the meshio block must
+        catch BaseException and degrade to the text counts rather than crash.
     """
-    # 1) 文本计数（原始 TYPE 名，永远可得）
     n_nodes = 0
     elements_by_type: dict[str, int] = {}
     for card in scan_cards(lines):
@@ -192,7 +181,7 @@ def _meshio_overview(path: str, lines: list[str]) -> dict:
 
     overview: dict[str, Any] = {
         "n_nodes": n_nodes,
-        "elements_by_type": dict(elements_by_type),  # 原始 TYPE 名
+        "elements_by_type": dict(elements_by_type),
         "elset_names": [],
         "nset_names": [],
         "bbox": None,
@@ -200,10 +189,9 @@ def _meshio_overview(path: str, lines: list[str]) -> dict:
         "meshio_error": None,
     }
 
-    # 2) meshio 补充 bbox / 集合名（失败不影响主字段）
     try:
-        import meshio  # 延迟导入
-    except Exception as e:  # pragma: no cover - 环境问题
+        import meshio
+    except Exception as e:  # pragma: no cover
         overview["meshio_error"] = f"meshio import failed: {e}"
         return overview
 
@@ -219,21 +207,14 @@ def _meshio_overview(path: str, lines: list[str]) -> dict:
             [float(v) for v in mesh.points.max(axis=0)],
         ]
     except BaseException as e:
-        # ⚠️ 必须捕 BaseException：meshio 对未知单元 TYPE 会 sys.exit(1)（SystemExit
-        #    是 BaseException 不是 Exception），这里要 graceful 降级到文本计数，绝不崩。
         overview["meshio_error"] = f"{type(e).__name__}: {e}"
         logger.warning("meshio.read failed, using text counts only: %s", e)
 
     return overview
 
 
-# ──────────────────────────────────────────────────────────────────────────
-# 卡片专用抽取器
-# ──────────────────────────────────────────────────────────────────────────
-
-
 def _to_float(s: str) -> float | None:
-    """安全 str→float；解析失败返回 None。"""
+    """Best-effort str→float; return None on parse failure."""
     s = s.strip().rstrip(",")
     if not s:
         return None
@@ -244,10 +225,11 @@ def _to_float(s: str) -> float | None:
 
 
 def extract_shell_sections(cards: list[Card]) -> list[dict]:
-    """抽取 ``*SHELL SECTION`` 卡 → 壳厚 T + ELSET + MATERIAL。
+    """Extract ``*SHELL SECTION`` cards -> thickness T + ELSET + MATERIAL.
 
-    Abaqus/CalculiX 约定：厚度在卡片后**第 1 个数据行的第 1 个数值**。
-    （OFFSET/MATERIAL 等放在关键字行的参数里，不动。）
+    Abaqus/CalculiX convention: the thickness is the **first value on the first
+    data line** of the card. OFFSET/MATERIAL etc. live as keyword-line
+    parameters and are left untouched.
     """
     out: list[dict] = []
     for c in cards:
@@ -267,12 +249,12 @@ def extract_shell_sections(cards: list[Card]) -> list[dict]:
 
 
 def extract_beam_sections(cards: list[Card]) -> list[dict]:
-    """抽取 ``*BEAM SECTION`` 卡 → 截面类型 SECTION= 与参数。
+    """Extract ``*BEAM SECTION`` cards -> section type SECTION= and parameters.
 
-    强制库截面 ``SECTION=I``（避开 ``*BEAM GENERAL SECTION`` 在 ccx 历史版本的
-    bug）。其它 SECTION 类型同样
-    读出原值，但 list_design_vars 只暴露 SECTION=I 的 h/b/t1/t2。
-    数据行 line1: ``h, b, t1, t2``（Abaqus/CalculiX 4 参数，顺序一致）。
+    The library section ``SECTION=I`` is preferred (``*BEAM GENERAL SECTION``
+    has bugs in some ccx releases). Other SECTION types are read with their raw
+    values too, but list_design_vars only exposes h/b/t1/t2 for SECTION=I.
+    Data line 1: ``h, b, t1, t2`` (the four Abaqus/CalculiX parameters, in order).
     """
     out: list[dict] = []
     for c in cards:
@@ -287,7 +269,7 @@ def extract_beam_sections(cards: list[Card]) -> list[dict]:
                 "elset": c.params.get("ELSET", ""),
                 "material": c.params.get("MATERIAL", ""),
                 "section": section,
-                "params": vals,  # [h, b, t1, t2] (SECTION=I)
+                "params": vals,
                 "header_line_no": c.header_line_no,
                 "data_line_no": c.data_line_nos[0] if c.data_line_nos else -1,
             }
@@ -296,11 +278,12 @@ def extract_beam_sections(cards: list[Card]) -> list[dict]:
 
 
 def extract_materials(cards: list[Card]) -> dict[str, dict]:
-    """抽取材料：把 ``*ELASTIC`` / ``*DENSITY`` / ``*PLASTIC`` 关联到所属 ``*MATERIAL``。
+    """Extract materials: attach ``*ELASTIC`` / ``*DENSITY`` / ``*PLASTIC`` to their ``*MATERIAL``.
 
-    Abaqus 语义：``*MATERIAL, NAME=X`` 后紧跟若干子卡（``*ELASTIC``/``*DENSITY``/
-    ``*PLASTIC``），它们没有 NAME 参数，靠**出现顺序**归属到最近的 ``*MATERIAL``。
-    本函数按顺序遍历 cards 维护 "当前材料" 上下文。
+    Abaqus semantics: ``*MATERIAL, NAME=X`` is followed by sub-cards
+    (``*ELASTIC``/``*DENSITY``/``*PLASTIC``) that carry no NAME parameter and
+    belong to the most recent ``*MATERIAL`` by **position**. This function walks
+    the cards in order, tracking the "current material" context.
     """
     materials: dict[str, dict] = {}
     current = None
@@ -336,11 +319,12 @@ def extract_materials(cards: list[Card]) -> dict[str, dict]:
 
 
 def extract_loads(cards: list[Card]) -> list[dict]:
-    """抽取 ``*CLOAD`` / ``*DLOAD`` 载荷。
+    """Extract ``*CLOAD`` / ``*DLOAD`` loads.
 
-    ``*CLOAD`` 数据行：``<node|nset>, <DOF>, <magnitude>``
-    ``*DLOAD`` 数据行：``<elset|element>, <TYPE>, <magnitude>``
-    每行作为一个独立载荷项（index 在 list_design_vars 里作 var_id 后缀）。
+    ``*CLOAD`` data line: ``<node|nset>, <DOF>, <magnitude>``.
+    ``*DLOAD`` data line: ``<elset|element>, <TYPE>, <magnitude>``.
+    Each line becomes one load entry (its index is used as a var_id suffix in
+    list_design_vars).
     """
     loads: list[dict] = []
     for c in cards:
@@ -373,7 +357,6 @@ def extract_loads(cards: list[Card]) -> list[dict]:
     return loads
 
 
-# 已知/关心的关键字白名单（其余归入 unsupported_cards）
 _KNOWN_CARDS = {
     "NODE", "ELEMENT", "NSET", "ELSET", "HEADING",
     "SHELL SECTION", "BEAM SECTION",
@@ -387,18 +370,13 @@ _KNOWN_CARDS = {
 }
 
 
-# ──────────────────────────────────────────────────────────────────────────
-# 公开 API
-# ──────────────────────────────────────────────────────────────────────────
-
-
 def parse_model(inp_path: str) -> dict:
-    """读 ``.inp`` 返回模型概览（``parse_inp`` MCP 工具用）。
+    """Read an ``.inp`` and return a model overview (used by the ``parse_inp`` MCP tool).
 
     Returns:
-        包含 ``nodes`` / ``elements_by_type`` / ``shell_sections`` /
-        ``beam_sections`` / ``materials`` / ``loads`` / ``unsupported_cards``
-        等键的 dict。
+        A dict with keys including ``nodes`` / ``elements_by_type`` /
+        ``shell_sections`` / ``beam_sections`` / ``materials`` / ``loads`` /
+        ``unsupported_cards``.
     """
     with open(inp_path, "r", encoding="utf-8", errors="replace") as f:
         lines = f.readlines()
@@ -436,13 +414,13 @@ def parse_model(inp_path: str) -> dict:
 
 
 def list_design_vars(inp_path: str) -> dict:
-    """提取可调设计变量，每个变量带 ``modify`` 定位器（供 :func:`modify_card`）。
+    """Extract tunable design variables, each carrying a ``modify`` locator for :func:`modify_card`.
 
-    覆盖 4 类（PRD 变量族 C）：
-      * 壳厚（``*SHELL SECTION``）
-      * 梁截面（``*BEAM SECTION, SECTION=I`` 的 h/b/t1/t2）
-      * 材料属性（E / nu / 密度）
-      * 载荷幅值（``*CLOAD`` / ``*DLOAD``）
+    Covers four families (PRD variable family C):
+      * shell thickness (``*SHELL SECTION``)
+      * beam section (h/b/t1/t2 of ``*BEAM SECTION, SECTION=I``)
+      * material properties (E / nu / density)
+      * load magnitudes (``*CLOAD`` / ``*DLOAD``)
 
     Returns:
         ``{"variables": [ {..., "modify": {...}} ], "count": N}``
@@ -450,7 +428,6 @@ def list_design_vars(inp_path: str) -> dict:
     model = parse_model(inp_path)
     variables: list[dict] = []
 
-    # 1) 壳厚
     for s in model["shell_sections"]:
         if s.get("thickness") is None:
             continue
@@ -471,7 +448,6 @@ def list_design_vars(inp_path: str) -> dict:
             }
         )
 
-    # 2) 梁截面 SECTION=I（h/b/t1/t2）
     beam_fields = [
         ("h", 0, "mm"),
         ("b", 1, "mm"),
@@ -480,7 +456,7 @@ def list_design_vars(inp_path: str) -> dict:
     ]
     for b in model["beam_sections"]:
         if b.get("section") != "I":
-            continue  # 仅暴露 SECTION=I（ccx 历史版本对 GENERAL SECTION 有 bug）
+            continue
         params = b.get("params") or []
         for fname, pos, unit in beam_fields:
             if pos < len(params) and params[pos] is not None:
@@ -501,7 +477,6 @@ def list_design_vars(inp_path: str) -> dict:
                     }
                 )
 
-    # 3) 材料属性（E / nu / 密度）
     for name, mat in model["materials"].items():
         el = mat.get("elastic")
         if el and el.get("E") is not None:
@@ -557,11 +532,6 @@ def list_design_vars(inp_path: str) -> dict:
                 }
             )
 
-    # 4) 载荷幅值
-    # ⚠️ _index 必须按 card_type 分别编号：modify_card 的 _index 定位（见 _locate_card）
-    #    是在**单种 card_type 内**把所有该类型卡片的数据行拍平后取下标。若这里用跨类型
-    #    全局 enumerate 索引，CLOAD+DLOAD 混存时 DLOAD 的 _index 会从 CLOAD 计数后接着
-    #    编，导致 modify 时越界（cross-layer 契约修正）。var_id 前缀带类型，无冲突。
     load_idx_by_type: dict[str, int] = {}
     for ld in model["loads"]:
         if ld.get("magnitude") is None:
@@ -580,7 +550,7 @@ def list_design_vars(inp_path: str) -> dict:
                 "modify": {
                     "card_type": ltype,
                     "match": {"_index": idx},
-                    "data_line": -1,  # 特殊：按 index 定位（见 _locate_card）
+                    "data_line": -1,
                     "value_pos": 2,
                 },
             }
@@ -589,25 +559,19 @@ def list_design_vars(inp_path: str) -> dict:
     return {"variables": variables, "count": len(variables)}
 
 
-# ──────────────────────────────────────────────────────────────────────────
-# 文本原位改值（核心：绝不用 meshio.write）
-# ──────────────────────────────────────────────────────────────────────────
-
-
 def _fmt_value(v: float) -> str:
-    """数值格式化：紧凑科学计数，保留 6 位有效数字。"""
+    """Format a number in compact notation with 6 significant digits."""
     return f"{float(v):.6g}"
 
 
 def _set_field_on_line(line: str, value_pos: int, new_value: float) -> str:
-    """对一行逗号分隔的数据，原位替换第 ``value_pos`` 个数值。
+    """In-place replace the ``value_pos``-th value of a comma-separated data line.
 
-    保留行首缩进与原始尾随逗号；未触及的字段保持原文（含小数点），最小化 diff。
+    Leading indent and any trailing comma are preserved; untouched fields keep
+    their original text (decimal point included) to minimize the diff.
     """
-    # 分离行尾换行
     nl = "\n" if line.endswith("\n") else ""
     body = line.rstrip("\n")
-    # 保留行首缩进
     indent_len = len(body) - len(body.lstrip())
     indent = body[:indent_len]
     content = body[indent_len:]
@@ -618,21 +582,19 @@ def _set_field_on_line(line: str, value_pos: int, new_value: float) -> str:
             f"value_pos={value_pos} out of range (line has {len(parts)} fields): {line!r}"
         )
     parts[value_pos] = _fmt_value(new_value)
-    # 尾随逗号（最后一个 part 为空）→ 重建时保留
     trailing = bool(raw_parts and raw_parts[-1].strip() == "")
     if trailing:
-        # 丢掉末尾空 part，join 后补一个尾随逗号
         body_parts = parts[:-1] if parts and parts[-1] == "" else parts
         return f"{indent}{', '.join(body_parts)},{nl}"
     return f"{indent}{', '.join(parts)}{nl}"
 
 
 def _header_matches(header_line: str, card_type: str, match: dict) -> str | None:
-    """检查一行是否是目标卡片头。
+    """Check whether a line is the target card header.
 
     Returns:
-        命中时返回归一化的上下文 key（用于 ELASTIC/DENSITY 的材料归属），
-        否则 ``None``。
+        A normalized context key on a hit (used for ELASTIC/DENSITY material
+        ownership), otherwise ``None``.
     """
     s = header_line.strip()
     if not s.startswith("*") or s.startswith("**"):
@@ -643,9 +605,8 @@ def _header_matches(header_line: str, card_type: str, match: dict) -> str | None
         return None
     if kw != card_type:
         return None
-    # ELASTIC/DENSITY 靠 _material 上下文，不在 header 上判定（由 _locate_card 处理）
     if "_material" in match or "_index" in match:
-        return "ctx"  # 仅确认 keyword 匹配，上下文由调用方判
+        return "ctx"
     for k, v in match.items():
         if k.startswith("_"):
             continue
@@ -657,12 +618,18 @@ def _header_matches(header_line: str, card_type: str, match: dict) -> str | None
 def _locate_card(
     lines: list[str], card_spec: dict
 ) -> tuple[int, int]:
-    """在文件行里定位目标卡片的 header 行号与目标数据行号。
+    """Locate the header line and target data line of a card in the file.
 
-    支持三类 match：
-      * 普通参数（ELSET/MATERIAL 等）—— 找 header 参数匹配
-      * ``_material`` —— 找 ``*MATERIAL, NAME=X`` 之后的该卡片
-      * ``_index`` —— 该卡片下第 N 个数据行（载荷用）
+    Three match modes are supported:
+      * plain parameters (ELSET/MATERIAL etc.) — match on the header parameters
+      * ``_material`` — the first such card after ``*MATERIAL, NAME=X``
+      * ``_index`` — the Nth data line of this card type (used for loads)
+
+    For ``_index`` the data lines of **all** cards of this card_type are
+    flattened into one list and indexed into (not just the first card). This is
+    a cross-layer contract with list_design_vars, which numbers loads per
+    card_type; a global cross-type index would misalign CLOAD/DLOAD and overflow
+    here.
 
     Returns:
         (data_line_no_0based, value_pos)
@@ -675,7 +642,6 @@ def _locate_card(
     n = len(lines)
     if "_material" in match:
         mat_name = match["_material"]
-        # 先找 *MATERIAL, NAME=mat_name
         mat_line = -1
         for i, ln in enumerate(lines):
             s = ln.strip()
@@ -689,7 +655,6 @@ def _locate_card(
                     break
         if mat_line < 0:
             raise ValueError(f"*MATERIAL, NAME={mat_name} not found")
-        # 在材料之后找第一个 *<card_type>（遇到下一个 *MATERIAL 停止）
         for j in range(mat_line + 1, n):
             s = lines[j].strip()
             if s.startswith("**") or not s:
@@ -700,9 +665,8 @@ def _locate_card(
                 except Exception:
                     kw = ""
                 if kw == "MATERIAL":
-                    break  # 进入下一个材料
+                    break
                 if kw == card_type:
-                    # 收数据行
                     data_nos = _collect_data_line_nos(lines, j)
                     if data_line_idx < len(data_nos):
                         return data_nos[data_line_idx], value_pos
@@ -713,9 +677,6 @@ def _locate_card(
 
     if "_index" in match:
         idx = int(match["_index"])
-        # ⚠️ 与 extract_loads 的语义对齐：把**所有**该 card_type 卡片的数据行拍平成一个
-        #    全局 list 再按 idx 取（不能只看第一个卡片）。否则多个 *CLOAD/*DLOAD 卡时，
-        #    list_design_vars 给的全局 idx 会越界（cross-layer 契约修正）。
         all_data_nos: list[int] = []
         for i, ln in enumerate(lines):
             s = ln.strip()
@@ -732,7 +693,6 @@ def _locate_card(
             f"{card_type} has no load index {idx} (found {len(all_data_nos)})"
         )
 
-    # 普通参数匹配
     for i, ln in enumerate(lines):
         if _header_matches(ln, card_type, match):
             data_nos = _collect_data_line_nos(lines, i)
@@ -745,7 +705,7 @@ def _locate_card(
 
 
 def _collect_data_line_nos(lines: list[str], header_idx: int) -> list[int]:
-    """从 header 行往后收集数据行号（直到下一个关键字，跳过注释/空行）。"""
+    """Collect data line numbers after a header (until the next keyword, skipping comments/blank lines)."""
     out: list[int] = []
     i = header_idx + 1
     n = len(lines)
@@ -767,29 +727,30 @@ def modify_card(
     new_value: float,
     out_path: str | None = None,
 ) -> dict:
-    """对 ``.inp`` 指定卡片的某个字段做**文本原位替换**，写出新 ``.inp``。
+    """Do a **pure-text in-place** edit of one field on an ``.inp`` card and write a new ``.inp``.
 
-    策略：读全部行 → 按定位器找到目标数据行 → 改第 ``value_pos`` 个逗号字段 →
-    原样写回其余所有行。**不 round-trip meshio**（research 警告 meshio.write 会
-    丢卡片且改单元类型）。
+    Strategy: read all lines -> use the locator to find the target data line ->
+    change the ``value_pos``-th comma field -> write every other line back
+    unchanged. There is **no meshio round-trip**: meshio.write drops cards and
+    corrupts element types (e.g. B31 -> B31H).
 
     Args:
-        inp_path:  原 ``.inp`` 路径。
-        card_spec: 定位器。可为：
-            * str —— ``list_design_vars`` 返回的 ``var_id``（自动重查定位器）；
-            * dict —— 形如 ``{"card_type", "match", "data_line", "value_pos"}``，
-              即设计变量的 ``modify`` 字段。
-        new_value: 新数值。
-        out_path:  输出路径；None 则写回原文件（``inp_path``）。
+        inp_path:  path to the source ``.inp``.
+        card_spec: the locator. Either:
+            * str — a ``var_id`` returned by ``list_design_vars`` (the locator is
+              re-resolved automatically);
+            * dict — ``{"card_type", "match", "data_line", "value_pos"}``, i.e.
+              a design variable's ``modify`` field.
+        new_value: the new numeric value.
+        out_path:  output path; None writes back to the original (``inp_path``).
 
     Returns:
         ``{"out_path", "changed", "card_type", "field_or_pos", "old_value",
-        "new_value"}``
+        "new_value"}``.
     """
     with open(inp_path, "r", encoding="utf-8", errors="replace") as f:
         lines = f.readlines()
 
-    # var_id → locator（调用方可直接传 var_id）
     if isinstance(card_spec, str):
         dvars = list_design_vars(inp_path)["variables"]
         hit = [v for v in dvars if v["var_id"] == card_spec]

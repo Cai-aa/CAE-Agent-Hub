@@ -44,7 +44,6 @@ logger = logging.getLogger("calculix_mcp.result_exporter")
 
 _SCHEMA_VERSION = 1
 
-# .dat section headers (same markers the solver uses).
 _STRESS_HDR = re.compile(r"^\s*stresses\s*\(elem", re.IGNORECASE)
 _DISP_HDR = re.compile(r"^\s*displacements\s*\(v", re.IGNORECASE)
 
@@ -59,11 +58,6 @@ def _to_float(s: str) -> float | None:
         return None
 
 
-# ──────────────────────────────────────────────────────────────────────────
-# Topology from the .inp (original node/element labels preserved)
-# ──────────────────────────────────────────────────────────────────────────
-
-
 def _read_topology_from_inp(inp_path: str):
     """Return (nodes, elements).
 
@@ -73,7 +67,7 @@ def _read_topology_from_inp(inp_path: str):
     import sys
 
     sys.path.insert(0, str(Path(__file__).resolve().parent))
-    import inp_parser  # local
+    import inp_parser
 
     with open(inp_path, "r", encoding="utf-8", errors="replace") as f:
         lines = f.readlines()
@@ -105,11 +99,6 @@ def _read_topology_from_inp(inp_path: str):
             elements.append({"label": label, "type": etype, "connectivity": conn})
 
     return nodes, elements
-
-
-# ──────────────────────────────────────────────────────────────────────────
-# Fields from the .dat (original labels)
-# ──────────────────────────────────────────────────────────────────────────
 
 
 def _parse_dat_displacements(text: str) -> dict[int, list[float]]:
@@ -158,7 +147,7 @@ def _parse_dat_element_mises(text: str) -> dict[int, float]:
                     break
                 try:
                     elem = int(parts[0])
-                    int(parts[1])  # integration point index
+                    int(parts[1])
                     sxx, syy, szz = float(parts[2]), float(parts[3]), float(parts[4])
                     sxy, sxz, syz = float(parts[5]), float(parts[6]), float(parts[7])
                 except (ValueError, IndexError):
@@ -191,11 +180,6 @@ def _resolve_dat_path(inp_path: str, dat_path: str | None) -> Path | None:
     return sibling if sibling.exists() else None
 
 
-# ──────────────────────────────────────────────────────────────────────────
-# deformation scale
-# ──────────────────────────────────────────────────────────────────────────
-
-
 def _auto_deformation_scale(coords, disp_by_node, target_fraction: float = 0.15) -> float:
     """Pick a scale so the max displacement is ~``target_fraction`` of the model extent."""
     if not coords:
@@ -215,11 +199,6 @@ def _auto_deformation_scale(coords, disp_by_node, target_fraction: float = 0.15)
     if max_u <= 0.0:
         return 1.0
     return max(1.0, min(target_fraction * extent / max_u, 1.0e6))
-
-
-# ──────────────────────────────────────────────────────────────────────────
-# main
-# ──────────────────────────────────────────────────────────────────────────
 
 
 def export_result_mesh(
