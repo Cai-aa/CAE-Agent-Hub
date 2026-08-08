@@ -1,0 +1,26 @@
+[project]
+name = "calculix-mcp"
+version = "0.1.0"
+description = "MCP server for running the CalculiX open-source FEM solver and parsing results"
+requires-python = ">=3.10"
+dependencies = [
+    # mcp 2.0 removed `mcp.server.fastmcp` (the FastMCP we use, same import as the
+    # repo's COMSOL/LAMMPS MCPs). Pin below 1.8 to keep that import path.
+    "mcp>=1.0,<1.8",
+    "meshio>=5.3",
+    "numpy>=1.26",
+    "python-dotenv>=1.0,<2",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8.0,<9"]
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+
+[tool.setuptools]
+py-modules = ["mcp_server"]
+packages = ["tools"]
+
+[tool.uv]
+package = false

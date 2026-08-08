@@ -1,0 +1,13 @@
+{
+  "mcpServers": {
+    "calculix-mcp-server": {
+      "command": "/path/to/CAE-Agent-Hub/MCP/CalculiX/.venv/bin/python",
+      "args": ["/path/to/CAE-Agent-Hub/MCP/CalculiX/mcp_server.py"],
+      "cwd": "/path/to/CAE-Agent-Hub/MCP/CalculiX",
+      "env": {
+        "CCX_EXE": "",
+        "OMP_NUM_THREADS": "1"
+      }
+    }
+  }
+}

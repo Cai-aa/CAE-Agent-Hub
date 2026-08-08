@@ -1,0 +1,18 @@
+.env
+.venv/
+.venv-*/
+*.egg-info/
+__pycache__/
+*.pyc
+.pytest_cache/
+*.log
+jobs/
+ccx_runs/
+# CalculiX solver outputs (regenerable) — input .inp decks ARE committed as source
+*.frd
+*.dat
+*.sta
+*.cvg
+*.12d
+spooles.out
+*.nam
