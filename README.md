@@ -48,6 +48,7 @@ This repository separates responsibilities:
 | [Altair HyperWorks MCP](MCP/HyperWorks) | Active | Control HyperWorks and a live HyperMesh session through typed, workspace-scoped tools plus an authenticated in-application Python bridge; inspect models and entities, run screened batch Tcl, and manage solver jobs. | `src/hyperworks_mcp/server.py`, `hyperworks_extension/`, `install_hyperworks_extension.ps1` | HyperWorks, HyperMesh, HyperView, OptiStruct, Radioss, live Python bridge |
 | [LAMMPS MCP](MCP/LAMMPS) | Active | Detect a local LAMMPS executable, run explicit input decks, and retain job evidence. | `server.py`, `tools/atomistic_bridge.py` | LAMMPS, molecular dynamics, trajectory |
 | [OVITO MCP](MCP/OVITO) | Active | Detect OVITO scripting support and run explicit postprocessing scripts with evidence logs. | `server.py`, `tools/atomistic_bridge.py` | OVITO, atomistic, visualization |
+| [CalculiX MCP](MCP/CalculiX) | Active | Wrap the open-source CalculiX FEM solver (`ccx`, GPLv2, no license): parse a `.inp` deck, edit design variables in place, run ccx fire-and-forget, read `.dat` text results, and export them to `result_mesh.json` for the viewer. | `mcp_server.py`, `tools/inp_parser.py`, `tools/solver.py`, `tools/result_exporter.py` | CalculiX, FEM, ccx, .inp, .dat, .frd, von Mises, design variables |
 
 > Adding a new MCP? Follow this pattern: keep reusable source, examples, tests, and bilingual README files; exclude virtual environments, solver results, private paths, licenses, and generated project data.
 
@@ -86,6 +87,7 @@ This repository separates responsibilities:
 | [ovito-evidence-postprocessing](Skill/ovito/ovito-evidence-postprocessing) | Active | Evidence-first OVITO atomistic postprocessing workflow. | OVITO, visualization, atomistic |
 | [ansys-mechanical-evidence-structural](Skill/Ansys/ansys-mechanical-evidence-structural) | Active | Mechanical evidence and acceptance gates, complementary to the Workbench workflow skill. | Mechanical, ACT, PyMechanical, MAPDL |
 | [aedt-evidence-electromagnetics](Skill/Ansys/aedt-evidence-electromagnetics) | Active | Generic AEDT evidence workflow with Maxwell checks. | AEDT, Maxwell, HFSS, PyAEDT |
+| [calculix-fem](Skill/calculix/calculix-fem) | Active | Workflow for driving the CalculiX MCP: inspect a `.inp` deck, edit design variables in place, run ccx, read `.dat` results, export `result_mesh.json`. | CalculiX, FEM, ccx, .inp, linear static |
 
 > Adding a new skill? Keep the complete skill directory together with `SKILL.md`, `metadata.json` when available, upstream attribution, references, assets, and any scripts needed by the workflow.
 
@@ -168,6 +170,7 @@ http://127.0.0.1:4178/?case=bullet-plate
 CAE-Agent-Hub/
   MCP/
     Abaqus/
+    CalculiX/
     Ansys/
       AEDT MCP/
       Fluent MCP/
