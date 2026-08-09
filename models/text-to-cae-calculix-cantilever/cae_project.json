@@ -1,0 +1,58 @@
+{
+  "schemaVersion": 1,
+  "project": {
+    "name": "Text to CAE CalculiX Cantilever",
+    "prompt": "Simulate a steel cantilever beam clamped at one end and transversely loaded at the other using the open-source CalculiX solver.",
+    "solver": "CalculiX (ccx)",
+    "model": "3D static structural (C3D8 solids)",
+    "source": "MCP/CalculiX/examples/cantilever.inp"
+  },
+  "connection": {
+    "status": "connected",
+    "message": "CalculiX solved the .inp deck and the .dat results were exported to result_mesh.json."
+  },
+  "inputs": {
+    "summary": [
+      {
+        "label": { "en": "Geometry", "zh": "几何" },
+        "value": { "en": "120 mm long square bar, 8 x 8 mm cross-section", "zh": "120 mm 长方钢梁，截面 8 x 8 mm" }
+      },
+      {
+        "label": { "en": "Material", "zh": "材料" },
+        "value": { "en": "Steel, E = 210000 MPa, nu = 0.3", "zh": "钢，E = 210000 MPa，泊松比 0.3" }
+      },
+      {
+        "label": { "en": "Boundary and load", "zh": "边界与载荷" },
+        "value": { "en": "Root face clamped (ENCASTRE); tip face 100 N total in -Z", "zh": "根部端面固支（ENCASTRE）；端部 -Z 向总载 100 N" }
+      },
+      {
+        "label": { "en": "Mesh", "zh": "网格" },
+        "value": { "en": "C3D8 hexahedral solid elements, 24 x 4 x 4 (384 elements)", "zh": "C3D8 六面体单元，24 x 4 x 4（384 个单元）" }
+      }
+    ],
+    "geometry": { "length_mm": 120.0, "width_mm": 8.0, "height_mm": 8.0 },
+    "material": { "name": "Steel", "youngs_modulus_mpa": 210000.0, "poissons_ratio": 0.3 },
+    "loads": {
+      "description": "Root face (x = 0) fully clamped; tip face (x = L) loaded -Z, 100 N total (4 N per tip node)",
+      "fixed_end": "x = 0 face (ENCASTRE)",
+      "tip_load_total_n": 100.0,
+      "load_direction": "global -Z"
+    },
+    "mesh": { "element_family": "C3D8", "element_count": 384 }
+  },
+  "outputs": {
+    "status": "complete",
+    "job_name": "cantilever",
+    "solver": "CalculiX ccx 2.17",
+    "metrics": [
+      { "label": "Max von Mises stress", "value": 107.40, "unit": "MPa", "state": "complete" },
+      { "label": "Max displacement magnitude", "value": 0.689, "unit": "mm", "state": "complete" }
+    ]
+  },
+  "workflow": [
+    { "step": "Parse prompt", "status": "complete", "detail": "Map the request to a clamped steel square bar, tip transverse load, linear static step." },
+    { "step": "Build CalculiX deck", "status": "complete", "detail": "Generate cantilever.inp (nodes, C3D8 hexahedra, solid section, material, BC, *NODE/*EL PRINT + *NODE/*EL FILE)." },
+    { "step": "Solve", "status": "complete", "detail": "Run ccx -i cantilever; success judged by no *ERROR in stdout and a data row in the .sta (ccx exit code is untrusted)." },
+    { "step": "Export results", "status": "complete", "detail": "Parse the .dat for displacement (per node) and von Mises (per element); merge with the .inp topology into result_mesh.json for the viewer." }
+  ]
+}

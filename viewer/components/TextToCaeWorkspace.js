@@ -71,6 +71,14 @@ const CAE_CASES = Object.freeze([
       zh: "F-22 \u6d41\u573a",
     },
   },
+  {
+    id: "calculix-cantilever",
+    directory: "models/text-to-cae-calculix-cantilever",
+    labels: {
+      en: "CalculiX cantilever",
+      zh: "CalculiX 悬臂梁",
+    },
+  },
 ]);
 
 const PARAMETER_FIELDS = Object.freeze([
