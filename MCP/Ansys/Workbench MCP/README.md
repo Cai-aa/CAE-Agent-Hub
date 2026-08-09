@@ -156,6 +156,7 @@ Install the plugin files into the ANSYS ACT extensions directory for your versio
 %APPDATA%\Ansys\v261\ACT\extensions\WorkbenchMCP\main.py
 %APPDATA%\Ansys\v261\ACT\extensions\WorkbenchMCP\mechanical_queue_processor.py
 %APPDATA%\Ansys\v261\ACT\extensions\WorkbenchMCP\mechanical_socket_timer_v7.py
+%APPDATA%\Ansys\v261\ACT\extensions\WorkbenchMCP\mechanical_analysis_workflows.py
 ```
 
 When the ACT plugin is installed outside this folder, set these environment variables before launching Mechanical:
@@ -184,6 +185,68 @@ The server exposes tools for:
 - reading job logs and status
 - submitting queue requests to Mechanical
 - executing Python in the currently open Mechanical session through the queue or socket timer bridge
+
+### Rotating-static and prestressed-modal tools
+
+The added tools cover the complete structural-analysis chain:
+
+- `mechanical_readiness_tool` and `mechanical_probe_session_tool` prove that the bridge, `Project`, `Model`, and `Model.Analyses` are usable.
+- `workbench_create_prestressed_modal_chain_tool` creates Static Structural, zero-RPM Modal, and prestressed Modal Workbench systems.
+- `mechanical_geometry_inventory_tool` and `mechanical_import_geometry_tool` import geometry and report bodies, face/edge IDs, named selections, contacts, and analyses.
+- `mechanical_create_named_selection_tool` creates an explicit geometry named selection from entity IDs.
+- `mechanical_create_analysis_chain_tool` creates rotating static, baseline modal, and prestressed modal analyses in one Mechanical model and assigns the prestress source.
+- `mechanical_validate_rotor_job_tool` and `mechanical_configure_rotor_model_tool` validate and apply material, bonded contacts, support, axis, and rotational speed.
+- `mechanical_validate_mesh_job_tool` and `mechanical_mesh_and_validate_tool` apply global/local sizing and return node/element evidence.
+- `mechanical_solve_analysis_tool` and `mechanical_workflow_status_tool` submit ordered solves and poll long-running work without automatic resubmission after timeout.
+- `mechanical_extract_structural_results_tool` and `mechanical_extract_modal_results_tool` extract deformation, stress, frequency, and prestress frequency shifts.
+- `mechanical_export_evidence_tool` exports result images and tables with `error | versioned | replace`; the default is `error`.
+
+Model-changing tools use `transport="queue"` by default so that Mechanical executes them on its UI thread. Use `transport="socket"` only for read-only diagnostics or operations explicitly proven safe in that context.
+
+Recommended call order:
+
+```text
+mechanical_readiness_tool
+  -> mechanical_probe_session_tool
+  -> mechanical_import_geometry_tool
+  -> mechanical_geometry_inventory_tool
+  -> mechanical_create_named_selection_tool
+  -> mechanical_create_analysis_chain_tool
+  -> mechanical_validate_rotor_job_tool
+  -> mechanical_configure_rotor_model_tool
+  -> mechanical_validate_mesh_job_tool
+  -> mechanical_mesh_and_validate_tool
+  -> mechanical_solve_analysis_tool
+  -> mechanical_workflow_status_tool
+  -> mechanical_extract_structural_results_tool
+  -> mechanical_extract_modal_results_tool
+  -> mechanical_export_evidence_tool
+```
+
+Example rotating-static input:
+
+```json
+{
+  "analysis_name": "Rotating_Static",
+  "rotational_speed_rpm": 6000,
+  "rotation_axis": "X",
+  "fixed_support_named_selection": "Disk_Bore",
+  "contact_mode": "existing",
+  "expected_contact_count": 20,
+  "material_name": "Structural Steel",
+  "large_deflection": true
+}
+```
+
+Run the validation tool first. Material, speed, named selections, and contact count must come from the confirmed model or teaching job specification; the MCP does not invent them.
+See `examples/rotor_analysis.example.json` for a complete rotor-model and mesh input example.
+
+Run the offline tests with:
+
+```powershell
+$env:PYTHONDONTWRITEBYTECODE='1'
+python -m unittest discover -s tests -v
+```
 
 ## Notes
 

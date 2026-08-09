@@ -27,6 +27,24 @@ from tools.workbench_socket_timer import (
     socket_timer_state,
     socket_timer_stop,
 )
+from tools.mechanical_workflows import (
+    mechanical_configure_rotor_model,
+    mechanical_create_analysis_chain,
+    mechanical_create_named_selection,
+    mechanical_export_evidence,
+    mechanical_extract_modal_results,
+    mechanical_extract_structural_results,
+    mechanical_geometry_inventory,
+    mechanical_import_geometry,
+    mechanical_mesh_and_validate,
+    mechanical_probe_session,
+    mechanical_readiness,
+    mechanical_solve_analysis,
+    mechanical_workflow_status,
+    validate_mesh_spec,
+    validate_rotor_job_spec,
+    workbench_create_prestressed_modal_chain,
+)
 
 
 load_dotenv()
@@ -157,6 +175,208 @@ def workbench_socket_timer_execute_python_tool(code: str, timeout: float = 60.0)
 def workbench_socket_timer_stop_tool(timeout: float = 10.0) -> dict:
     """Stop the Mechanical socket timer bridge."""
     return socket_timer_stop(timeout=timeout)
+
+
+@mcp.tool()
+def mechanical_readiness_tool(timeout: float = 5.0) -> dict:
+    """Check the Mechanical bridge and report the model-readiness contract."""
+    return mechanical_readiness(timeout=timeout)
+
+
+@mcp.tool()
+def mechanical_probe_session_tool(transport: str = "queue", wait_timeout: float = 5.0) -> dict:
+    """Prove Project, Model, and Model.Analyses availability inside Mechanical."""
+    return mechanical_probe_session(transport=transport, wait_timeout=wait_timeout)
+
+
+@mcp.tool()
+def workbench_create_prestressed_modal_chain_tool(
+    project_path: str,
+    geometry_path: str | None = None,
+    include_baseline_modal: bool = True,
+    overwrite_policy: str = "error",
+    launch: bool = True,
+) -> dict:
+    """Create a Static Structural -> prestressed Modal Workbench project chain."""
+    return workbench_create_prestressed_modal_chain(
+        project_path=project_path,
+        geometry_path=geometry_path,
+        include_baseline_modal=include_baseline_modal,
+        overwrite_policy=overwrite_policy,
+        launch=launch,
+    )
+
+
+@mcp.tool()
+def mechanical_geometry_inventory_tool(transport: str = "queue", wait_timeout: float = 10.0) -> dict:
+    """List bodies, geometry entity ids, named selections, contacts, and analyses."""
+    return mechanical_geometry_inventory(transport=transport, wait_timeout=wait_timeout)
+
+
+@mcp.tool()
+def mechanical_import_geometry_tool(
+    geometry_path: str,
+    import_name: str = "WB_MCP_Geometry_Import",
+    process_named_selections: bool = True,
+    process_coordinate_systems: bool = True,
+    replace_existing: bool = False,
+    transport: str = "queue",
+    wait_timeout: float = 30.0,
+) -> dict:
+    """Import a supported CAD file into the loaded Mechanical model."""
+    return mechanical_import_geometry(
+        geometry_path=geometry_path,
+        import_name=import_name,
+        process_named_selections=process_named_selections,
+        process_coordinate_systems=process_coordinate_systems,
+        replace_existing=replace_existing,
+        transport=transport,
+        wait_timeout=wait_timeout,
+    )
+
+
+@mcp.tool()
+def mechanical_create_named_selection_tool(
+    name: str,
+    entity_ids: list[int],
+    replace_existing: bool = False,
+    transport: str = "queue",
+    wait_timeout: float = 10.0,
+) -> dict:
+    """Create a Mechanical geometry named selection from explicit entity ids."""
+    return mechanical_create_named_selection(
+        name=name,
+        entity_ids=entity_ids,
+        replace_existing=replace_existing,
+        transport=transport,
+        wait_timeout=wait_timeout,
+    )
+
+
+@mcp.tool()
+def mechanical_create_analysis_chain_tool(
+    static_name: str = "Rotating_Static",
+    baseline_modal_name: str = "Modal_Zero_RPM",
+    prestressed_modal_name: str = "Modal_Prestressed",
+    mode_count: int = 6,
+    include_baseline_modal: bool = True,
+    replace_existing: bool = False,
+    transport: str = "queue",
+    wait_timeout: float = 15.0,
+) -> dict:
+    """Create idempotent rotating-static, baseline-modal, and prestressed-modal analyses."""
+    return mechanical_create_analysis_chain(
+        static_name=static_name,
+        baseline_modal_name=baseline_modal_name,
+        prestressed_modal_name=prestressed_modal_name,
+        mode_count=mode_count,
+        include_baseline_modal=include_baseline_modal,
+        replace_existing=replace_existing,
+        transport=transport,
+        wait_timeout=wait_timeout,
+    )
+
+
+@mcp.tool()
+def mechanical_validate_rotor_job_tool(spec: dict) -> dict:
+    """Validate rotor contacts, support, material, axis, and rotational-speed inputs."""
+    return validate_rotor_job_spec(spec)
+
+
+@mcp.tool()
+def mechanical_configure_rotor_model_tool(
+    spec: dict,
+    transport: str = "queue",
+    wait_timeout: float = 20.0,
+) -> dict:
+    """Configure material, bonded contacts, bore support, and rotational velocity."""
+    return mechanical_configure_rotor_model(spec=spec, transport=transport, wait_timeout=wait_timeout)
+
+
+@mcp.tool()
+def mechanical_validate_mesh_job_tool(spec: dict) -> dict:
+    """Validate global and named-selection local mesh sizing inputs."""
+    return validate_mesh_spec(spec)
+
+
+@mcp.tool()
+def mechanical_mesh_and_validate_tool(
+    spec: dict,
+    transport: str = "queue",
+    wait_timeout: float = 60.0,
+) -> dict:
+    """Apply mesh sizing, generate the mesh, and return node/element evidence."""
+    return mechanical_mesh_and_validate(spec=spec, transport=transport, wait_timeout=wait_timeout)
+
+
+@mcp.tool()
+def mechanical_solve_analysis_tool(
+    analysis_names: list[str],
+    save_after: bool = True,
+    transport: str = "queue",
+    wait_timeout: float = 2.0,
+) -> dict:
+    """Submit ordered Mechanical analyses for solve; poll instead of resubmitting after timeout."""
+    return mechanical_solve_analysis(
+        analysis_names=analysis_names,
+        save_after=save_after,
+        transport=transport,
+        wait_timeout=wait_timeout,
+    )
+
+
+@mcp.tool()
+def mechanical_workflow_status_tool(request_id: str | None = None, timeout: float = 5.0) -> dict:
+    """Poll a submitted workflow response or return current bridge readiness."""
+    return mechanical_workflow_status(request_id=request_id, timeout=timeout)
+
+
+@mcp.tool()
+def mechanical_extract_structural_results_tool(
+    analysis_name: str = "Rotating_Static",
+    transport: str = "queue",
+    wait_timeout: float = 15.0,
+) -> dict:
+    """Extract managed deformation, stress, and contact-tool result records."""
+    return mechanical_extract_structural_results(
+        analysis_name=analysis_name,
+        transport=transport,
+        wait_timeout=wait_timeout,
+    )
+
+
+@mcp.tool()
+def mechanical_extract_modal_results_tool(
+    analysis_names: list[str] | None = None,
+    mode_count: int = 6,
+    transport: str = "queue",
+    wait_timeout: float = 15.0,
+) -> dict:
+    """Extract modal frequencies and compare baseline with prestressed modes."""
+    return mechanical_extract_modal_results(
+        analysis_names=analysis_names,
+        mode_count=mode_count,
+        transport=transport,
+        wait_timeout=wait_timeout,
+    )
+
+
+@mcp.tool()
+def mechanical_export_evidence_tool(
+    output_dir: str,
+    result_names: list[str],
+    overwrite_policy: str = "error",
+    transport: str = "queue",
+    wait_timeout: float = 30.0,
+) -> dict:
+    """Export result images and tables with error, versioned, or replace policy."""
+    return mechanical_export_evidence(
+        output_dir=output_dir,
+        result_names=result_names,
+        overwrite_policy=overwrite_policy,
+        transport=transport,
+        wait_timeout=wait_timeout,
+    )
 
 
 if __name__ == "__main__":

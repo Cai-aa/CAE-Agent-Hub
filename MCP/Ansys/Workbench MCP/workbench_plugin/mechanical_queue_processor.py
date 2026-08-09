@@ -154,13 +154,21 @@ def _state_payload():
         "app": "ANSYS Mechanical",
         "time": time.strftime("%Y-%m-%d %H:%M:%S"),
         "queue_root": QUEUE_ROOT,
+        "project_available": False,
+        "model_available": False,
+        "analysis_collection_readable": False,
     }
     try:
-        payload["project_directory"] = str(ExtAPI.DataModel.Project.ProjectDirectory)
+        project = ExtAPI.DataModel.Project
+        payload["project_available"] = project is not None
+        if project is not None:
+            payload["project_directory"] = str(project.ProjectDirectory)
     except Exception as exc:
         payload["project_directory_error"] = str(exc)
     try:
+        payload["model_available"] = Model is not None
         analyses = list(Model.Analyses)
+        payload["analysis_collection_readable"] = True
         payload["analysis_count"] = len(analyses)
         payload["analyses"] = [a.Name for a in analyses]
     except Exception as exc:

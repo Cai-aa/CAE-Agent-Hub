@@ -1,0 +1,45 @@
+{
+  "rotor_model": {
+    "analysis_name": "Rotating_Static",
+    "rotational_speed_rpm": 6000,
+    "rotation_axis": "X",
+    "fixed_support_named_selection": "Disk_Bore",
+    "rotation_scope_named_selection": "",
+    "coordinate_system_name": "",
+    "contact_mode": "existing",
+    "contact_pairs": [],
+    "expected_contact_count": 20,
+    "material_name": "Structural Steel",
+    "large_deflection": true,
+    "replace_managed_objects": false,
+    "modal_analysis_names": [
+      "Modal_Zero_RPM",
+      "Modal_Prestressed"
+    ]
+  },
+  "mesh": {
+    "global_size_mm": 5.0,
+    "local_sizings": [
+      {
+        "named_selection": "Blade_Roots",
+        "size_mm": 1.5
+      },
+      {
+        "named_selection": "Disk_Slots",
+        "size_mm": 1.5
+      },
+      {
+        "named_selection": "Disk_Bore",
+        "size_mm": 2.0
+      }
+    ],
+    "generate_mesh": true,
+    "clear_generated_data": true,
+    "replace_managed_objects": false
+  },
+  "notes": [
+    "All values are teaching-demo inputs and must be confirmed before solving.",
+    "Use named_pairs instead of existing when the imported model has no verified contact regions.",
+    "After a solve timeout, poll the returned request_id; do not immediately submit another solve."
+  ]
+}

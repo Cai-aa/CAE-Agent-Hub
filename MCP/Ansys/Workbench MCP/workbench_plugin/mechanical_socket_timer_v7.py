@@ -159,7 +159,7 @@ def _is_would_block(exc):
 
 def _bridge_state_payload():
     st = _state()
-    return {
+    payload = {
         "ok": True,
         "app": "ANSYS Mechanical",
         "mode": "socket_timer_v7",
@@ -174,6 +174,29 @@ def _bridge_state_payload():
         "has_model_symbol": "Model" in globals(),
         "last_error": st.get("last_error"),
     }
+    payload["project_available"] = False
+    payload["model_available"] = False
+    payload["analysis_collection_readable"] = False
+    payload["analysis_count"] = 0
+    payload["analyses"] = []
+    try:
+        project = ExtAPI.DataModel.Project
+        payload["project_available"] = project is not None
+        if project is not None:
+            payload["project_directory"] = str(project.ProjectDirectory)
+    except Exception as exc:
+        payload["project_error"] = str(exc)
+    try:
+        model = globals().get("Model", None)
+        payload["model_available"] = model is not None
+        if model is not None:
+            analyses = list(model.Analyses)
+            payload["analysis_collection_readable"] = True
+            payload["analysis_count"] = len(analyses)
+            payload["analyses"] = [str(item.Name) for item in analyses]
+    except Exception as exc:
+        payload["analysis_error"] = str(exc)
+    return payload
 
 
 def _execute_python(code):

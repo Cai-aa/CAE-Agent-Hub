@@ -156,6 +156,7 @@ py -m venv .venv
 %APPDATA%\Ansys\v261\ACT\extensions\WorkbenchMCP\main.py
 %APPDATA%\Ansys\v261\ACT\extensions\WorkbenchMCP\mechanical_queue_processor.py
 %APPDATA%\Ansys\v261\ACT\extensions\WorkbenchMCP\mechanical_socket_timer_v7.py
+%APPDATA%\Ansys\v261\ACT\extensions\WorkbenchMCP\mechanical_analysis_workflows.py
 ```
 
 如果 ACT 插件安装在本目录之外，请在启动 Mechanical 之前设置这些环境变量：
@@ -184,6 +185,68 @@ WORKBENCH_MCP_PORT=9885
 - 读取作业日志和状态
 - 向 Mechanical 提交队列请求
 - 通过队列或 socket timer 在当前打开的 Mechanical 会话中执行 Python
+
+### 旋转静力与预应力模态工具
+
+新增工具覆盖完整结构分析链：
+
+- `mechanical_readiness_tool`、`mechanical_probe_session_tool`：确认桥接、`Project`、`Model` 和 `Model.Analyses` 真正可用。
+- `workbench_create_prestressed_modal_chain_tool`：创建 Static Structural、零转速 Modal 和预应力 Modal 的 Workbench 项目链。
+- `mechanical_geometry_inventory_tool`、`mechanical_import_geometry_tool`：导入几何并返回实体、面/边 ID、命名选择、接触和分析清单。
+- `mechanical_create_named_selection_tool`：用明确的几何实体 ID 创建命名选择。
+- `mechanical_create_analysis_chain_tool`：在同一个 Mechanical 模型中创建旋转静力、基准模态和预应力模态，并设置预应力来源。
+- `mechanical_validate_rotor_job_tool`、`mechanical_configure_rotor_model_tool`：校验并设置材料、绑定接触、固定约束、旋转轴和转速。
+- `mechanical_validate_mesh_job_tool`、`mechanical_mesh_and_validate_tool`：设置全局/局部网格并返回节点和单元证据。
+- `mechanical_solve_analysis_tool`、`mechanical_workflow_status_tool`：按顺序提交求解并轮询长任务；超时后禁止立即重复提交。
+- `mechanical_extract_structural_results_tool`、`mechanical_extract_modal_results_tool`：提取应力、变形、频率和预应力频移。
+- `mechanical_export_evidence_tool`：导出结果图片和表格，支持 `error | versioned | replace`，默认 `error`。
+
+所有会修改 Mechanical 数据模型的工具默认使用 `transport="queue"`，由 Mechanical UI 主线程执行。`transport="socket"` 仅建议用于只读诊断或已明确验证支持的轻量操作。
+
+推荐调用顺序：
+
+```text
+mechanical_readiness_tool
+  -> mechanical_probe_session_tool
+  -> mechanical_import_geometry_tool
+  -> mechanical_geometry_inventory_tool
+  -> mechanical_create_named_selection_tool
+  -> mechanical_create_analysis_chain_tool
+  -> mechanical_validate_rotor_job_tool
+  -> mechanical_configure_rotor_model_tool
+  -> mechanical_validate_mesh_job_tool
+  -> mechanical_mesh_and_validate_tool
+  -> mechanical_solve_analysis_tool
+  -> mechanical_workflow_status_tool
+  -> mechanical_extract_structural_results_tool
+  -> mechanical_extract_modal_results_tool
+  -> mechanical_export_evidence_tool
+```
+
+旋转静力参数示例：
+
+```json
+{
+  "analysis_name": "Rotating_Static",
+  "rotational_speed_rpm": 6000,
+  "rotation_axis": "X",
+  "fixed_support_named_selection": "Disk_Bore",
+  "contact_mode": "existing",
+  "expected_contact_count": 20,
+  "material_name": "Structural Steel",
+  "large_deflection": true
+}
+```
+
+先调用校验工具。材料、转速、命名选择和接触数量必须来自已确认的模型或教学任务单，不应由 MCP 自动猜测。
+完整的旋转模型和网格输入示例见 `examples/rotor_analysis.example.json`。
+
+运行离线测试：
+
+```powershell
+$env:PYTHONDONTWRITEBYTECODE='1'
+python -m unittest discover -s tests -v
+```
 
 ## 说明
 
