@@ -16,3 +16,5 @@ ccx_runs/
 *.12d
 spooles.out
 *.nam
+# Optimizer output deck (regenerable) — sizing optimizer writes <stem>.optimized.inp
+*.optimized.inp

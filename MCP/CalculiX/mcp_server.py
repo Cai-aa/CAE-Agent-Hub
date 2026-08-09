@@ -26,6 +26,7 @@ ROOT = Path(__file__).resolve().parent
 sys.path.insert(0, str(ROOT))  # so `from tools.X import ...` works from any CWD
 
 from tools.inp_parser import list_design_vars, modify_card, parse_model  # noqa: E402
+from tools.optimizer import optimize_structure  # noqa: E402
 from tools.result_exporter import export_result_mesh  # noqa: E402
 from tools.solver import detect_ccx, read_results, run_solver  # noqa: E402
 
@@ -43,6 +44,10 @@ Typical workflow:
 6. read_results — parse the .dat for max von Mises (self-computed), max |U|, mass.
 7. export_results — turn the .dat results into a result_mesh.json the viewer
    can render.
+8. optimize_structure (optional) — sizing optimization: minimize mass subject
+   to stress/displacement bounds by tuning design variables (shell thickness,
+   beam section, material, load). Each trial is a full solve, so set
+   max_solves to bound wall time.
 
 Units follow the .inp's working system (commonly mm-t-s-MPa). CalculiX has no
 license; ccx returns 0 even on *ERROR, so never trust the exit code alone.
@@ -138,6 +143,42 @@ def export_results_tool(
     out = res.pop("_out_path", None)
     return {"out_path": out, "nodes": len(res["nodes"]), "elements": len(res["elements"]),
             "fieldRanges": res["fieldRanges"], "elementType": res["elementType"]}
+
+
+@mcp.tool()
+def optimize_structure_tool(
+    path: str,
+    variables: dict,
+    objective: dict | None = None,
+    constraints: list | None = None,
+    n_lhs: int = 5,
+    max_solves: int = 10,
+    max_iters: int = 6,
+    seed: int = 42,
+    timeout: int = 1800,
+) -> dict:
+    """Run two-stage sizing optimization on a CalculiX ``.inp`` deck: minimize mass
+    subject to stress/displacement constraints by tuning scalar design variables
+    (shell thickness, beam section, material, load). ``variables`` maps each
+    ``var_id`` (from ``list_design_vars``) to ``[lower, upper]``. Defaults:
+    objective = minimize mass; constraints = max von Mises < 250 MPa and max
+    displacement < 1.5 mm. Returns the best feasible design found, its mass
+    reduction vs the baseline, the full evaluation history, and the convergence
+    reason. The best deck is written next to the input as
+    ``<stem>.optimized.inp``. Each evaluation is a real ccx solve, so wall time
+    ~= (1 + n_lhs + coord-descent probes) x per-solve time, bounded by
+    ``max_solves``."""
+    return optimize_structure(
+        path,
+        variables,
+        objective=objective,
+        constraints=constraints,
+        n_lhs=n_lhs,
+        max_solves=max_solves,
+        max_iters=max_iters,
+        seed=seed,
+        timeout=timeout,
+    )
 
 
 def main() -> None:
