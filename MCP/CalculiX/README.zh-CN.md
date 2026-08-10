@@ -22,6 +22,7 @@ Issue #14 提出的空白。
 | `run_solver_tool` | 对 deck 跑 `ccx -i <jobname>`。成功判定不看 exit code（见下）。 |
 | `read_results_tool` | 解析 `.dat` 取最大 von Mises（自算）、最大位移、体积、质量。 |
 | `export_results_tool` | 把本次求解导出为 `result_mesh.json`（viewer 格式）。 |
+| `optimize_structure_tool` | 两阶段尺寸优化（LHS 粗扫 + 坐标下降精修）：在应力/位移约束下，通过调标量设计变量（壳厚、梁截面、材料、载荷）最小化质量。仅限壳/梁模型——见[优化](#优化)。 |
 
 ## CalculiX 实战契约（编码在 solver 里）
 
@@ -33,6 +34,27 @@ Issue #14 提出的空白。
 - **`.dat` 没有总体积/质量** —— 由网格几何 × `*DENSITY` 计算。
 - **严禁 `meshio.write`** —— 会丢掉全部卡片并把 `B31` 改写成 `B31H`（文件损坏）。
   `modify_card` 走纯文本原位替换。
+
+## 优化
+
+`optimize_structure_tool` 跑两阶段**尺寸**优化：先 Latin Hypercube 粗扫，再坐标下降
+精修，通过原位改标量卡片，在应力/位移约束下最小化质量。
+
+```python
+optimize_structure_tool(
+    path="examples/bracket.inp",
+    variables={"shell.PLATE.thickness": [2.0, 8.0]},
+    n_lhs=8, max_solves=18,
+)
+# -> 最优 ~4.1 mm，减重 ~-48%，应力 < 250 MPa，位移 < 1.5 mm
+```
+
+范围与诚实性：
+
+- **仅限壳/梁模型。** 实体（C3D8）没有标量几何卡片可调，没有厚度可减薄；请用
+  shape/topology 优化。
+- 这是**尺寸/参数优化，不是拓扑优化**——它减薄截面，不在空间上重分布材料。
+- 最优 deck 写到输入旁的 `<stem>.optimized.inp`；可交给 `export_results_tool` 渲染。
 
 ## 安装
 
@@ -85,6 +107,7 @@ python3 examples/gen_cantilever.py
 - `tools/inp_parser.py` —— `.inp` 卡片解析 + 文本原位改值。
 - `tools/solver.py` —— `ccx` 子进程 + `.dat` 结果解析。
 - `tools/result_exporter.py` —— `.dat`/`.inp` → `result_mesh.json`（viewer 格式）。
+- `tools/optimizer.py` —— 两阶段尺寸优化（LHS + 坐标下降）。
 - `examples/` —— 公开悬臂梁 benchmark + 生成器 + MCP 配置示例。
 - `tests/` —— pytest 套件。
 

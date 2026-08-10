@@ -24,6 +24,7 @@ stopped at FEniCS references), filling the gap noted in Issue #14.
 | `run_solver_tool` | Run `ccx -i <jobname>` on a deck. Success ignores the exit code (see below). |
 | `read_results_tool` | Parse the `.dat` for max von Mises (self-computed), max displacement, volume, mass. |
 | `export_results_tool` | Export the run to `result_mesh.json` (viewer format). |
+| `optimize_structure_tool` | Two-stage sizing optimization (LHS sweep + coordinate descent): minimize mass subject to stress/displacement bounds by tuning scalar design variables (shell thickness, beam section, material, load). Shell/beam models only — see [Optimization](#optimization). |
 
 ## Hard-won CalculiX contracts (encoded in the solver)
 
@@ -36,6 +37,30 @@ These are why this server is non-trivial — all from public CalculiX behaviour:
 - **`.dat` has no total volume/mass** — computed from the mesh geometry × `*DENSITY`.
 - **Never `meshio.write`** — it drops every card and rewrites `B31`→`B31H`
   (corrupts the file). `modify_card` does pure-text in-place edits instead.
+
+## Optimization
+
+`optimize_structure_tool` runs two-stage **sizing** optimization: a Latin
+Hypercube coarse sweep, then coordinate-descent refinement, minimizing mass
+subject to stress and displacement constraints by editing scalar cards in place.
+
+```python
+optimize_structure_tool(
+    path="examples/bracket.inp",
+    variables={"shell.PLATE.thickness": [2.0, 8.0]},
+    n_lhs=8, max_solves=18,
+)
+# -> best ~4.1 mm, ~-48% mass, stress < 250 MPa, displacement < 1.5 mm
+```
+
+Scope and honesty:
+
+- **Shell/beam models only.** Solids (C3D8) expose no scalar geometry card, so
+  there is no thickness to thin; use shape/topology optimization instead.
+- This is **sizing/parameter optimization, not topology optimization** — it
+  thins sections, it does not redistribute material in space.
+- The best deck is written next to the input as `<stem>.optimized.inp`; pass it
+  to `export_results_tool` to render the optimized design.
 
 ## Install
 
@@ -90,6 +115,7 @@ CalculiX is installed.
 - `tools/inp_parser.py` — `.inp` card parsing + text in-place editing.
 - `tools/solver.py` — `ccx` subprocess + `.dat` result parsing.
 - `tools/result_exporter.py` — `.dat`/`.inp` → `result_mesh.json` (viewer format).
+- `tools/optimizer.py` — two-stage sizing optimization (LHS + coordinate descent).
 - `examples/` — public cantilever benchmark + generator + MCP config example.
 - `tests/` — pytest suite.
 
