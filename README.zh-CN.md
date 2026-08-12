@@ -87,6 +87,7 @@ AI client
 | [ovito-evidence-postprocessing](Skill/ovito/ovito-evidence-postprocessing) | Active | 证据优先的 OVITO 原子尺度后处理工作流。 | OVITO, visualization, atomistic |
 | [ansys-mechanical-evidence-structural](Skill/Ansys/ansys-mechanical-evidence-structural) | Active | 与 Workbench 主工作流互补的 Mechanical 证据和验收门槛。 | Mechanical, ACT, PyMechanical, MAPDL |
 | [aedt-evidence-electromagnetics](Skill/Ansys/aedt-evidence-electromagnetics) | Active | 含 Maxwell 检查的泛用 AEDT 证据工作流。 | AEDT, Maxwell, HFSS, PyAEDT |
+| [comsol-motor-nvh-evidence](Skill/comsol/comsol-motor-nvh-evidence) | Active | 检查点式永磁电机 NVH 工作流，耦合旋转电磁、结构模态、声学与 Campbell 验证。 | COMSOL, 电机 NVH, Maxwell 力, 模态, Campbell |
 | [calculix-fem](Skill/calculix/calculix-fem) | Active | 驱动 CalculiX MCP 的工作流：检视 `.inp`、原位修改设计变量、运行 ccx、读取 `.dat` 结果、导出 `result_mesh.json`。 | CalculiX, FEM, ccx, .inp, 线性静力 |
 | [calculix-sizing-optimization](Skill/calculix/calculix-sizing-optimization) | Active | 在 CalculiX 壳/梁 deck 上跑两阶段尺寸优化（LHS 粗扫 + 坐标下降），在应力/位移约束下最小化质量。 | CalculiX, 尺寸优化, 减重, LHS, 坐标下降 |
 

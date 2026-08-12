@@ -199,3 +199,10 @@ protocol behavior:
 
 Do not commit COMSOL binaries, license files, generated `.mph` models, exported
 solver results, local `.env`, or `comsol_runs/`.
+
+For a checkpointed permanent-magnet motor noise, vibration, and harshness
+workflow, use the repository
+[`comsol-motor-nvh-evidence`](../../Skill/comsol/comsol-motor-nvh-evidence/SKILL.md)
+skill together with this MCP. The skill adds model-contract, smoke-matrix,
+Campbell-data, and release-evidence gates without storing proprietary models or
+solver results.

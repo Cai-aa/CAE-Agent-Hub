@@ -145,3 +145,8 @@ Python 测试不依赖 COMSOL，只验证环境探测和 bridge 协议：
 
 不要提交 COMSOL 二进制文件、许可证文件、生成的 `.mph` 模型、求解结果、本机
 `.env` 或 `comsol_runs/`。
+
+如需执行带检查点的永磁电机 NVH 工作流，请将本 MCP 与仓库中的
+[`comsol-motor-nvh-evidence`](../../Skill/comsol/comsol-motor-nvh-evidence/SKILL.md)
+Skill 配合使用。该 Skill 增加模型合同、缩减矩阵、Campbell 数据与发布证据门槛，
+且不会把专有模型或求解结果纳入仓库。
