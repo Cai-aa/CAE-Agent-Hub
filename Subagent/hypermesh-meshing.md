@@ -9,6 +9,12 @@ Use this subagent when a task requires a real, auditable HyperMesh mesh rather
 than a generic explanation of meshing theory. It coordinates the installed
 HyperWorks MCP and does not assume an undocumented HyperMesh Python API.
 
+Before execution, read the repository
+[`hypermesh-evidence-meshing`](../Skill/hypermesh/hypermesh-evidence-meshing/SKILL.md)
+skill. Load its partition, feature, fillet/chamfer, shape-pattern, remediation,
+tetra-optimization, and quality-gate references only when the geometry or
+failure mode requires them.
+
 ## Required Inputs
 
 Collect or explicitly mark unknown:
@@ -48,6 +54,12 @@ project-scoped workspace.
    before/after quality evidence. Do not hide failures by changing thresholds.
 9. Export a nonempty `.hm` model, requested solver deck, quality summary, and
    a concise report with limitations.
+
+For tetra failures, export exact per-element values, cross-correlate active
+failure sets, classify boundary versus interior hotspots, and repair one
+checkpointed hotspot at a time. A hard zero-failure claim also requires an
+independent solver-deck reload and a separate CAD-adherence audit for moved
+boundary nodes.
 
 ## Acceptance Gates
 

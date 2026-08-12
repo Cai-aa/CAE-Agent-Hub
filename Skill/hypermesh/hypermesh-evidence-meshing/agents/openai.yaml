@@ -1,0 +1,4 @@
+interface:
+  display_name: "HyperMesh Feature & Quality Meshing"
+  short_description: "Measured partitions, blends, and mesh repair"
+  default_prompt: "Use $hypermesh-evidence-meshing to classify fillets, chamfers, and other features, plan measured patch or block topology, derive mesh controls, and apply evidence-gated quality remediation."

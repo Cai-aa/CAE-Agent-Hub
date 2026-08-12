@@ -87,6 +87,7 @@ This repository separates responsibilities:
 | [ovito-evidence-postprocessing](Skill/ovito/ovito-evidence-postprocessing) | Active | Evidence-first OVITO atomistic postprocessing workflow. | OVITO, visualization, atomistic |
 | [ansys-mechanical-evidence-structural](Skill/Ansys/ansys-mechanical-evidence-structural) | Active | Mechanical evidence and acceptance gates, complementary to the Workbench workflow skill. | Mechanical, ACT, PyMechanical, MAPDL |
 | [aedt-evidence-electromagnetics](Skill/Ansys/aedt-evidence-electromagnetics) | Active | Generic AEDT evidence workflow with Maxwell checks. | AEDT, Maxwell, HFSS, PyAEDT |
+| [hypermesh-evidence-meshing](Skill/hypermesh/hypermesh-evidence-meshing) | Active | Feature-aware HyperMesh partitioning, shell/solid meshing, and evidence-gated quality remediation through the HyperWorks MCP. | HyperMesh, meshing, fillet, chamfer, tetra quality |
 | [calculix-fem](Skill/calculix/calculix-fem) | Active | Workflow for driving the CalculiX MCP: inspect a `.inp` deck, edit design variables in place, run ccx, read `.dat` results, export `result_mesh.json`. | CalculiX, FEM, ccx, .inp, linear static |
 | [calculix-sizing-optimization](Skill/calculix/calculix-sizing-optimization) | Active | Two-stage sizing optimization on a CalculiX shell/beam deck (LHS sweep + coordinate descent) to minimize mass s.t. stress/displacement bounds. | CalculiX, sizing optimization, mass reduction, LHS, coordinate descent |
 
