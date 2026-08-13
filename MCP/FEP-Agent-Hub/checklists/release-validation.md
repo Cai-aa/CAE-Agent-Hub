@@ -5,7 +5,7 @@
 - [ ] Local executable paths are configured outside public files.
 - [ ] `scripts/install.ps1` completes.
 - [ ] `scripts/doctor.py` finds FreeCADCmd, Gmsh, ElmerGrid, ElmerSolver, and pvpython.
-- [ ] `scripts/protocol_smoke.py` reports 15/16/17 tools.
+- [ ] `scripts/protocol_smoke.py` reports 15/17/17 tools.
 - [ ] Routine pytest suite passes.
 
 ## Native benchmark
@@ -22,7 +22,7 @@
 
 ## Full MCP contract
 
-- [ ] All 48 exposed tools are inventoried.
+- [ ] All 49 exposed tools are inventoried.
 - [ ] Every exposed tool is invoked at least once.
 - [ ] Supported capabilities return `SUCCEEDED`.
 - [ ] Declared unsupported capabilities return the documented `BLOCKED` response.
