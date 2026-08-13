@@ -1,0 +1,10 @@
+"""OpenCAE fixed FreeCAD macro entry point."""
+
+import os
+import runpy
+
+runpy.run_path(
+    os.path.join(os.path.dirname(__file__), "freecad_runner.py"),
+    run_name="__main__",
+)
+

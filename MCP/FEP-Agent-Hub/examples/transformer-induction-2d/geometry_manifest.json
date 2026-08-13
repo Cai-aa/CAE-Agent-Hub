@@ -1,0 +1,280 @@
+{
+  "schema_version": "1.0",
+  "units": "mm",
+  "coordinate_system": "global",
+  "model_name": "transformer_induction_smoke_v1",
+  "step_file": "geometry/model.step",
+  "objects": [
+    {
+      "semantic_id": "air",
+      "freecad_name": "Air",
+      "label": "Air",
+      "role": "planar_face",
+      "bbox_mm": [
+        -80.0,
+        80.0,
+        -70.0,
+        70.0,
+        0.0,
+        0.0
+      ],
+      "centroid_mm": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "volume_mm3": 0.0,
+      "area_mm2": 17399.999999999996,
+      "source_rectangles_mm": [
+        {
+          "freecad_name": "AirOuter",
+          "x_min": -80.0,
+          "x_max": 80.0,
+          "y_min": -70.0,
+          "y_max": 70.0
+        },
+        {
+          "freecad_name": "CoreTop",
+          "x_min": -40.0,
+          "x_max": 40.0,
+          "y_min": 20.0,
+          "y_max": 35.0
+        },
+        {
+          "freecad_name": "CoreBottom",
+          "x_min": -40.0,
+          "x_max": 40.0,
+          "y_min": -35.0,
+          "y_max": -20.0
+        },
+        {
+          "freecad_name": "CoreLeft",
+          "x_min": -40.0,
+          "x_max": -25.0,
+          "y_min": -20.0,
+          "y_max": 20.0
+        },
+        {
+          "freecad_name": "CoreCenter",
+          "x_min": -10.0,
+          "x_max": 10.0,
+          "y_min": -20.0,
+          "y_max": 20.0
+        },
+        {
+          "freecad_name": "CoreRight",
+          "x_min": 25.0,
+          "x_max": 40.0,
+          "y_min": -20.0,
+          "y_max": 20.0
+        },
+        {
+          "freecad_name": "PrimaryPos",
+          "x_min": -17.0,
+          "x_max": -12.0,
+          "y_min": -15.0,
+          "y_max": 15.0
+        },
+        {
+          "freecad_name": "PrimaryNeg",
+          "x_min": 12.0,
+          "x_max": 17.0,
+          "y_min": -15.0,
+          "y_max": 15.0
+        },
+        {
+          "freecad_name": "SecondaryPos",
+          "x_min": -24.0,
+          "x_max": -19.0,
+          "y_min": -15.0,
+          "y_max": 15.0
+        },
+        {
+          "freecad_name": "SecondaryNeg",
+          "x_min": 19.0,
+          "x_max": 24.0,
+          "y_min": -15.0,
+          "y_max": 15.0
+        }
+      ]
+    },
+    {
+      "semantic_id": "core",
+      "freecad_name": "Core",
+      "label": "Core",
+      "role": "planar_face",
+      "bbox_mm": [
+        -40.0,
+        40.0,
+        -35.0,
+        35.0,
+        0.0,
+        0.0
+      ],
+      "centroid_mm": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "volume_mm3": 0.0,
+      "area_mm2": 4400.0,
+      "source_rectangles_mm": [
+        {
+          "freecad_name": "CoreTop",
+          "x_min": -40.0,
+          "x_max": 40.0,
+          "y_min": 20.0,
+          "y_max": 35.0
+        },
+        {
+          "freecad_name": "CoreBottom",
+          "x_min": -40.0,
+          "x_max": 40.0,
+          "y_min": -35.0,
+          "y_max": -20.0
+        },
+        {
+          "freecad_name": "CoreLeft",
+          "x_min": -40.0,
+          "x_max": -25.0,
+          "y_min": -20.0,
+          "y_max": 20.0
+        },
+        {
+          "freecad_name": "CoreCenter",
+          "x_min": -10.0,
+          "x_max": 10.0,
+          "y_min": -20.0,
+          "y_max": 20.0
+        },
+        {
+          "freecad_name": "CoreRight",
+          "x_min": 25.0,
+          "x_max": 40.0,
+          "y_min": -20.0,
+          "y_max": 20.0
+        }
+      ]
+    },
+    {
+      "semantic_id": "primary_pos",
+      "freecad_name": "PrimaryPos",
+      "label": "PrimaryPos",
+      "role": "planar_face",
+      "bbox_mm": [
+        -17.0,
+        -12.0,
+        -15.0,
+        15.0,
+        0.0,
+        0.0
+      ],
+      "centroid_mm": [
+        -14.5,
+        -3.552713678800501e-15,
+        0.0
+      ],
+      "volume_mm3": 0.0,
+      "area_mm2": 149.99999999999997,
+      "source_rectangles_mm": [
+        {
+          "freecad_name": "PrimaryPos",
+          "x_min": -17.0,
+          "x_max": -12.0,
+          "y_min": -15.0,
+          "y_max": 15.0
+        }
+      ]
+    },
+    {
+      "semantic_id": "primary_neg",
+      "freecad_name": "PrimaryNeg",
+      "label": "PrimaryNeg",
+      "role": "planar_face",
+      "bbox_mm": [
+        12.0,
+        17.0,
+        -15.0,
+        15.0,
+        0.0,
+        0.0
+      ],
+      "centroid_mm": [
+        14.5,
+        -3.552713678800501e-15,
+        0.0
+      ],
+      "volume_mm3": 0.0,
+      "area_mm2": 149.99999999999997,
+      "source_rectangles_mm": [
+        {
+          "freecad_name": "PrimaryNeg",
+          "x_min": 12.0,
+          "x_max": 17.0,
+          "y_min": -15.0,
+          "y_max": 15.0
+        }
+      ]
+    },
+    {
+      "semantic_id": "secondary_pos",
+      "freecad_name": "SecondaryPos",
+      "label": "SecondaryPos",
+      "role": "planar_face",
+      "bbox_mm": [
+        -24.0,
+        -19.0,
+        -15.0,
+        15.0,
+        0.0,
+        0.0
+      ],
+      "centroid_mm": [
+        -21.5,
+        -3.552713678800501e-15,
+        0.0
+      ],
+      "volume_mm3": 0.0,
+      "area_mm2": 149.99999999999997,
+      "source_rectangles_mm": [
+        {
+          "freecad_name": "SecondaryPos",
+          "x_min": -24.0,
+          "x_max": -19.0,
+          "y_min": -15.0,
+          "y_max": 15.0
+        }
+      ]
+    },
+    {
+      "semantic_id": "secondary_neg",
+      "freecad_name": "SecondaryNeg",
+      "label": "SecondaryNeg",
+      "role": "planar_face",
+      "bbox_mm": [
+        19.0,
+        24.0,
+        -15.0,
+        15.0,
+        0.0,
+        0.0
+      ],
+      "centroid_mm": [
+        21.5,
+        -3.552713678800501e-15,
+        0.0
+      ],
+      "volume_mm3": 0.0,
+      "area_mm2": 149.99999999999997,
+      "source_rectangles_mm": [
+        {
+          "freecad_name": "SecondaryNeg",
+          "x_min": 19.0,
+          "x_max": 24.0,
+          "y_min": -15.0,
+          "y_max": 15.0
+        }
+      ]
+    }
+  ]
+}

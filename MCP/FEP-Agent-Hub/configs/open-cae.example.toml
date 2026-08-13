@@ -1,0 +1,27 @@
+[workspace]
+root = "D:/CAE/FEP_Agent_Hub_Workspace"
+
+[security]
+workspace_only = true
+allow_network = false
+allow_arbitrary_shell = false
+allow_arbitrary_python = false
+
+[freecad]
+exe = "C:/Program Files/FreeCAD 1.1/bin/FreeCAD.exe"
+cmd = "C:/Program Files/FreeCAD 1.1/bin/FreeCADCmd.exe"
+
+[elmer]
+gui = "C:/Program Files/Elmer/bin/ElmerGUI.exe"
+grid = "C:/Program Files/Elmer/bin/ElmerGrid.exe"
+solver = "C:/Program Files/Elmer/bin/ElmerSolver.exe"
+solver_mpi = "C:/Program Files/Elmer/bin/ElmerSolver_mpi.exe"
+mpiexec = "C:/Program Files/Microsoft MPI/Bin/mpiexec.exe"
+
+[gmsh]
+exe = "C:/Program Files/gmsh/gmsh.exe"
+
+[paraview]
+gui = "C:/Program Files/ParaView/bin/paraview.exe"
+pvpython = "C:/Program Files/ParaView/bin/pvpython.exe"
+pvbatch = "C:/Program Files/ParaView/bin/pvbatch.exe"

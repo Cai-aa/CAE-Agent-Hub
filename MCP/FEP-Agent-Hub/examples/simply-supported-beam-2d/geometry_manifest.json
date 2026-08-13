@@ -1,0 +1,39 @@
+{
+  "schema_version": "1.0",
+  "units": "mm",
+  "coordinate_system": "global",
+  "model_name": "simply_supported_beam_smoke_v1",
+  "step_file": "geometry/model.step",
+  "objects": [
+    {
+      "semantic_id": "beam",
+      "freecad_name": "Beam",
+      "label": "Beam",
+      "role": "planar_face",
+      "bbox_mm": [
+        0.0,
+        1000.0,
+        0.0,
+        100.0,
+        0.0,
+        0.0
+      ],
+      "centroid_mm": [
+        500.0,
+        49.99999999999999,
+        0.0
+      ],
+      "volume_mm3": 0.0,
+      "area_mm2": 99999.99999999997,
+      "source_rectangles_mm": [
+        {
+          "freecad_name": "Beam",
+          "x_min": 0.0,
+          "x_max": 1000.0,
+          "y_min": 0.0,
+          "y_max": 100.0
+        }
+      ]
+    }
+  ]
+}

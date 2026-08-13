@@ -1,0 +1,38 @@
+{
+  "schema_version": "1.0",
+  "profile": "magnetodynamics_2d_transient_eddy_v1",
+  "primary_mcp_calls": {
+    "succeeded": 95,
+    "total": 95
+  },
+  "supplemental_electric_field_mcp_calls": {
+    "succeeded": 11,
+    "total": 11
+  },
+  "aggregate_mcp_calls": {
+    "succeeded": 106,
+    "total": 106
+  },
+  "baseline": {
+    "mesh_size_mm": 2.0,
+    "nodes": 5760,
+    "elements_2d": 11238,
+    "time_step_count": 40,
+    "time_step_s": 0.0005,
+    "peak_eddy_current_rms_a_per_m2": 216339.57428182173,
+    "joule_energy_j": 0.00013509341391837112,
+    "lenz_incremental_sign_passes": [true, true, true, true]
+  },
+  "time_step_sensitivity": {
+    "peak_eddy_rms_relative_difference": 0.011014713396337644,
+    "joule_energy_relative_difference": 0.02757285032652747,
+    "limit": 0.08,
+    "pass": true
+  },
+  "mesh_sensitivity": {
+    "peak_eddy_rms_relative_difference": 0.004228682227837289,
+    "joule_energy_relative_difference": 0.006837067940330375,
+    "limit": 0.1,
+    "pass": true
+  }
+}

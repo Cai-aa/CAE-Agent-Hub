@@ -1,0 +1,7 @@
+mcp>=1.0
+meshio>=5.0
+numpy>=1.26
+opencv-python-headless>=4.10
+Pillow>=10.0
+pydantic>=2.0
+pytest>=8.0

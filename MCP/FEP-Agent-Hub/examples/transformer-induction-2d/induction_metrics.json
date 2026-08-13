@@ -1,0 +1,412 @@
+{
+  "profile": "magnetodynamics_2d_harmonic_v1",
+  "variants": [
+    {
+      "variant": "baseline",
+      "current_rms_A": 1.0,
+      "mesh_size_mm": 1.5,
+      "mesh": {
+        "dimension": 2,
+        "nodes": 12211,
+        "elements": 24018,
+        "boundary_elements": 402,
+        "header_counts": {
+          "nodes": 12211,
+          "elements": 24018,
+          "boundary_elements": 402
+        },
+        "bodies": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6
+        ],
+        "element_types": [
+          303
+        ],
+        "boundaries": [
+          {
+            "id": 1,
+            "elements": 402,
+            "nodes": 402,
+            "bbox": [
+              -0.08,
+              0.08,
+              -0.07,
+              0.07,
+              0.0,
+              0.0
+            ]
+          }
+        ],
+        "bounds": [
+          -0.08,
+          0.08,
+          -0.07,
+          0.07,
+          0.0,
+          0.0
+        ],
+        "semantic_boundaries": {
+          "x_min": [],
+          "x_max": [],
+          "y_min": [],
+          "y_max": [],
+          "outer_boundary": [
+            1
+          ]
+        },
+        "quality": {
+          "checked": false,
+          "reason": "v0.1 records topology; Jacobian quality is delegated to Gmsh logs"
+        }
+      },
+      "physics": {
+        "Bmin_T": 1.6908123454575938e-06,
+        "Bmax_T": 1.8868221546045463,
+        "B_center_line_mean_T": 1.1446751775237236,
+        "flux_re_Wb": 0.0004578663421390737,
+        "flux_im_Wb": 0.0,
+        "flux_magnitude_Wb": 0.0004578663421390737,
+        "flux_from_A_magnitude_Wb": 0.00045786569,
+        "V1_induced_rms_V": 14.384295367901448,
+        "V2_open_rms_V": 7.192147683950724,
+        "turns_ratio": 0.5,
+        "expected_turns_ratio": 0.5,
+        "turns_ratio_relative_error": 0.0,
+        "flux_A_vs_B_relative_error": 1.4243000930201154e-06,
+        "complex_A_and_B_arrays_present": true,
+        "opposite_primary_current_directions": true,
+        "body_field_statistics": {
+          "air": {
+            "nodes": 55590,
+            "Bmean_T": 0.0003621828899340427,
+            "Bmax_T": 0.0050136465318765125
+          },
+          "core": {
+            "nodes": 14400,
+            "Bmean_T": 0.7517631510924156,
+            "Bmax_T": 1.8868221546045463
+          },
+          "primary_neg": {
+            "nodes": 516,
+            "Bmean_T": 0.0016894466822275872,
+            "Bmax_T": 0.003041706106005674
+          },
+          "primary_pos": {
+            "nodes": 516,
+            "Bmean_T": 0.0016900974489205422,
+            "Bmax_T": 0.0030411892817851062
+          },
+          "secondary_neg": {
+            "nodes": 516,
+            "Bmean_T": 0.001637760681477826,
+            "Bmax_T": 0.002127124058235048
+          },
+          "secondary_pos": {
+            "nodes": 516,
+            "Bmean_T": 0.0016375593771311484,
+            "Bmax_T": 0.002127101480334253
+          }
+        },
+        "far_air_Bmean_T": 0.00021036245671530532,
+        "core_to_far_air_Bmean_ratio": 3573.6564538691264,
+        "spatial_verification_available": true,
+        "core_field_concentration_pass": true,
+        "finite": true,
+        "pass": true,
+        "criteria": {
+          "Bmax": "1e-4 T < Bmax < 2 T",
+          "flux": "finite and non-zero",
+          "V2": "finite and non-zero",
+          "turns_ratio": "relative error <= 2%",
+          "flux_consistency": "A-difference and B-line flux relative error <= 5%",
+          "complex_fields": "A re/im and B re/im arrays present",
+          "primary_excitation": "equal-magnitude opposite-sign real current density",
+          "field_concentration": "core mean B / far-air mean B > 10"
+        }
+      },
+      "result_artifacts": [
+        "transformer_induction_smoke_v1/results/baseline_t0001.vtu"
+      ]
+    },
+    {
+      "variant": "half_current",
+      "current_rms_A": 0.5,
+      "mesh_size_mm": 1.5,
+      "mesh": {
+        "dimension": 2,
+        "nodes": 12211,
+        "elements": 24018,
+        "boundary_elements": 402,
+        "header_counts": {
+          "nodes": 12211,
+          "elements": 24018,
+          "boundary_elements": 402
+        },
+        "bodies": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6
+        ],
+        "element_types": [
+          303
+        ],
+        "boundaries": [
+          {
+            "id": 1,
+            "elements": 402,
+            "nodes": 402,
+            "bbox": [
+              -0.08,
+              0.08,
+              -0.07,
+              0.07,
+              0.0,
+              0.0
+            ]
+          }
+        ],
+        "bounds": [
+          -0.08,
+          0.08,
+          -0.07,
+          0.07,
+          0.0,
+          0.0
+        ],
+        "semantic_boundaries": {
+          "x_min": [],
+          "x_max": [],
+          "y_min": [],
+          "y_max": [],
+          "outer_boundary": [
+            1
+          ]
+        },
+        "quality": {
+          "checked": false,
+          "reason": "v0.1 records topology; Jacobian quality is delegated to Gmsh logs"
+        }
+      },
+      "physics": {
+        "Bmin_T": 8.425900184402166e-07,
+        "Bmax_T": 0.9434110905024758,
+        "B_center_line_mean_T": 0.5723375906207724,
+        "flux_re_Wb": 0.00022893317180181899,
+        "flux_im_Wb": 0.0,
+        "flux_magnitude_Wb": 0.00022893317180181899,
+        "flux_from_A_magnitude_Wb": 0.00022893284700000003,
+        "V1_induced_rms_V": 7.192147706956045,
+        "V2_open_rms_V": 3.5960738534780226,
+        "turns_ratio": 0.5,
+        "expected_turns_ratio": 0.5,
+        "turns_ratio_relative_error": 0.0,
+        "flux_A_vs_B_relative_error": 1.4187625864875554e-06,
+        "complex_A_and_B_arrays_present": true,
+        "opposite_primary_current_directions": true,
+        "body_field_statistics": {
+          "air": {
+            "nodes": 55590,
+            "Bmean_T": 0.000181091444918612,
+            "Bmax_T": 0.002506823265662486
+          },
+          "core": {
+            "nodes": 14400,
+            "Bmean_T": 0.3758815755761354,
+            "Bmax_T": 0.9434110905024758
+          },
+          "primary_neg": {
+            "nodes": 516,
+            "Bmean_T": 0.0008447233385548005,
+            "Bmax_T": 0.0015208531522983224
+          },
+          "primary_pos": {
+            "nodes": 516,
+            "Bmean_T": 0.0008450487220875016,
+            "Bmax_T": 0.0015205946781266697
+          },
+          "secondary_neg": {
+            "nodes": 516,
+            "Bmean_T": 0.0008188803388027614,
+            "Bmax_T": 0.001063562029117524
+          },
+          "secondary_pos": {
+            "nodes": 516,
+            "Bmean_T": 0.0008187796890518785,
+            "Bmax_T": 0.0010635507318169728
+          }
+        },
+        "far_air_Bmean_T": 0.00010518122834686073,
+        "core_to_far_air_Bmean_ratio": 3573.6564545203287,
+        "spatial_verification_available": true,
+        "core_field_concentration_pass": true,
+        "finite": true,
+        "pass": true,
+        "criteria": {
+          "Bmax": "1e-4 T < Bmax < 2 T",
+          "flux": "finite and non-zero",
+          "V2": "finite and non-zero",
+          "turns_ratio": "relative error <= 2%",
+          "flux_consistency": "A-difference and B-line flux relative error <= 5%",
+          "complex_fields": "A re/im and B re/im arrays present",
+          "primary_excitation": "equal-magnitude opposite-sign real current density",
+          "field_concentration": "core mean B / far-air mean B > 10"
+        }
+      },
+      "result_artifacts": [
+        "transformer_induction_smoke_v1/results/half_current_t0001.vtu"
+      ]
+    },
+    {
+      "variant": "fine_mesh",
+      "current_rms_A": 1.0,
+      "mesh_size_mm": 1.25,
+      "mesh": {
+        "dimension": 2,
+        "nodes": 17110,
+        "elements": 33738,
+        "boundary_elements": 480,
+        "header_counts": {
+          "nodes": 17110,
+          "elements": 33738,
+          "boundary_elements": 480
+        },
+        "bodies": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6
+        ],
+        "element_types": [
+          303
+        ],
+        "boundaries": [
+          {
+            "id": 1,
+            "elements": 480,
+            "nodes": 480,
+            "bbox": [
+              -0.08,
+              0.08,
+              -0.07,
+              0.07,
+              0.0,
+              0.0
+            ]
+          }
+        ],
+        "bounds": [
+          -0.08,
+          0.08,
+          -0.07,
+          0.07,
+          0.0,
+          0.0
+        ],
+        "semantic_boundaries": {
+          "x_min": [],
+          "x_max": [],
+          "y_min": [],
+          "y_max": [],
+          "outer_boundary": [
+            1
+          ]
+        },
+        "quality": {
+          "checked": false,
+          "reason": "v0.1 records topology; Jacobian quality is delegated to Gmsh logs"
+        }
+      },
+      "physics": {
+        "Bmin_T": 7.864517071794504e-08,
+        "Bmax_T": 1.89234424970846,
+        "B_center_line_mean_T": 1.1457706398826006,
+        "flux_re_Wb": 0.000458304504582972,
+        "flux_im_Wb": 0.0,
+        "flux_magnitude_Wb": 0.000458304504582972,
+        "flux_from_A_magnitude_Wb": 0.00045830542000000005,
+        "V1_induced_rms_V": 14.398060647049746,
+        "V2_open_rms_V": 7.199030323524873,
+        "turns_ratio": 0.5,
+        "expected_turns_ratio": 0.5,
+        "turns_ratio_relative_error": 0.0,
+        "flux_A_vs_B_relative_error": 1.997399150319535e-06,
+        "complex_A_and_B_arrays_present": true,
+        "opposite_primary_current_directions": true,
+        "body_field_statistics": {
+          "air": {
+            "nodes": 78252,
+            "Bmean_T": 0.00035789754895649856,
+            "Bmax_T": 0.005437140236415092
+          },
+          "core": {
+            "nodes": 19944,
+            "Bmean_T": 0.7539944276337784,
+            "Bmax_T": 1.89234424970846
+          },
+          "primary_neg": {
+            "nodes": 750,
+            "Bmean_T": 0.0016164005380874566,
+            "Bmax_T": 0.003049021364916535
+          },
+          "primary_pos": {
+            "nodes": 756,
+            "Bmean_T": 0.0016147183674721953,
+            "Bmax_T": 0.0030470532331167187
+          },
+          "secondary_neg": {
+            "nodes": 756,
+            "Bmean_T": 0.001614463419205519,
+            "Bmax_T": 0.0021294471964293763
+          },
+          "secondary_pos": {
+            "nodes": 756,
+            "Bmean_T": 0.0016134649144607432,
+            "Bmax_T": 0.0021247042735060614
+          }
+        },
+        "far_air_Bmean_T": 0.00021023945458082836,
+        "core_to_far_air_Bmean_ratio": 3586.360272561965,
+        "spatial_verification_available": true,
+        "core_field_concentration_pass": true,
+        "finite": true,
+        "pass": true,
+        "criteria": {
+          "Bmax": "1e-4 T < Bmax < 2 T",
+          "flux": "finite and non-zero",
+          "V2": "finite and non-zero",
+          "turns_ratio": "relative error <= 2%",
+          "flux_consistency": "A-difference and B-line flux relative error <= 5%",
+          "complex_fields": "A re/im and B re/im arrays present",
+          "primary_excitation": "equal-magnitude opposite-sign real current density",
+          "field_concentration": "core mean B / far-air mean B > 10"
+        }
+      },
+      "result_artifacts": [
+        "transformer_induction_smoke_v1/results/fine_mesh_t0001.vtu"
+      ]
+    }
+  ],
+  "linearity_acceptance": {
+    "flux_ratio": 1.999999993602656,
+    "Bmax_ratio": 1.999999972016011,
+    "V2_ratio": 1.999999993602656,
+    "max_relative_error": 1.3991994451956202e-08,
+    "pass": true
+  },
+  "mesh_sensitivity_acceptance": {
+    "flux_relative_difference": 0.0009560509214217669,
+    "Bmax_relative_difference": 0.0029181239643708643,
+    "V2_relative_difference": 0.0009560509214217747,
+    "pass": true
+  },
+  "overall_pass": true
+}

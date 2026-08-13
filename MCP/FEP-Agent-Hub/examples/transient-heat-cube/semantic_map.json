@@ -1,0 +1,37 @@
+{
+  "body_ids": {
+    "solid": 1
+  },
+  "boundary_ids": {
+    "x_max": [
+      2
+    ],
+    "x_min": [
+      1
+    ],
+    "y_max": [
+      4
+    ],
+    "y_min": [
+      3
+    ],
+    "z_max": [
+      6
+    ],
+    "z_min": [
+      5
+    ]
+  },
+  "bounds": [
+    0.0,
+    0.01,
+    0.0,
+    0.01,
+    0.0,
+    0.01
+  ],
+  "dimension": 3,
+  "method": "manifest cardinality + Elmer mesh coordinate fingerprint",
+  "schema_version": "1.0",
+  "status": "MAPPED"
+}

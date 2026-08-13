@@ -15,8 +15,10 @@ The current layout is:
 | `abaqus/optimization` | Topology, shape, and general optimization skills. |
 | `abaqus/reference` | General FEA and FEniCS reference skills that are useful beside Abaqus workflows. |
 | `CST` | CST Studio Suite electromagnetic simulation workflow skills for use with the CST MCP. |
+| `fep-agent-hub` | Evidence-first FreeCAD, Elmer FEM, and ParaView orchestration with six verified CAE profiles. |
 
 See [abaqus/README.md](abaqus/README.md) for the full skill index, upstream attribution, and client setup examples.
 See [CST/README.md](CST/README.md) for CST workflow skills.
+See [fep-agent-hub/SKILL.md](fep-agent-hub/SKILL.md) for the FEP orchestration workflow and its benchmark references.
 
 Chinese version: [README.zh-CN.md](README.zh-CN.md).

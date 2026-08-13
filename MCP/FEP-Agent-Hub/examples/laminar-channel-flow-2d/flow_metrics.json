@@ -1,0 +1,27 @@
+{
+  "analytical_max_velocity_m_per_s": 0.07500000000000001,
+  "analytical_pressure_drop_10_to_90_percent_pa": 1.1999999999999997,
+  "criteria": {
+    "maximum_velocity": "relative error from 1.5*Umean <= 5%",
+    "mean_velocity": "relative error <= 5%",
+    "pressure_drop": "relative error <= 15%",
+    "profile": "Poiseuille profile relative L2 error <= 8%",
+    "regime": "0 < Re <= 200",
+    "walls": "no-slip residual <= 1e-6*Umean"
+  },
+  "finite": true,
+  "flow_rate_per_unit_depth_m2_per_s": 0.0009844660911881974,
+  "max_velocity_m_per_s": 0.075,
+  "max_velocity_relative_error": 1.850371707708594e-16,
+  "mean_velocity_relative_error": 0.015533908811802694,
+  "measured_mean_velocity_m_per_s": 0.04922330455940987,
+  "pass": true,
+  "pressure_drop_10_to_90_percent_pa": 1.2124366876980164,
+  "pressure_drop_relative_error": 0.010363906415013875,
+  "pressure_field": "pressure",
+  "profile_relative_l2_error": 0.01757118055401005,
+  "reynolds_number": 100.0,
+  "target_mean_velocity_m_per_s": 0.05,
+  "velocity_field": "velocity",
+  "wall_speed_max_m_per_s": 0.0
+}

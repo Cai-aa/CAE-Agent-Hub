@@ -1,0 +1,31 @@
+{
+  "body_ids": {
+    "air": 1,
+    "core": 2,
+    "primary_neg": 4,
+    "primary_pos": 3,
+    "secondary_neg": 6,
+    "secondary_pos": 5
+  },
+  "boundary_ids": {
+    "outer_boundary": [
+      1
+    ],
+    "x_max": [],
+    "x_min": [],
+    "y_max": [],
+    "y_min": []
+  },
+  "bounds": [
+    -0.08,
+    0.08,
+    -0.07,
+    0.07,
+    0.0,
+    0.0
+  ],
+  "dimension": 2,
+  "method": "verified Gmsh physical groups + Elmer mesh coordinate fingerprint",
+  "schema_version": "1.0",
+  "status": "MAPPED"
+}

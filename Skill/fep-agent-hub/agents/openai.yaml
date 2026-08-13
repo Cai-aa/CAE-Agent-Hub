@@ -1,0 +1,4 @@
+interface:
+  display_name: "FEP Agent Hub"
+  short_description: "Evidence-first FreeCAD, Elmer FEM, and ParaView workflows"
+  default_prompt: "Use $fep-agent-hub to run and validate a CAE case through FreeCAD, Elmer FEM, and ParaView."
