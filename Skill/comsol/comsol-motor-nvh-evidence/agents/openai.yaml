@@ -1,0 +1,4 @@
+interface:
+  display_name: "COMSOL PM Motor NVH"
+  short_description: "Build and verify PM motor NVH workflows"
+  default_prompt: "Use $comsol-motor-nvh-evidence to build, run, and audit a checkpointed COMSOL Java API motor NVH study."
