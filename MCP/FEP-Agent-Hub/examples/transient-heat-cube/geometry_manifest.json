@@ -1,0 +1,30 @@
+{
+  "schema_version": "1.0",
+  "units": "mm",
+  "coordinate_system": "global",
+  "model_name": "transient_heat_process_smoke_v1",
+  "step_file": "geometry/model.step",
+  "objects": [
+    {
+      "semantic_id": "solid",
+      "freecad_name": "Cube",
+      "label": "Cube",
+      "role": "solid",
+      "bbox_mm": [
+        0.0,
+        10.0,
+        0.0,
+        10.0,
+        0.0,
+        10.0
+      ],
+      "centroid_mm": [
+        5.0,
+        5.0,
+        5.0
+      ],
+      "volume_mm3": 999.9999999999998,
+      "area_mm2": 599.9999999999999
+    }
+  ]
+}

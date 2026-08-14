@@ -1,0 +1,206 @@
+{
+  "analytical_absolute_error_K": 0.3182148431486098,
+  "analytical_midpoint_temperature_K": 349.9611720845279,
+  "cold_boundary_K": 300.0,
+  "criteria": {
+    "analytical": "final 1D Fourier-series midpoint absolute error <= 3 K",
+    "bounds": "all temperatures remain within imposed boundaries +/- 1 K",
+    "process": "midpoint temperature is monotonic and rises by more than 5 K",
+    "sequence": "exactly 20 finite VTU time steps"
+  },
+  "final_midpoint_temperature_K": 349.6429572413793,
+  "final_time_s": 20.0,
+  "finite": true,
+  "history": [
+    {
+      "Tmax_K": 400.0,
+      "Tmid_K": 308.4480203448276,
+      "Tmin_K": 300.0,
+      "file": "transient_heat_t0001.vtu",
+      "step": 1,
+      "time_s": 1.0
+    },
+    {
+      "Tmax_K": 400.0,
+      "Tmid_K": 318.8280948275862,
+      "Tmin_K": 300.0,
+      "file": "transient_heat_t0002.vtu",
+      "step": 2,
+      "time_s": 2.0
+    },
+    {
+      "Tmax_K": 400.0,
+      "Tmid_K": 327.24549068965524,
+      "Tmin_K": 300.0,
+      "file": "transient_heat_t0003.vtu",
+      "step": 3,
+      "time_s": 3.0
+    },
+    {
+      "Tmax_K": 400.0,
+      "Tmid_K": 333.48115655172404,
+      "Tmin_K": 300.0,
+      "file": "transient_heat_t0004.vtu",
+      "step": 4,
+      "time_s": 4.0
+    },
+    {
+      "Tmax_K": 400.0,
+      "Tmid_K": 338.0059886206896,
+      "Tmin_K": 300.0,
+      "file": "transient_heat_t0005.vtu",
+      "step": 5,
+      "time_s": 5.0
+    },
+    {
+      "Tmax_K": 400.0,
+      "Tmid_K": 341.27379275862063,
+      "Tmin_K": 300.0,
+      "file": "transient_heat_t0006.vtu",
+      "step": 6,
+      "time_s": 6.0
+    },
+    {
+      "Tmax_K": 400.0,
+      "Tmid_K": 343.63124000000005,
+      "Tmin_K": 300.0,
+      "file": "transient_heat_t0007.vtu",
+      "step": 7,
+      "time_s": 7.0
+    },
+    {
+      "Tmax_K": 400.0,
+      "Tmid_K": 345.3315424137931,
+      "Tmin_K": 300.0,
+      "file": "transient_heat_t0008.vtu",
+      "step": 8,
+      "time_s": 8.0
+    },
+    {
+      "Tmax_K": 400.0,
+      "Tmid_K": 346.5578210344828,
+      "Tmin_K": 300.0,
+      "file": "transient_heat_t0009.vtu",
+      "step": 9,
+      "time_s": 9.0
+    },
+    {
+      "Tmax_K": 400.0,
+      "Tmid_K": 347.44222344827585,
+      "Tmin_K": 300.0,
+      "file": "transient_heat_t0010.vtu",
+      "step": 10,
+      "time_s": 10.0
+    },
+    {
+      "Tmax_K": 400.0,
+      "Tmid_K": 348.0800579310345,
+      "Tmin_K": 300.0,
+      "file": "transient_heat_t0011.vtu",
+      "step": 11,
+      "time_s": 11.0
+    },
+    {
+      "Tmax_K": 400.0,
+      "Tmid_K": 348.5400682758621,
+      "Tmin_K": 300.0,
+      "file": "transient_heat_t0012.vtu",
+      "step": 12,
+      "time_s": 12.0
+    },
+    {
+      "Tmax_K": 400.0,
+      "Tmid_K": 348.8718306896552,
+      "Tmin_K": 300.0,
+      "file": "transient_heat_t0013.vtu",
+      "step": 13,
+      "time_s": 13.0
+    },
+    {
+      "Tmax_K": 400.0,
+      "Tmid_K": 349.1110986206897,
+      "Tmin_K": 300.0,
+      "file": "transient_heat_t0014.vtu",
+      "step": 14,
+      "time_s": 14.0
+    },
+    {
+      "Tmax_K": 400.0,
+      "Tmid_K": 349.2836610344828,
+      "Tmin_K": 300.0,
+      "file": "transient_heat_t0015.vtu",
+      "step": 15,
+      "time_s": 15.0
+    },
+    {
+      "Tmax_K": 400.0,
+      "Tmid_K": 349.40811344827586,
+      "Tmin_K": 300.0,
+      "file": "transient_heat_t0016.vtu",
+      "step": 16,
+      "time_s": 16.0
+    },
+    {
+      "Tmax_K": 400.0,
+      "Tmid_K": 349.49786965517234,
+      "Tmin_K": 300.0,
+      "file": "transient_heat_t0017.vtu",
+      "step": 17,
+      "time_s": 17.0
+    },
+    {
+      "Tmax_K": 400.0,
+      "Tmid_K": 349.5626037931034,
+      "Tmin_K": 300.0,
+      "file": "transient_heat_t0018.vtu",
+      "step": 18,
+      "time_s": 18.0
+    },
+    {
+      "Tmax_K": 400.0,
+      "Tmid_K": 349.60928793103443,
+      "Tmin_K": 300.0,
+      "file": "transient_heat_t0019.vtu",
+      "step": 19,
+      "time_s": 19.0
+    },
+    {
+      "Tmax_K": 400.0,
+      "Tmid_K": 349.6429572413793,
+      "Tmin_K": 300.0,
+      "file": "transient_heat_t0020.vtu",
+      "step": 20,
+      "time_s": 20.0
+    }
+  ],
+  "hot_boundary_K": 400.0,
+  "initial_temperature_K": 300.0,
+  "midpoint_monotonic_heating": true,
+  "pass": true,
+  "thermal_diffusivity_m2_per_s": 3.75e-06,
+  "time_step_count": 20,
+  "time_step_s": 1.0,
+  "time_steps_s": [
+    1.0,
+    2.0,
+    3.0,
+    4.0,
+    5.0,
+    6.0,
+    7.0,
+    8.0,
+    9.0,
+    10.0,
+    11.0,
+    12.0,
+    13.0,
+    14.0,
+    15.0,
+    16.0,
+    17.0,
+    18.0,
+    19.0,
+    20.0
+  ],
+  "validated_file_count": 20
+}

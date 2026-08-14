@@ -1,0 +1,103 @@
+{
+  "bodies": [
+    1
+  ],
+  "boundaries": [
+    {
+      "bbox": [
+        0.0,
+        0.0,
+        0.0,
+        0.02,
+        0.0,
+        0.0
+      ],
+      "elements": 10,
+      "id": 1,
+      "nodes": 11
+    },
+    {
+      "bbox": [
+        0.1,
+        0.1,
+        0.0,
+        0.02,
+        0.0,
+        0.0
+      ],
+      "elements": 10,
+      "id": 2,
+      "nodes": 11
+    },
+    {
+      "bbox": [
+        0.0,
+        0.1,
+        0.0,
+        0.02,
+        0.0,
+        0.0
+      ],
+      "elements": 100,
+      "id": 3,
+      "nodes": 102
+    }
+  ],
+  "boundary_elements": 120,
+  "bounds": [
+    0.0,
+    0.1,
+    0.0,
+    0.02,
+    0.0,
+    0.0
+  ],
+  "dimension": 2,
+  "element_types": [
+    303
+  ],
+  "elements": 1198,
+  "header_counts": {
+    "boundary_elements": 120,
+    "elements": 1198,
+    "nodes": 660
+  },
+  "named_bodies": {
+    "fluid": 1
+  },
+  "named_boundaries": {
+    "inlet": 1,
+    "outlet": 2,
+    "walls": 3
+  },
+  "nodes": 660,
+  "quality": {
+    "checked": false,
+    "reason": "v0.1 records topology; Jacobian quality is delegated to Gmsh logs"
+  },
+  "schema_version": "1.0",
+  "semantic_boundaries": {
+    "inlet": [
+      1
+    ],
+    "outer_boundary": [
+      1,
+      2,
+      3
+    ],
+    "outlet": [
+      2
+    ],
+    "walls": [
+      3
+    ],
+    "x_max": [
+      2
+    ],
+    "x_min": [
+      1
+    ],
+    "y_max": [],
+    "y_min": []
+  }
+}

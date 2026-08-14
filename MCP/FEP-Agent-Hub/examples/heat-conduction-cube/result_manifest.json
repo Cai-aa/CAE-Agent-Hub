@@ -1,0 +1,33 @@
+{
+  "fields": [
+    {
+      "association": "POINTS",
+      "components": 1,
+      "finite": true,
+      "maximum": 400.00000000000006,
+      "minimum": 299.99999999999994,
+      "name": "temperature",
+      "unit": "K"
+    }
+  ],
+  "files": [
+    "results/case_t0001.vtu"
+  ],
+  "physics_acceptance": {
+    "Tmax_K": 400.00000000000006,
+    "Tmid_K": 350.26994261005336,
+    "Tmin_K": 299.99999999999994,
+    "criteria": {
+      "Tmax": "400 +/- 1 K",
+      "Tmid": "350 +/- 3 K",
+      "Tmin": "300 +/- 1 K"
+    },
+    "pass": true
+  },
+  "schema_version": "1.0",
+  "solver": "Elmer",
+  "status": "SOLVED",
+  "time_steps": [
+    0.0
+  ]
+}

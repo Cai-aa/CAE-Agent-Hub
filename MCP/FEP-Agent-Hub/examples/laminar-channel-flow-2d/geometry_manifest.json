@@ -1,0 +1,39 @@
+{
+  "schema_version": "1.0",
+  "units": "mm",
+  "coordinate_system": "global",
+  "model_name": "laminar_channel_flow_smoke_v1",
+  "step_file": "geometry/model.step",
+  "objects": [
+    {
+      "semantic_id": "fluid",
+      "freecad_name": "Fluid",
+      "label": "Fluid",
+      "role": "planar_face",
+      "bbox_mm": [
+        0.0,
+        100.0,
+        0.0,
+        20.0,
+        0.0,
+        0.0
+      ],
+      "centroid_mm": [
+        50.0,
+        10.0,
+        0.0
+      ],
+      "volume_mm3": 0.0,
+      "area_mm2": 2000.0,
+      "source_rectangles_mm": [
+        {
+          "freecad_name": "Fluid",
+          "x_min": 0.0,
+          "x_max": 100.0,
+          "y_min": 0.0,
+          "y_max": 20.0
+        }
+      ]
+    }
+  ]
+}

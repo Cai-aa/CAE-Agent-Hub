@@ -1,0 +1,41 @@
+{
+  "body_ids": {
+    "fluid": 1
+  },
+  "boundary_ids": {
+    "inlet": [
+      1
+    ],
+    "outer_boundary": [
+      1,
+      2,
+      3
+    ],
+    "outlet": [
+      2
+    ],
+    "walls": [
+      3
+    ],
+    "x_max": [
+      2
+    ],
+    "x_min": [
+      1
+    ],
+    "y_max": [],
+    "y_min": []
+  },
+  "bounds": [
+    0.0,
+    0.1,
+    0.0,
+    0.02,
+    0.0,
+    0.0
+  ],
+  "dimension": 2,
+  "method": "verified Gmsh physical groups + Elmer mesh coordinate fingerprint",
+  "schema_version": "1.0",
+  "status": "MAPPED"
+}

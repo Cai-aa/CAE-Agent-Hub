@@ -1,0 +1,54 @@
+{
+  "schema_version": "1.0",
+  "analysis": "elasticity_2d_static_v1",
+  "status": "PASS",
+  "model": {
+    "length_m": 1.0,
+    "height_m": 0.1,
+    "thickness_m": 0.01,
+    "youngs_modulus_pa": 210000000000.0,
+    "poisson_ratio": 0.3,
+    "full_load_pressure_pa": 1000000.0,
+    "full_load_total_n": 10000.0
+  },
+  "mesh": {
+    "nodes": 1314,
+    "triangle_elements": 2406,
+    "boundary_elements": 220
+  },
+  "timeline": "ten independent quasi-static load levels; not transient dynamics",
+  "load_steps": [
+    {"step": 1, "factor": 0.1, "deflection_mm": 0.063380, "midspan_stress_mpa": 6.157158, "midspan_strain": 0.0000293323236, "pass": true},
+    {"step": 2, "factor": 0.2, "deflection_mm": 0.126761, "midspan_stress_mpa": 12.314322, "midspan_strain": 0.0000586646872, "pass": true},
+    {"step": 3, "factor": 0.3, "deflection_mm": 0.190141, "midspan_stress_mpa": 18.471492, "midspan_strain": 0.0000879969808, "pass": true},
+    {"step": 4, "factor": 0.4, "deflection_mm": 0.253522, "midspan_stress_mpa": 24.628635, "midspan_strain": 0.000117329275, "pass": true},
+    {"step": 5, "factor": 0.5, "deflection_mm": 0.316902, "midspan_stress_mpa": 30.785807, "midspan_strain": 0.000146661635, "pass": true},
+    {"step": 6, "factor": 0.6, "deflection_mm": 0.380282, "midspan_stress_mpa": 36.942944, "midspan_strain": 0.000175993962, "pass": true},
+    {"step": 7, "factor": 0.7, "deflection_mm": 0.443663, "midspan_stress_mpa": 43.100087, "midspan_strain": 0.000205326255, "pass": true},
+    {"step": 8, "factor": 0.8, "deflection_mm": 0.507043, "midspan_stress_mpa": 49.257232, "midspan_strain": 0.000234658616, "pass": true},
+    {"step": 9, "factor": 0.9, "deflection_mm": 0.570424, "midspan_stress_mpa": 55.414463, "midspan_strain": 0.000263990943, "pass": true},
+    {"step": 10, "factor": 1.0, "deflection_mm": 0.633804, "midspan_stress_mpa": 61.571579, "midspan_strain": 0.000293323236, "pass": true}
+  ],
+  "full_load": {
+    "max_displacement_mm": 0.640616,
+    "midspan_downward_deflection_mm": 0.633804,
+    "max_von_mises_mpa": 135.825504,
+    "midspan_outer_fiber_abs_stress_xx_mpa": 61.571579,
+    "midspan_outer_fiber_abs_strain_xx": 0.000293323236,
+    "support_displacement_residual_m": 0.0,
+    "euler_bernoulli_deflection_mm": 0.744048,
+    "euler_bernoulli_stress_mpa": 75.0,
+    "euler_bernoulli_strain": 0.000357142857,
+    "deflection_relative_error": 0.148167276,
+    "stress_relative_error": 0.179045607,
+    "strain_relative_error": 0.178694939,
+    "pass": true
+  },
+  "paraview": {
+    "verified_time_steps": 10,
+    "validated_frames": 10,
+    "postprocess_mcp_calls_passed": 14,
+    "postprocess_mcp_calls_total": 14
+  }
+}
+

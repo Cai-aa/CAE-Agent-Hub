@@ -52,6 +52,8 @@ MCP/**/results/
 MCP/**/scripts/
 !MCP/Ansys/AEDT MCP/scripts/
 !MCP/Ansys/AEDT MCP/scripts/**
+!MCP/FEP-Agent-Hub/scripts/
+!MCP/FEP-Agent-Hub/scripts/**
 MCP/**/screenshots/
 MCP/**/status.json
 MCP/**/status.json.tmp

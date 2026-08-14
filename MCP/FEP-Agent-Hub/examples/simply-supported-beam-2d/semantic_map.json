@@ -1,0 +1,59 @@
+{
+  "body_ids": {
+    "beam": 1
+  },
+  "boundary_ids": {
+    "bottom_free": [
+      4
+    ],
+    "left_end": [
+      5
+    ],
+    "left_pin": [
+      1
+    ],
+    "outer_boundary": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+    ],
+    "right_end": [
+      6
+    ],
+    "right_roller": [
+      2
+    ],
+    "top_load": [
+      3
+    ],
+    "x_max": [
+      6
+    ],
+    "x_min": [
+      5
+    ],
+    "y_max": [
+      3
+    ],
+    "y_min": [
+      1,
+      2,
+      4
+    ]
+  },
+  "bounds": [
+    0.0,
+    1.0,
+    0.0,
+    0.1,
+    0.0,
+    0.0
+  ],
+  "dimension": 2,
+  "method": "verified Gmsh physical groups + Elmer mesh coordinate fingerprint",
+  "schema_version": "1.0",
+  "status": "MAPPED"
+}

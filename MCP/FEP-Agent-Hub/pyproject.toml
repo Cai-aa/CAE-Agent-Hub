@@ -1,0 +1,28 @@
+[project]
+name = "fep-agent-hub"
+version = "0.1.0"
+description = "Evidence-first FreeCAD, Elmer FEM, and ParaView MCP agent stack."
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+  "mcp>=1.0",
+  "pydantic>=2.0",
+]
+
+[project.optional-dependencies]
+fem = ["meshio>=5.0", "numpy>=1.26"]
+media = ["opencv-python-headless>=4.10", "Pillow>=10.0"]
+dev = ["pytest>=8.0", "ruff>=0.5"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = [
+  "packages/open-cae-core/src",
+  "mcp/freecad/src",
+  "mcp/elmer/src",
+  "mcp/paraview/src",
+]
+addopts = "-q"
+
+[tool.ruff]
+line-length = 120

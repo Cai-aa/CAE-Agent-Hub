@@ -1,0 +1,20 @@
+[mcp_servers.open-cae-freecad]
+command = "D:/path/to/FEP_Agent_Hub/.venv/Scripts/python.exe"
+args = ["-m", "freecad_mcp.server"]
+
+[mcp_servers.open-cae-freecad.env]
+OPEN_CAE_CONFIG = "D:/path/to/FEP_Agent_Hub/configs/open-cae.local.toml"
+
+[mcp_servers.open-cae-elmer]
+command = "D:/path/to/FEP_Agent_Hub/.venv/Scripts/python.exe"
+args = ["-m", "elmer_mcp.server"]
+
+[mcp_servers.open-cae-elmer.env]
+OPEN_CAE_CONFIG = "D:/path/to/FEP_Agent_Hub/configs/open-cae.local.toml"
+
+[mcp_servers.open-cae-paraview]
+command = "D:/path/to/FEP_Agent_Hub/.venv/Scripts/python.exe"
+args = ["-m", "paraview_mcp.server"]
+
+[mcp_servers.open-cae-paraview.env]
+OPEN_CAE_CONFIG = "D:/path/to/FEP_Agent_Hub/configs/open-cae.local.toml"

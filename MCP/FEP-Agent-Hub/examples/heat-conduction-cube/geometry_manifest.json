@@ -1,0 +1,29 @@
+{
+  "schema_version": "1.0",
+  "units": "mm",
+  "coordinate_system": "global",
+  "model_name": "mcp_full_validation_release",
+  "step_file": "geometry/model.step",
+  "objects": [
+    {
+      "semantic_id": "cube",
+      "freecad_name": "Cube",
+      "label": "ValidatedCube",
+      "role": "solid",
+      "bbox_mm": [
+        0.0,
+        10.0,
+        0.0,
+        10.0,
+        0.0,
+        10.0
+      ],
+      "centroid_mm": [
+        5.0,
+        5.0,
+        5.0
+      ],
+      "volume_mm3": 999.9999999999998
+    }
+  ]
+}

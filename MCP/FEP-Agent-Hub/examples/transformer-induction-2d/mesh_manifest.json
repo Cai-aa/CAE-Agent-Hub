@@ -1,0 +1,59 @@
+{
+  "bodies": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6
+  ],
+  "boundaries": [
+    {
+      "bbox": [
+        -0.08,
+        0.08,
+        -0.07,
+        0.07,
+        0.0,
+        0.0
+      ],
+      "elements": 402,
+      "id": 1,
+      "nodes": 402
+    }
+  ],
+  "boundary_elements": 402,
+  "bounds": [
+    -0.08,
+    0.08,
+    -0.07,
+    0.07,
+    0.0,
+    0.0
+  ],
+  "dimension": 2,
+  "element_types": [
+    303
+  ],
+  "elements": 24018,
+  "header_counts": {
+    "boundary_elements": 402,
+    "elements": 24018,
+    "nodes": 12211
+  },
+  "nodes": 12211,
+  "quality": {
+    "checked": false,
+    "reason": "v0.1 records topology; Jacobian quality is delegated to Gmsh logs"
+  },
+  "schema_version": "1.0",
+  "semantic_boundaries": {
+    "outer_boundary": [
+      1
+    ],
+    "x_max": [],
+    "x_min": [],
+    "y_max": [],
+    "y_min": []
+  }
+}
