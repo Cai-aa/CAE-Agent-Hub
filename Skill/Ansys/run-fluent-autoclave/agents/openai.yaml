@@ -1,0 +1,6 @@
+interface:
+  display_name: "Fluent Autoclave CFD"
+  short_description: "Run and validate reproducible Fluent autoclave CFD cases"
+  default_prompt: "Use $run-fluent-autoclave to run and validate a Fluent autoclave airflow simulation on my geometry."
+policy:
+  allow_implicit_invocation: true
