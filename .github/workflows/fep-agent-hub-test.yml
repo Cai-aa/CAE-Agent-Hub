@@ -1,0 +1,29 @@
+name: FEP Agent Hub test
+
+on:
+  push:
+    paths:
+      - "MCP/FEP-Agent-Hub/**"
+      - ".github/workflows/fep-agent-hub-test.yml"
+  pull_request:
+    paths:
+      - "MCP/FEP-Agent-Hub/**"
+      - ".github/workflows/fep-agent-hub-test.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  unit:
+    runs-on: windows-latest
+    defaults:
+      run:
+        working-directory: MCP/FEP-Agent-Hub
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - run: python -m pip install -r requirements.txt
+      - run: python -m pip install -e packages/open-cae-core -e mcp/freecad -e mcp/elmer -e mcp/paraview
+      - run: python -m pytest -q

@@ -1,4 +1,4 @@
-mcp>=1.0
+mcp>=1.27,<2
 meshio>=5.0
 numpy>=1.26
 opencv-python-headless>=4.10
