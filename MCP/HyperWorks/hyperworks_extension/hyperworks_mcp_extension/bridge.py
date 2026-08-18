@@ -97,7 +97,10 @@ class BridgeRuntime:
     def start(self) -> None:
         if self.server is not None:
             return
-        from PyQt6.QtCore import QTimer
+        try:
+            from PyQt6.QtCore import QTimer
+        except ImportError:
+            from PyQt5.QtCore import QTimer
 
         self.server = _BridgeTCPServer((self.host, self.port), self)
         self.server_thread = threading.Thread(

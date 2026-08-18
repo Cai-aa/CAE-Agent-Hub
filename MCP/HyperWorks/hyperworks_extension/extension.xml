@@ -1,7 +1,7 @@
 <section name="Extension">
     <entry name="name" value="HyperWorks MCP Bridge" />
     <entry name="displayName" value="HyperWorks MCP Bridge" />
-    <entry name="minProductVersion" value="2026" />
+    <entry name="minProductVersion" value="2025" />
     <entry name="version" value="0.9.1" />
     <entry name="author" value="CAE-Agent-Hub" />
     <entry name="description" value="Authenticated localhost bridge for controlled HyperMesh preprocessing and HyperView result postprocessing." />
