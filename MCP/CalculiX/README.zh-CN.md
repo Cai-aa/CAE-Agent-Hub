@@ -20,8 +20,8 @@ Issue #14 提出的空白。
 | `list_design_vars_tool` | 列出可调设计变量（壳厚、梁截面、材料 E/ν/密度、载荷幅值），每个带 `var_id` 定位器。 |
 | `modify_card_tool` | 按 `var_id` 原位修改一个设计变量；纯文本替换，写出新 `.inp`。 |
 | `run_solver_tool` | 对 deck 跑 `ccx -i <jobname>`。成功判定不看 exit code（见下）。 |
-| `read_results_tool` | 解析 `.dat` 取最大 von Mises（自算）、最大位移、体积、质量。 |
-| `export_results_tool` | 把本次求解导出为 `result_mesh.json`（viewer 格式）。 |
+| `read_results_tool` | 解析 `.dat` 取最大 von Mises（自算）、最大位移、体积、质量；`*FREQUENCY` 步还返回特征值表（`frequencies`、`n_modes`）。 |
+| `export_results_tool` | 把本次求解导出为 `result_mesh.json`（viewer 格式）；模态运行传 `mode=N` 可导第 N 阶振型。 |
 | `optimize_structure_tool` | 两阶段尺寸优化（LHS 粗扫 + 坐标下降精修）：在应力/位移约束下，通过调标量设计变量（壳厚、梁截面、材料、载荷）最小化质量。仅限壳/梁模型——见[优化](#优化)。 |
 
 ## CalculiX 实战契约（编码在 solver 里）
@@ -34,6 +34,9 @@ Issue #14 提出的空白。
 - **`.dat` 没有总体积/质量** —— 由网格几何 × `*DENSITY` 计算。
 - **严禁 `meshio.write`** —— 会丢掉全部卡片并把 `B31` 改写成 `B31H`（文件损坏）。
   `modify_card` 走纯文本原位替换。
+- **`*FREQUENCY` 步的 `.sta` 只有表头** —— 特征值求解没有增量，因此成功判据也接受
+  非空 `.dat`（否则每次模态运行都会被误判失败）。频率和各阶特征向量都在 `.dat`
+  文本里，不只在 `.frd`。
 
 ## 优化
 
@@ -55,6 +58,24 @@ optimize_structure_tool(
   shape/topology 优化。
 - 这是**尺寸/参数优化，不是拓扑优化**——它减薄截面，不在空间上重分布材料。
 - 最优 deck 写到输入旁的 `<stem>.optimized.inp`；可交给 `export_results_tool` 渲染。
+
+## 模态分析
+
+`*FREQUENCY` deck 用同一套工具即可。`.dat` 里什么都有：先是
+`E I G E N V A L U E   O U T P U T` 特征值表（模态号、特征值、rad/s、cycles/s），
+随后是标记为 `E I G E N V A L U E    N U M B E R     N` 的各阶特征向量块——
+向量行复用静力 `displacements (vx,vy,vz)` 格式，因此振型导出不碰 `.frd`。
+
+```python
+read_results_tool(result_path=...)     # -> frequencies: [{mode, eigenvalue,
+                                       #     freq_rad_s, freq_hz}], n_modes
+export_results_tool(path="examples/cantilever_modal.inp", mode=1)
+# -> result_mesh.json 持有第 1 阶特征向量（无应力振型）
+```
+
+两条值得诚实汇报的物理注记：双对称截面出现简并对（f1 = f2）；全积分 C3D8
+六面体弯曲剪切锁死，频率比欧拉梁手算偏高 ~5-10%
+（`examples/cantilever_modal.inp`：ccx f1 ~ 502 Hz vs 手算 ~ 464 Hz）。
 
 ## 安装
 
@@ -91,6 +112,10 @@ python3 examples/gen_cantilever.py
 
 手算 sanity 目标（欧拉梁，mm-t-s-MPa，P = 100 N）：端部挠度 ≈ 0.8 mm，根部应力
 ≈ 140 MPa。viewer 会自动放大这个微小的弹性变形以供显示。
+
+`examples/cantilever_modal.inp` 是同一根梁加 5 阶 `*FREQUENCY` 步：f1 = f2 ≈ 502 Hz
+（简并对）、f3 = f4 ≈ 3089 Hz、f5 ≈ 6309 Hz，对比手算 f1 ≈ 464 Hz（C3D8 剪切锁死）。
+viewer 案例 `models/text-to-cae-calculix-modal` 渲染第 1 阶振型。
 
 ## 测试
 

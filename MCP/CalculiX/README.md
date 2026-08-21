@@ -22,8 +22,8 @@ stopped at FEniCS references), filling the gap noted in Issue #14.
 | `list_design_vars_tool` | List tunable design variables (shell thickness, beam section, material E/nu/density, load magnitude), each with a `var_id` locator. |
 | `modify_card_tool` | Edit one design variable in place by `var_id`; pure-text replacement, writes a new `.inp`. |
 | `run_solver_tool` | Run `ccx -i <jobname>` on a deck. Success ignores the exit code (see below). |
-| `read_results_tool` | Parse the `.dat` for max von Mises (self-computed), max displacement, volume, mass. |
-| `export_results_tool` | Export the run to `result_mesh.json` (viewer format). |
+| `read_results_tool` | Parse the `.dat` for max von Mises (self-computed), max displacement, volume, mass; for `*FREQUENCY` steps also the eigenvalue table (`frequencies`, `n_modes`). |
+| `export_results_tool` | Export the run to `result_mesh.json` (viewer format); for modal runs pass `mode=N` to export that mode's shape. |
 | `optimize_structure_tool` | Two-stage sizing optimization (LHS sweep + coordinate descent): minimize mass subject to stress/displacement bounds by tuning scalar design variables (shell thickness, beam section, material, load). Shell/beam models only — see [Optimization](#optimization). |
 
 ## Hard-won CalculiX contracts (encoded in the solver)
@@ -37,6 +37,10 @@ These are why this server is non-trivial — all from public CalculiX behaviour:
 - **`.dat` has no total volume/mass** — computed from the mesh geometry × `*DENSITY`.
 - **Never `meshio.write`** — it drops every card and rewrites `B31`→`B31H`
   (corrupts the file). `modify_card` does pure-text in-place edits instead.
+- **`*FREQUENCY` steps write a header-only `.sta`** — an eigenvalue solve has
+  no increments, so success also accepts a non-empty `.dat` (otherwise every
+  modal run would look failed). Frequencies and per-mode eigenvectors are in
+  the `.dat` text, not only the `.frd`.
 
 ## Optimization
 
@@ -61,6 +65,27 @@ Scope and honesty:
   thins sections, it does not redistribute material in space.
 - The best deck is written next to the input as `<stem>.optimized.inp`; pass it
   to `export_results_tool` to render the optimized design.
+
+## Modal analysis
+
+`*FREQUENCY` decks work with the same tools. The `.dat` carries everything: an
+`E I G E N V A L U E   O U T P U T` table (mode, eigenvalue, rad/s, cycles/s)
+followed by per-mode eigenvector blocks marked
+`E I G E N V A L U E    N U M B E R     N` — the vectors reuse the static
+`displacements (vx,vy,vz)` row format, so mode shapes export without touching
+the `.frd`.
+
+```python
+read_results_tool(result_path=...)     # -> frequencies: [{mode, eigenvalue,
+                                       #     freq_rad_s, freq_hz}], n_modes
+export_results_tool(path="examples/cantilever_modal.inp", mode=1)
+# -> result_mesh.json holding mode 1's eigenvector (stress-free shape)
+```
+
+Two physics notes worth reporting honestly: a doubly symmetric section gives
+degenerate pairs (f1 = f2), and fully-integrated C3D8 hexes shear-lock in
+bending, so frequencies run ~5-10% above the Euler-Bernoulli hand calc
+(`examples/cantilever_modal.inp`: ccx f1 ~ 502 Hz vs hand calc ~ 464 Hz).
 
 ## Install
 
@@ -98,6 +123,11 @@ python3 examples/gen_cantilever.py
 Hand-calc sanity targets (Euler-Bernoulli, mm-t-s-MPa, P = 100 N): tip deflection
 ≈ 0.8 mm, root stress ≈ 140 MPa. The viewer auto-magnifies the small elastic
 deformation for display.
+
+`examples/cantilever_modal.inp` is the same bar with a 5-mode `*FREQUENCY`
+step: f1 = f2 ≈ 502 Hz (degenerate pair), f3 = f4 ≈ 3089 Hz, f5 ≈ 6309 Hz,
+vs the hand calc f1 ≈ 464 Hz (C3D8 shear locking). The viewer case
+`models/text-to-cae-calculix-modal` renders mode 1.
 
 ## Tests
 

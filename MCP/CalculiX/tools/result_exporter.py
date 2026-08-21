@@ -29,6 +29,16 @@ Viewer contract (verified against viewer/components/CaeResultViewer.js):
   * ``element.mises`` is one von Mises value per element, coloured against
     ``fieldRanges.misesMin/misesMax``.
 
+Modal ``*FREQUENCY`` runs: pass ``mode=N`` to export the Nth mode shape. The
+eigenvectors are read from the ``.dat``'s per-mode blocks (marked
+``E I G E N V A L U E    N U M B E R     N``). Modal files follow the viewer's
+modal schema (verified against the ``hole-plate-modal`` case): displacement is
+normalised to max |u| = 1, each node carries ``modalMagnitude`` = |u|, each
+element's colour scalar (``mises``/``value``) is the mean |u| of its nodes, the
+true pre-normalisation magnitude is kept in ``rawMaxDisplacement``, and
+``analysisType``/``mode``/``frequencyHz``/``fieldLabel`` label the footer and
+legend. Stress stays zero — a mode shape has no stress field.
+
 When no ``.dat`` is available (e.g. ccx not yet run), a mesh-only file with zero
 fields is emitted from the ``.inp`` — useful for wiring the viewer and for tests
 that must not depend on a solver.
@@ -46,6 +56,9 @@ _SCHEMA_VERSION = 1
 
 _STRESS_HDR = re.compile(r"^\s*stresses\s*\(elem", re.IGNORECASE)
 _DISP_HDR = re.compile(r"^\s*displacements\s*\(v", re.IGNORECASE)
+_MODE_MARKER = re.compile(
+    r"^\s*E\s+I\s+G\s+E\s+N\s+V\s+A\s+L\s+U\s+E\s+N\s+U\s+M\s+B\s+E\s*R\s+(\d+)"
+)
 
 
 def _to_float(s: str) -> float | None:
@@ -169,6 +182,54 @@ def _parse_dat_element_mises(text: str) -> dict[int, float]:
     return out
 
 
+def _parse_dat_modal_modes(text: str) -> dict[int, dict[int, list[float]]]:
+    """mode number -> {node label -> [vx, vy, vz]} from per-mode eigenvector blocks.
+
+    Each block is introduced by a spaced-letter marker
+    (``E I G E N V A L U E    N U M B E R     N``) and its rows reuse the
+    static ``displacements (vx,vy,vz)`` format. ``_parse_dat_displacements``
+    cannot be used here: every block repeats the same header, so it would
+    silently keep only the last mode.
+    """
+    lines = text.splitlines()
+    modes: dict[int, dict[int, list[float]]] = {}
+    current: int | None = None
+    for line in lines:
+        m = _MODE_MARKER.match(line)
+        if m:
+            current = int(m.group(1))
+            modes.setdefault(current, {})
+            continue
+        if current is None:
+            continue
+        if _DISP_HDR.search(line):
+            continue
+        parts = line.split()
+        if len(parts) < 4:
+            continue
+        try:
+            node = int(parts[0])
+            vx, vy, vz = float(parts[1]), float(parts[2]), float(parts[3])
+        except ValueError:
+            continue
+        modes[current][node] = [vx, vy, vz]
+    return {k: v for k, v in modes.items() if v}
+
+
+def _modal_frequency_hz(text: str, mode: int) -> float | None:
+    """Frequency (Hz) of ``mode`` from the .dat eigenvalue table, else None."""
+    import sys
+
+    sys.path.insert(0, str(Path(__file__).resolve().parent))
+    import solver
+
+    rows, _ = solver._parse_dat_frequencies(text)
+    for row in rows:
+        if row["mode"] == mode:
+            return row["freq_hz"]
+    return None
+
+
 def _resolve_dat_path(inp_path: str, dat_path: str | None) -> Path | None:
     if dat_path:
         p = Path(dat_path)
@@ -210,6 +271,7 @@ def export_result_mesh(
     instance: str = "PART-1",
     step: str = "Load",
     frame: int = 1,
+    mode: int | None = None,
 ) -> dict:
     """Build (and by default write) a ``result_mesh.json`` for the viewer.
 
@@ -222,6 +284,12 @@ def export_result_mesh(
         deformation_scale: numeric scale baked into ``deformed``; None/"auto" ->
             auto-magnify so the deformation is visible (~15% of model size).
         source/instance/step/frame: metadata echoed into the JSON.
+        mode: for ``*FREQUENCY`` runs, export this mode's eigenvector as the
+            displacement field, in the viewer's modal schema: ``analysisType``
+            "modal", ``frequencyHz`` from the .dat eigenvalue table, displacement
+            normalised to max |u| = 1 with per-node ``modalMagnitude`` and the
+            element colour scalar set to the mean |u| (stress stays zero).
+            Raises when the mode is absent from the ``.dat``.
 
     Returns:
         The result_mesh dict (also written to ``out_path``).
@@ -231,12 +299,34 @@ def export_result_mesh(
 
     dat = _resolve_dat_path(inp_path, dat_path)
     has_fields = dat is not None
+    is_modal = mode is not None
+    if is_modal and dat is None:
+        raise ValueError(f"mode {mode} requested but no .dat found for {inp_path}")
     disp_by_node: dict[int, list[float]] = {}
     mises_by_elem: dict[int, float] = {}
+    frequency_hz: float | None = None
     if has_fields:
         text = dat.read_text(encoding="utf-8", errors="ignore")  # type: ignore[union-attr]
-        disp_by_node = _parse_dat_displacements(text)
-        mises_by_elem = _parse_dat_element_mises(text)
+        if is_modal:
+            mode_shapes = _parse_dat_modal_modes(text)
+            if mode not in mode_shapes:
+                raise ValueError(
+                    f"mode {mode} not found in {dat.name} (available: {sorted(mode_shapes)})"
+                )
+            disp_by_node = mode_shapes[mode]
+            step = f"Mode {mode}"
+            frequency_hz = _modal_frequency_hz(text, mode)
+        else:
+            disp_by_node = _parse_dat_displacements(text)
+            mises_by_elem = _parse_dat_element_mises(text)
+
+    raw_max_disp = max(
+        (math.sqrt(sum(c * c for c in v)) for v in disp_by_node.values()), default=0.0
+    )
+    if is_modal and raw_max_disp > 0.0:
+        # Viewer modal contract: displacement normalised to max |u| = 1; the true
+        # magnitude (mass-normalised eigenvector) is kept in rawMaxDisplacement.
+        disp_by_node = {k: [c / raw_max_disp for c in v] for k, v in disp_by_node.items()}
 
     if deformation_scale in (None, "auto"):
         scale = _auto_deformation_scale(list(coords_by_label.values()), disp_by_node)
@@ -248,32 +338,49 @@ def export_result_mesh(
         label = nd["label"]
         c = nd["coordinates"]
         d = disp_by_node.get(label, [0.0, 0.0, 0.0])
-        nodes.append(
-            {
-                "label": label,
-                "coordinates": c,
-                "displacement": d,
-                "deformed": [c[i] + d[i] * scale for i in range(3)],
-            }
-        )
+        node = {
+            "label": label,
+            "coordinates": c,
+            "displacement": d,
+            "deformed": [c[i] + d[i] * scale for i in range(3)],
+        }
+        if is_modal:
+            node["modalMagnitude"] = math.sqrt(sum(c0 * c0 for c0 in d))
+        nodes.append(node)
+
+    def _elem_modal_magnitude(el: dict) -> float:
+        """Mean normalised |u| over the element's nodes (the viewer colour scalar)."""
+        if not el["connectivity"]:
+            return 0.0
+        total = 0.0
+        for lbl in el["connectivity"]:
+            v = disp_by_node.get(lbl)
+            total += math.sqrt(sum(c0 * c0 for c0 in v)) if v else 0.0
+        return total / len(el["connectivity"])
 
     elements = []
     type_counts: dict[str, int] = {}
     for el in elements_raw:
-        mises = float(mises_by_elem.get(el["label"], 0.0))
-        elements.append(
-            {
-                "label": el["label"],
-                "type": el["type"],
-                "connectivity": el["connectivity"],
-                "mises": mises,
-            }
-        )
+        mises = _elem_modal_magnitude(el) if is_modal else float(mises_by_elem.get(el["label"], 0.0))
+        element = {
+            "label": el["label"],
+            "type": el["type"],
+            "connectivity": el["connectivity"],
+            "mises": mises,
+        }
+        if is_modal:
+            element["value"] = mises
+        elements.append(element)
         type_counts[el["type"]] = type_counts.get(el["type"], 0) + 1
 
     nonzero_mises = [e["mises"] for e in elements if e["mises"] > 0.0]
-    mises_min = min(nonzero_mises) if nonzero_mises else 0.0
-    mises_max = max(nonzero_mises) if nonzero_mises else 0.0
+    if is_modal:
+        elem_vals = [e["mises"] for e in elements]
+        mises_min = min(elem_vals) if elem_vals else 0.0
+        mises_max = max(elem_vals) if elem_vals else 0.0
+    else:
+        mises_min = min(nonzero_mises) if nonzero_mises else 0.0
+        mises_max = max(nonzero_mises) if nonzero_mises else 0.0
     max_disp = max((math.sqrt(sum(c * c for c in d)) for d in disp_by_node.values()), default=0.0)
 
     result = {
@@ -292,6 +399,19 @@ def export_result_mesh(
             "maxDisplacement": max_disp,
         },
     }
+    if is_modal:
+        result["analysisType"] = "modal"
+        result["mode"] = mode
+        result["fieldLabel"] = "U, Magnitude"
+        if frequency_hz is not None:
+            result["frequencyHz"] = frequency_hz
+        result["fieldRanges"].update(
+            {
+                "valueMin": mises_min,
+                "valueMax": mises_max,
+                "rawMaxDisplacement": raw_max_disp,
+            }
+        )
 
     if out_path is None:
         base_dir = dat.parent if has_fields else Path(inp_path).parent
