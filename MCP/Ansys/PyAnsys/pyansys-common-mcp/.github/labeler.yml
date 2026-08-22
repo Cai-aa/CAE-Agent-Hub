@@ -1,0 +1,12 @@
+documentation:
+- changed-files:
+  - any-glob-to-any-file: 'doc/source/**/*'
+  - any-glob-to-any-file: 'examples/**/*'
+maintenance:
+- changed-files:
+  - any-glob-to-any-file: '.github/**/*'
+  - any-glob-to-any-file: 'uv.lock'
+  - any-glob-to-any-file: 'pyproject.toml'
+testing:
+- changed-files:
+  - any-glob-to-any-file:  'tests/*'

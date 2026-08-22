@@ -1,0 +1,193 @@
+[build-system]
+requires = ["flit_core >=3.2,<4"]
+build-backend = "flit_core.buildapi"
+
+[project]
+name = "ansys-fluent-mcp"
+version = "0.5.dev0"
+description = "Model Context Protocol (MCP) server for ANSYS Fluent, built on PyFluent."
+readme = "README.md"
+requires-python = ">=3.12,<4"
+authors = [{ name = "ANSYS, Inc.", email = "pyansys.core@ansys.com" }]
+maintainers = [{ name = "ANSYS, Inc.", email = "pyansys.core@ansys.com" }]
+license = "Apache-2.0"
+license-files = ["LICENSE"]
+keywords = [
+    "ansys",
+    "fluent",
+    "fluids",
+    "cfd",
+    "pyfluent",
+    "mcp",
+    "model-context-protocol",
+]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Science/Research",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+    "Topic :: Scientific/Engineering",
+    "Topic :: Scientific/Engineering :: Physics",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Typing :: Typed",
+]
+
+dependencies = [
+    "ansys-common-mcp>=0.3.3",
+    "ansys-fluent-core>=0.41.0",
+    "httpx>=0.27",
+    "pydantic>=2",
+]
+
+[project.optional-dependencies]
+file-probe = ["h5py>=3"]
+tests = [
+    "ansys-common-mcp==0.3.3",
+    "ansys-fluent-core==0.41.0",
+    "httpx==0.28.1",
+    "h5py==3.16.0",
+    "pydantic==2.13.4",
+    "pytest==9.1.1",
+    "pytest-asyncio==1.4.0",
+    "pytest-cov==7.1.0",
+]
+doc = [
+    "ansys-common-mcp==0.3.3",
+    "ansys-sphinx-theme[autoapi,changelog]==1.10.0",
+    "httpx==0.28.1",
+    "numpydoc==1.10.0",
+    "pydantic==2.13.4",
+    "sphinx-autodoc-typehints==3.13.2",
+    "sphinx-notfound-page==1.1.0",
+    "sphinx==9.1.0",
+    "sphinxcontrib-video==0.4.2",
+]
+
+[project.urls]
+Homepage = "https://github.com/ansys/pyfluent-mcp"
+Documentation = "https://fluent-mcp.docs.pyansys.com"
+Repository = "https://github.com/ansys/pyfluent-mcp"
+Issues = "https://github.com/ansys/pyfluent-mcp/issues"
+
+[project.scripts]
+ansys-fluent-mcp = "ansys.fluent.mcp.__main__:launcher"
+
+[tool.flit.module]
+name = "ansys.fluent.mcp"
+
+[tool.ruff]
+line-length = 100
+fix = true
+format.indent-style = "space"
+format.quote-style = "double"
+format.docstring-code-line-length = "dynamic"
+format.docstring-code-format = true
+lint.select = [
+  "D",   # pydocstyle, see https://docs.astral.sh/ruff/rules/#pydocstyle-d
+  "E",   # pycodestyle, see https://docs.astral.sh/ruff/rules/#pycodestyle-e-w
+  "F",   # pyflakes, see https://docs.astral.sh/ruff/rules/#pyflakes-f
+  "I",   # isort, see https://docs.astral.sh/ruff/rules/#isort-i
+  "N",   # pep8-naming, see https://docs.astral.sh/ruff/rules/#pep8-naming-n
+  "PTH", # flake8-use-pathlib, https://docs.astral.sh/ruff/rules/#flake8-use-pathlib-pth
+  "TD",  # flake8-todos, https://docs.astral.sh/ruff/rules/#flake8-todos-td
+]
+# Ignore `D` rules everywhere except for the `src/` directory.
+lint.per-file-ignores."!src/**.py" = [ "D" ]
+# Ignore `F401` (import violations) in all `__init__.py` files.
+lint.per-file-ignores."__init__.py" = [ "F401" ]
+# Ignore `E402` (module level import not at top of file) in `src/ansys/fluent/mcp/__init__.py`.
+lint.per-file-ignores."src/ansys/fluent/mcp/__init__.py" = [ "E402" ]
+lint.isort.combine-as-imports = true
+lint.isort.force-sort-within-sections = true
+lint.isort.known-first-party = [ "ansys.fluent.mcp" ]
+lint.pydocstyle.convention = "numpy"
+
+[tool.mypy]
+python_version = "3.12"
+mypy_path = "src"
+namespace_packages = true
+explicit_package_bases = true
+ignore_missing_imports = true
+warn_unused_configs = true
+exclude = [
+    "^doc/",
+    "^tests/",
+]
+
+[tool.bandit]
+exclude_dirs = ["tests", ".venv", "venv"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
+python_files = "test_*.py"
+python_classes = "Test*"
+python_functions = "test_*"
+asyncio_mode = "auto"
+markers = [
+    "integration: tests that require a live Fluent/PyFluent session",
+]
+addopts = [
+    "--verbose",
+    "--cov=ansys.fluent.mcp",
+    "--cov-report=term-missing",
+    "--cov-report=html",
+    "--cov-report=xml",
+]
+
+[tool.towncrier]
+package = "ansys.fluent.mcp"
+directory = "doc/changelog.d"
+filename = "doc/source/changelog.rst"
+template = "doc/changelog.d/changelog_template.jinja"
+start_string = ".. towncrier release notes start\n"
+title_format = "`{version} <https://github.com/ansys/pyfluent-mcp/releases/tag/v{version}>`_ - {project_date}"
+issue_format = "`#{issue} <https://github.com/ansys/pyfluent-mcp/pull/{issue}>`_"
+
+[[tool.towncrier.type]]
+directory = "breaking"
+name = "Breaking"
+showcontent = true
+
+[[tool.towncrier.type]]
+directory = "added"
+name = "Added"
+showcontent = true
+
+[[tool.towncrier.type]]
+directory = "fixed"
+name = "Fixed"
+showcontent = true
+
+[[tool.towncrier.type]]
+directory = "documentation"
+name = "Documentation"
+showcontent = true
+
+[[tool.towncrier.type]]
+directory = "dependencies"
+name = "Dependencies"
+showcontent = true
+
+[[tool.towncrier.type]]
+directory = "maintenance"
+name = "Maintenance"
+showcontent = true
+
+[[tool.towncrier.type]]
+directory = "miscellaneous"
+name = "Miscellaneous"
+showcontent = true
+
+[[tool.towncrier.type]]
+directory = "test"
+name = "Test"
+showcontent = true
+
+[[tool.towncrier.type]]
+directory = "changed"
+name = "Changed"
+showcontent = true

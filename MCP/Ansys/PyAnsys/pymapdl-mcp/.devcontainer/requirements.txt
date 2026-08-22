@@ -1,0 +1,11 @@
+ansys-mapdl-core==0.71.1
+pytest==9.0.1
+pytest-asyncio==1.3.0
+pytest-cov==7.0.0
+pytest-mock==3.15.1
+black==25.11.0
+fastmcp==2.13.2
+isort==7.0.0
+mypy==1.18.2
+pre_commit==4.5.0
+flake8==7.3.0

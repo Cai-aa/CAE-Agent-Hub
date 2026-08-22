@@ -1,0 +1,9 @@
+[default.extend-words]
+ba = "ba"
+certifi = "certifi"
+mis = "mis"
+pn = "pn"
+Synopsys = "Synopsys"
+# CFD-domain abbreviations
+tke = "tke"  # turbulent kinetic energy (k-equation)
+sdr = "sdr"  # specific dissipation rate (omega-equation)

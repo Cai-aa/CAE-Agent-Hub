@@ -1,0 +1,366 @@
+{
+  "type": "object",
+  "help": "Encapsulates a CFD-Post (PostProcessing) session (pycfx.PostProcessing). CCL tree populated from curated fallback \u2014 run with a live CFD-Post session for full accuracy.",
+  "commands": {
+    "build_from_cfx_connection": {
+      "type": "command",
+      "help": "Build a ``BaseSession`` object from a ``cfx_connection`` object.",
+      "args": [
+        {
+          "name": "cfx_connection",
+          "type": "CFXConnection"
+        },
+        {
+          "name": "file_transfer_service",
+          "type": "Optional",
+          "default": "None"
+        }
+      ]
+    },
+    "download": {
+      "type": "command",
+      "help": "Download a file from the server.",
+      "args": [
+        {
+          "name": "file_name",
+          "type": "str"
+        },
+        {
+          "name": "local_directory",
+          "type": "Optional",
+          "default": "'.'"
+        }
+      ]
+    },
+    "execute_ccl": {
+      "type": "command",
+      "help": "Execute a CCL command.",
+      "args": [
+        {
+          "name": "command",
+          "type": "str"
+        },
+        {
+          "name": "wait",
+          "type": "bool",
+          "default": "True"
+        }
+      ],
+      "return_type": "None"
+    },
+    "exit": {
+      "type": "command",
+      "help": "Exit the session.",
+      "args": [
+        {
+          "name": "kwargs"
+        }
+      ],
+      "return_type": "None"
+    },
+    "force_exit": {
+      "type": "command",
+      "help": "Terminate the CFX session immediately, losing unsaved progress and",
+      "return_type": "None"
+    },
+    "get_cfx_version": {
+      "type": "command",
+      "help": "Get the CFX version.",
+      "return_type": "CFXVersion"
+    },
+    "get_state": {
+      "type": "command",
+      "help": "Get the state of the object.",
+      "return_type": "StateT"
+    },
+    "is_server_healthy": {
+      "type": "command",
+      "help": "Check if the current session is healthy.",
+      "return_type": "bool"
+    },
+    "set_state": {
+      "type": "command",
+      "help": "Set the state of the object.",
+      "args": [
+        {
+          "name": "state",
+          "type": "Optional",
+          "default": "None"
+        },
+        {
+          "name": "kwargs"
+        }
+      ]
+    },
+    "upload": {
+      "type": "command",
+      "help": "Upload a file to the server.",
+      "args": [
+        {
+          "name": "file_name",
+          "type": "str"
+        }
+      ]
+    }
+  },
+  "children": {
+    "results": {
+      "type": "namespace",
+      "help": "Root namespace for CFD-Post results objects.",
+      "children": {
+        "data_reader": {
+          "type": "namespace",
+          "help": "Provides access to loaded result data.",
+          "children": {
+            "case": {
+              "type": "named-object-container",
+              "help": "Dict-like container of loaded CFD-Post cases.",
+              "commands": {
+                "get_object_names": {
+                  "type": "command",
+                  "help": "Return a list of all case names currently loaded.",
+                  "args": [],
+                  "return_type": "list[str]"
+                }
+              },
+              "object-type": {
+                "type": "object",
+                "help": "A single loaded CFD-Post case.",
+                "children": {
+                  "boundary": {
+                    "type": "named-object-container",
+                    "help": "Boundary surface objects within the case.",
+                    "object-type": {
+                      "type": "object",
+                      "help": "A single boundary surface.",
+                      "children": {
+                        "colour_mode": {
+                          "type": "string",
+                          "has-allowed-values": true,
+                          "help": "Colour rendering mode for the boundary. E.g. 'Variable', 'Constant'."
+                        },
+                        "colour_variable": {
+                          "type": "string",
+                          "help": "Variable used when colour_mode='Variable'. E.g. 'Pressure', 'Temperature'."
+                        },
+                        "draw_contours": {
+                          "type": "boolean",
+                          "help": "Whether to draw contour lines on the boundary surface."
+                        }
+                      },
+                      "commands": {
+                        "show": {
+                          "type": "command",
+                          "help": "Show the object in a named view.",
+                          "args": [
+                            {
+                              "name": "view",
+                              "type": "str",
+                              "help": "View path, e.g. '/VIEW:View 1'"
+                            }
+                          ]
+                        },
+                        "hide": {
+                          "type": "command",
+                          "help": "Hide the object from view.",
+                          "args": []
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "plane": {
+          "type": "named-object-container",
+          "help": "Plane objects for slicing the domain.",
+          "object-type": {
+            "type": "object",
+            "help": "A single plane.",
+            "children": {
+              "option": {
+                "type": "string",
+                "has-allowed-values": true,
+                "help": "Plane orientation, e.g. 'XY Plane', 'YZ Plane', 'ZX Plane', 'Point and Normal', or 'Three Points'."
+              },
+              "plane_type": {
+                "type": "string",
+                "has-allowed-values": true,
+                "help": "Plane type, e.g. 'Slice' or 'Sample'."
+              },
+              "x": {
+                "type": "real",
+                "help": "X-coordinate offset of the plane along the global X axis. Applies when option = 'YZ Plane'."
+              },
+              "y": {
+                "type": "real",
+                "help": "Y-coordinate offset of the plane along the global Y axis. Applies when option = 'ZX Plane'."
+              },
+              "z": {
+                "type": "real",
+                "help": "Z-coordinate offset of the plane along the global Z axis. Applies when option = 'XY Plane'."
+              },
+              "point": {
+                "type": "vector",
+                "help": "Anchor point of the plane (3-vector). Applies when option = 'Point and Normal'."
+              },
+              "normal": {
+                "type": "vector",
+                "help": "Normal vector of the plane (3-vector). Applies when option = 'Point and Normal'."
+              },
+              "point_1": {
+                "type": "vector",
+                "help": "First anchor point (3-vector). Applies when option = 'Three Points'."
+              },
+              "point_2": {
+                "type": "vector",
+                "help": "Second anchor point (3-vector). Applies when option = 'Three Points'."
+              },
+              "point_3": {
+                "type": "vector",
+                "help": "Third anchor point (3-vector). Applies when option = 'Three Points'."
+              }
+            },
+            "commands": {
+              "suspend": {
+                "type": "command",
+                "help": "Suspend recalculation while modifying multiple settings.",
+                "args": []
+              },
+              "unsuspend": {
+                "type": "command",
+                "help": "Unsuspend recalculation after setting modifications.",
+                "args": []
+              }
+            }
+          }
+        },
+        "contour": {
+          "type": "named-object-container",
+          "help": "Contour plot objects.",
+          "object-type": {
+            "type": "object",
+            "help": "A single contour plot.",
+            "children": {
+              "colour_variable": {
+                "type": "string",
+                "help": "Variable to plot, e.g. 'Pressure'."
+              },
+              "location_list": {
+                "type": "string",
+                "help": "CCL path to the location, e.g. '/PLANE:Plane 1'."
+              },
+              "number_of_contours": {
+                "type": "integer",
+                "help": "Number of contour levels."
+              },
+              "contour_range": {
+                "type": "string",
+                "has-allowed-values": true,
+                "help": "'Local' or 'Global'."
+              },
+              "draw_contours": {
+                "type": "boolean",
+                "help": "Whether to draw contour lines."
+              },
+              "fringe_fill": {
+                "type": "boolean",
+                "help": "Whether to fill between contour lines."
+              }
+            },
+            "commands": {
+              "show": {
+                "type": "command",
+                "help": "Show the contour in a named view.",
+                "args": [
+                  {
+                    "name": "view",
+                    "type": "str"
+                  }
+                ]
+              },
+              "hide": {
+                "type": "command",
+                "help": "Hide the contour.",
+                "args": []
+              }
+            }
+          }
+        },
+        "hardcopy": {
+          "type": "object",
+          "help": "Controls image output settings.",
+          "children": {
+            "hardcopy_format": {
+              "type": "string",
+              "has-allowed-values": true,
+              "help": "Image format, e.g. 'png', 'jpg'."
+            },
+            "image_height": {
+              "type": "integer",
+              "help": "Image height in pixels."
+            },
+            "image_width": {
+              "type": "integer",
+              "help": "Image width in pixels."
+            },
+            "use_screen_size": {
+              "type": "boolean",
+              "help": "Use screen resolution instead of explicit size."
+            }
+          }
+        },
+        "library": {
+          "type": "namespace",
+          "help": "CEL expressions and variables library.",
+          "children": {
+            "cel": {
+              "type": "object",
+              "help": "CEL (CFX Expression Language) container.",
+              "children": {
+                "expressions": {
+                  "type": "named-object-container",
+                  "help": "Named CEL expressions.",
+                  "commands": {
+                    "list": {
+                      "type": "command",
+                      "help": "Return list of expression names.",
+                      "args": [],
+                      "return_type": "list"
+                    },
+                    "list_properties": {
+                      "type": "command",
+                      "help": "Return expression definitions.",
+                      "args": [],
+                      "return_type": "str"
+                    }
+                  },
+                  "object-type": {
+                    "type": "object",
+                    "help": "A single CEL expression.",
+                    "children": {
+                      "definition": {
+                        "type": "string",
+                        "help": "The CEL expression string."
+                      }
+                    },
+                    "commands": {
+                      "evaluate": {
+                        "type": "command",
+                        "help": "Evaluate the expression and return the result.",
+                        "args": [],
+                        "return_type": "float"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,48 @@
+(i?)HTTP
+(i?)MCP
+(i?)RST
+[Aa]sync
+[Cc]ompose
+[Cc]onfig
+[Dd]ev
+[Dd]ocker
+[Dd]ocstring
+[Dd]ocstrings
+[Mm]atplotlib
+[Nn]ginx
+[Uu]nescaped
+ansys
+Ansys
+[Ss]ynopsys
+Anthropic's
+Claude Code
+Claude Desktop
+dataclass
+GitHub
+HAProxy
+hostname
+isort
+Model Context Protocol
+numpydoc
+postprocessing
+Python
+PyVista
+toctree
+uv
+uvx
+Visual Studio Code
+PR
+AEDT
+PyAEDT
+HFSS
+Maxwell
+Icepak
+PCB
+electromagnetic
+RF
+thermal
+EDA
+CLI
+toolset
+microstrip
+viewport

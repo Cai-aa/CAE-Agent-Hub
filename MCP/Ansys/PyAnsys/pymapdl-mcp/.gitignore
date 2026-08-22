@@ -1,0 +1,11 @@
+.vscode
+*.pyc
+dist
+coverage.xml
+.coverage
+doc/_build
+.mcp.json
+
+
+# AutoAPI generated files
+doc/source/api

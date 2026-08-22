@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="140" viewBox="0 0 800 140" role="img" aria-labelledby="title desc">
+  <title id="title">PyCFX-MCP logo</title>
+  <desc id="desc">PyCFX-MCP wordmark for light backgrounds, styled with PyAnsys colors.</desc>
+  <rect width="800" height="140" fill="none"/>
+  <defs>
+    <clipPath id="half-c-light">
+      <rect x="105" y="34" width="22" height="62"/>
+    </clipPath>
+  </defs>
+  <text x="24" y="88" fill="#111827" font-family="Arial, Helvetica, sans-serif" font-size="68" font-weight="700"><tspan>Py</tspan><tspan>CFX-MCP</tspan></text>
+  <text x="24" y="88" fill="#fdb71a" font-family="Arial, Helvetica, sans-serif" font-size="68" font-weight="700" clip-path="url(#half-c-light)">PyCFX-MCP</text>
+</svg>

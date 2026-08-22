@@ -1,0 +1,36 @@
+{% extends "!layout.html" %}
+
+{% block footer %}
+<footer class="bd-footer" font-size="4px">
+  <div class="bd-footer__inner bd-page-width">
+    <div class="footer-items__start">
+      <div class="footer-item">
+        <p class="copyright">
+          PyMAPDL-MCP {{ version }} © Copyright (c) <span id="copyright-year"></span> ANSYS, Inc. All rights reserved.
+          <br>
+        </p>
+        <script>
+          document.getElementById("copyright-year").textContent = new Date().getFullYear();
+        </script>
+      </div>
+    </div>
+    <div class="footer-items__end">
+      <div class="footer-item">
+        <p class="theme-version">
+          {% trans theme_version=ansys_sphinx_theme_version|e %}Built with the
+          <a href="https://sphinxdocs.ansys.com/version/stable/index.html">Ansys Sphinx Theme</a>
+          {{ ansys_sphinx_theme_version }}.{% endtrans %} and
+          {% trans sphinx_version=sphinx_version|e %} <a href="https://www.sphinx-doc.org/">Sphinx</a> {{ sphinx_version }}.{% endtrans %}
+          on <span id="date"></span>
+        </p>
+        <script>
+          var options = { day: "numeric", month: "long", year: "numeric" };
+          var lastModifiedDate = new Date(document.lastModified);
+          var date = lastModifiedDate.toLocaleDateString("en-US", options);
+          document.getElementById("date").innerHTML = date;
+        </script>
+      </div>
+    </div>
+  </div>
+</footer>
+{% endblock %}

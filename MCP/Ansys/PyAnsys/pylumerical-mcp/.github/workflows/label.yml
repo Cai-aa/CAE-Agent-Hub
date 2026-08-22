@@ -1,0 +1,138 @@
+name: "Pull Request Labeler"
+on:
+  pull_request:
+    # opened, reopened, and synchronize are default for pull_request
+    # edited - when PR title or body is changed
+    # labeled - when labels are added to PR
+    types: [opened, reopened, synchronize, edited, labeled]
+  push:
+    branches: [ main ]
+    paths:
+      - '.github/labels.yml'
+
+permissions: {}
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+
+  label-syncer:
+    name: "Syncer"
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write # Needed to synchronize labels on pull requests
+    steps:
+      - name: "Checkout repository"
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          persist-credentials: false
+
+      - name: "Sync labels"
+        uses: micnncim/action-label-syncer@3abd5ab72fda571e69fffd97bd4e0033dd5f495c # v1.3.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  labeler:
+    name: "Set labels"
+    needs: [label-syncer]
+    permissions:
+      contents: read
+      pull-requests: write # Needed to add labels to pull requests
+    runs-on: ubuntu-latest
+    steps:
+
+    # Label based on modified files
+    - name: "Label based on changed files"
+      uses: actions/labeler@b8dd2d9be0f68b860e7dae5dae7d772984eacd6d # v6.2.0
+      with:
+        repo-token: "${{ secrets.GITHUB_TOKEN }}"
+        sync-labels: true
+
+    # Label based on branch name
+    - name: "Label based on branch name - documentation"
+      uses: actions-ecosystem/action-add-labels@18f1af5e3544586314bbe15c0273249c770b2daf # v1.1.3
+      if: |
+        startsWith(github.event.pull_request.head.ref, 'doc') ||
+        startsWith(github.event.pull_request.head.ref, 'docs')
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        labels: documentation
+
+    - name: "Label based on branch name - ci/cd"
+      uses: actions-ecosystem/action-add-labels@18f1af5e3544586314bbe15c0273249c770b2daf # v1.1.3
+      if: |
+        startsWith(github.event.pull_request.head.ref, 'docker') ||
+        startsWith(github.event.pull_request.head.ref, 'no-ci') ||
+        startsWith(github.event.pull_request.head.ref, 'ci')
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        labels: ci/cd
+
+    - name: "Label based on branch name - maintenance"
+      uses: actions-ecosystem/action-add-labels@18f1af5e3544586314bbe15c0273249c770b2daf # v1.1.3
+      if: startsWith(github.event.pull_request.head.ref, 'maint')
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        labels: maintenance
+
+    - name: "Label based on branch name - enhancement"
+      uses: actions-ecosystem/action-add-labels@18f1af5e3544586314bbe15c0273249c770b2daf # v1.1.3
+      if: startsWith(github.event.pull_request.head.ref, 'feat')
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        labels: |
+          enhancement
+
+    - name: "Label based on branch name - bug"
+      uses: actions-ecosystem/action-add-labels@18f1af5e3544586314bbe15c0273249c770b2daf # v1.1.3
+      if: |
+        startsWith(github.event.pull_request.head.ref, 'fix') ||
+        startsWith(github.event.pull_request.head.ref, 'patch')
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        labels: bug
+
+  commenter:
+    name: "Suggest to add labels"
+    runs-on: ubuntu-latest
+    needs: labeler
+    permissions:
+      contents: read
+      pull-requests: write # Needed to add comments to pull requests
+    steps:
+    - name: "Suggest to add labels"
+      uses: peter-evans/create-or-update-comment@e8674b075228eee787fea43ef493e45ece1004c9 # v5.0.0
+      # Execute only when no labels have been applied to the pull request.
+      # `.labels.*.name` is a JSON array; an empty array serializes to `[]`.
+      if: toJSON(github.event.pull_request.labels.*.name) == '[]'
+      with:
+        issue-number: ${{ github.event.pull_request.number }}
+        body: |
+          Please add one of the following labels to add this contribution to the Release Notes :point_down:
+          - [bug](https://github.com/ansys/pylumerical-mcp/pulls?q=label%3Abug+)
+          - [documentation](https://github.com/ansys/pylumerical-mcp/pulls?q=label%3Adocumentation+)
+          - [enhancement](https://github.com/ansys/pylumerical-mcp/pulls?q=label%3Aenhancement+)
+          - [good first issue](https://github.com/ansys/pylumerical-mcp/pulls?q=label%3Agood+first+issue)
+          - [maintenance](https://github.com/ansys/pylumerical-mcp/pulls?q=label%3Amaintenance+)
+          - [release](https://github.com/ansys/pylumerical-mcp/pulls?q=label%3Arelease+)
+          - [ci/cd](https://github.com/ansys/pylumerical-mcp/pulls?q=label%3Aci%2Fcd+)
+
+  changelog-fragment:
+    name: "Create changelog fragment"
+    needs: [labeler]
+    permissions:
+      contents: write # Needed to add changelog files to the repository
+      pull-requests: write # Needed to add changelog files to the pull request
+    runs-on: ubuntu-latest
+    steps:
+    - name: "Changelog fragment"
+      uses: ansys/actions/doc-changelog@7419880d64bb0bba83f968ca803611df0b76faf0 #v10.3.4
+      with:
+        use-pull-request-title: true
+        use-default-towncrier-config: true
+        token: ${{ secrets.PYANSYS_CI_BOT_TOKEN }}
+        bot-user: ${{ secrets.PYANSYS_CI_BOT_USERNAME }}
+        bot-email: ${{ secrets.PYANSYS_CI_BOT_EMAIL }}

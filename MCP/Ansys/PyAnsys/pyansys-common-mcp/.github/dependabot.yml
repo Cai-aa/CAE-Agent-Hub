@@ -1,0 +1,43 @@
+version: 2
+updates:
+  - package-ecosystem: "pip"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "saturday"
+      time: "06:00"
+      timezone: "Europe/Paris"
+    cooldown:
+      default-days: 7
+      include:
+        - "*"  # Include all dependencies in cooldown
+      exclude:
+        - "ansys-sphinx-theme"
+    assignees:
+      - "pyansys-ci-bot"
+    labels:
+      - "maintenance"
+      - "dependencies"
+    commit-message:
+      prefix: "build(pip)"
+
+  - package-ecosystem: "github-actions"
+    cooldown:
+      default-days: 10 # Fallback cooldown if no specific rule applies
+      include:
+        - "*"  # Include all dependencies in cooldown
+      exclude:
+        - "ansys/actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "saturday"
+      time: "06:00"
+      timezone: "Europe/Paris"
+    assignees:
+      - "pyansys-ci-bot"
+    labels:
+      - "maintenance"
+      - "dependencies"
+    commit-message:
+      prefix: "build(actions)"

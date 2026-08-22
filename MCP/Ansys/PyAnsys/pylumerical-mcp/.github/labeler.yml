@@ -1,0 +1,10 @@
+documentation:
+- changed-files:
+  - any-glob-to-any-file: 'doc/source/**/*'
+maintenance:
+- changed-files:
+  - any-glob-to-any-file: '.github/**/*'
+  - any-glob-to-any-file: 'pyproject.toml'
+testing:
+- changed-files:
+  - any-glob-to-any-file:  'tests/*'

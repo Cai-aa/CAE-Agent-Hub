@@ -1,0 +1,15 @@
+[default.extend-words]
+lumapi = "lumapi"
+lumerical = "lumerical"
+fdtd = "fdtd"
+INTERCONNECT = "INTERCONNECT"
+Synopsys = "Synopsys"
+
+[files]
+extend-exclude = [
+    "_build",
+    "*.fsp",
+    "*.lms",
+    "*.ldev",
+    "*.icp",
+]

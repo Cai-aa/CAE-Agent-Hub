@@ -1,0 +1,50 @@
+{
+  "name": "PyLumerical MCP DevContainer",
+  "runArgs": [
+    "--memory=8g",
+    "--add-host=host.docker.internal:host-gateway",
+    "--env-file=${localWorkspaceFolder}/.env"
+  ],
+  "build": {
+    "dockerfile": "Dockerfile",
+    "context": "."
+  },
+  "initializeCommand": "bash .devcontainer/setup.sh",
+  "workspaceFolder": "/workspaces/pylumerical-mcp",
+  "mounts": [
+    "source=${localEnv:HOME}/.corporate-certs,target=/usr/local/share/corporate-certs,type=bind,readonly"
+  ],
+  "containerEnv": {
+    "SSL_CERT_FILE": "/etc/pki/tls/certs/ca-bundle.crt",
+    "REQUESTS_CA_BUNDLE": "/etc/pki/tls/certs/ca-bundle.crt",
+    "UV_CACHE_DIR": "/workspaces/pylumerical-mcp/.uv-cache",
+    "UV_TOOL_DIR": "/workspaces/pylumerical-mcp/.uv-tools"
+  },
+  "postCreateCommand": "bash .devcontainer/post-create.sh",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "anysphere.cursorpyright",
+        "charliermarsh.ruff",
+        "tamasfe.even-better-toml"
+      ],
+      "settings": {
+        "python.defaultInterpreterPath": "/workspaces/pylumerical-mcp/.venv/bin/python",
+        "python.terminal.activateEnvironment": true,
+        "python.testing.pytestEnabled": true,
+        "python.testing.unittestEnabled": false,
+        "editor.formatOnSave": true,
+        "editor.defaultFormatter": "charliermarsh.ruff"
+      }
+    }
+  },
+  "features": {
+    "ghcr.io/devcontainers/features/common-utils:2": {
+      "installZsh": true,
+      "configureZshAsDefaultShell": true,
+      "installOhMyZsh": true,
+      "upgradePackages": false
+    }
+  },
+  "shutdownAction": "stopContainer"
+}

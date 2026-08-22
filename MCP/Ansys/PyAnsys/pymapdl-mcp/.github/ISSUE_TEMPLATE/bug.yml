@@ -1,0 +1,90 @@
+name: 🐞 Bug, problem, or error
+description: Fill a bug report here
+title: "Bug located in ..."
+labels: ["bug"]
+assignees: [""]
+
+body:
+
+  - type: markdown
+    attributes:
+      value: '# 🐞 **Problem**'
+
+  - type: checkboxes
+    id: new-bug
+    attributes:
+      label: 🤓 Before submitting the issue
+      description: |
+        Ensure that the following conditions are met.
+      options:
+      - label: I have searched among the [existing issues](https://github.com/ansys/pymapdl-mcp/issues?q=).
+        required: true
+      - label: I am using a [Python virtual environment](https://docs.python.org/3/library/venv.html).
+        required: true
+      - label: I am using the latest version of PyMAPDL-MCP and its dependencies (fully updated virtual environment).
+        required: true
+
+  - type: textarea
+    id: bug-description
+    attributes:
+      label: 🔍 Description of the bug
+      placeholder: Describe what bug you encountered and what should have happened.
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps-to-reproduce
+    attributes:
+      label: 🕵️ Steps to reproduce
+      description: |
+        Please provide the steps or code that reproduces the issue.
+      placeholder: Describe the steps to reproduce the bug.
+    validations:
+      required: true
+
+  - type: markdown
+    attributes:
+      value: '# 🖥️ **System Information**'
+
+  - type: dropdown
+    id: os-name
+    attributes:
+      label: 💻 Which operating system are you using?
+      multiple: false
+      options:
+       - 'Windows'
+       - 'MacOS'
+       - 'Linux'
+    validations:
+      required: true
+
+  - type: dropdown
+    id: python-version
+    attributes:
+      label: 🐍 Which Python version are you using?
+      description: Run `python --version` to verify your Python version.
+      multiple: false
+      options:
+       - '3.10'
+       - '3.11'
+       - '3.12'
+       - '3.13'
+    validations:
+      required: true
+
+  - type: textarea
+    id: installed-packages
+    attributes:
+      label: 📝 Installed packages
+      description: Run `python -m pip freeze` to list installed packages.
+      value: |
+        <details><summary>Show the installed packages.</summary>
+
+        ```text
+
+        # PASTE HERE THE OUTPUT OF `python -m pip freeze`
+
+        ```
+        </details>
+    validations:
+      required: true

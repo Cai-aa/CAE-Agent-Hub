@@ -1,0 +1,21 @@
+[build-system]
+requires = ["flit_core >=3.2,<4"]
+build-backend = "flit_core.buildapi"
+
+[project]
+name = "pyexample-mcp"
+version = "0.1.0"
+description = "MCP server for PyExample"
+readme = "README.md"
+requires-python = ">=3.12,<4"
+license = { file = "LICENSE" }
+
+dependencies = [
+    "ansys-common-mcp>=0.0.1",
+    "numpy>=2.0",
+    "pandas>=3.0",
+    "matplotlib>=3.0",
+]
+
+[project.scripts]
+pyexample-mcp = "pyexample_mcp.__main__:main"

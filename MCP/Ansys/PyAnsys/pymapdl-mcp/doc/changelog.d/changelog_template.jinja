@@ -1,0 +1,22 @@
+{% if sections[""] %}
+
+.. tab-set::
+
+{%+ for category, val in definitions.items() if category in sections[""] %}
+
+  .. tab-item:: {{ definitions[category]['name'] }}
+
+    .. list-table::
+        :header-rows: 0
+        :widths: auto
+
+{% for text, values in sections[""][category].items() %}
+        * - {{ text }}
+          - {{ values|join(', ') }}
+
+{% endfor %}
+{% endfor %}
+
+{% else %}
+No significant changes.
+{% endif %}

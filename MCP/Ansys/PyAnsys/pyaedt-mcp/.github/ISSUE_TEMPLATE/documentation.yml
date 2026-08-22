@@ -1,0 +1,31 @@
+name: 📖 Documentation issue
+description: Modifications to the documentation only
+title: "Modify ..."
+labels: ["documentation"]
+assignees: [""]
+
+body:
+
+  - type: markdown
+    attributes:
+      value: '# 📝 **Modifications**'
+
+  - type: textarea
+    id: modifications
+    attributes:
+      label: Description of the modifications
+      placeholder: Describe what modification you propose and why it is useful for the project.
+    validations:
+      required: true
+
+  - type: markdown
+    attributes:
+      value: '# 🔗 **References**'
+
+  - type: textarea
+    id: references
+    attributes:
+      label: Useful links and references
+      placeholder: A list of links and references to help when modifying the documentation.
+    validations:
+      required: false

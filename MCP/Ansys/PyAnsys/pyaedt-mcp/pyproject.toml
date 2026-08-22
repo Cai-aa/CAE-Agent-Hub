@@ -1,0 +1,185 @@
+[build-system]
+build-backend = "flit_core.buildapi"
+requires = ["flit_core >=3.2,<5"]
+
+[project]
+authors = [{name = "Synopsys, Inc. and ANSYS, Inc.", email = "pyansys-core@synopsys.com"}]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Intended Audience :: Developers",
+  "Intended Audience :: Science/Research",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Programming Language :: Python :: 3.14",
+  "Topic :: Scientific/Engineering :: Information Analysis",
+  "Topic :: Scientific/Engineering :: Electronic Design Automation (EDA)",
+  "Topic :: Software Development :: Libraries",
+]
+description = "Model Context Protocol (MCP) server for Ansys Electronics Desktop (AEDT) through PyAEDT"
+keywords = [
+  "ansys",
+  "aedt",
+  "pyaedt",
+  "electronics-desktop",
+  "hfss",
+  "maxwell",
+  "icepak",
+  "circuit",
+  "mcp",
+  "model-context-protocol",
+  "ai",
+  "assistant",
+  "electromagnetic-simulation",
+  "rf-simulation",
+  "thermal-analysis",
+]
+license = "Apache-2.0"
+license-files = ["LICENSE"]
+maintainers = [{name = "Synopsys, Inc. and ANSYS, Inc.", email = "pyansys-core@synopsys.com"}]
+name = "ansys-aedt-mcp"
+readme = "README.md"
+requires-python = ">=3.12,<4"
+version = "0.1.dev0"
+
+dependencies = [
+  "pyaedt>=1.3.0",
+  "ansys-common-mcp>=0.3.3",
+  "ansys-tools-visualization-interface",
+  "pyvista[io]>=0.38.0,<0.49",
+  "matplotlib>=3.11.1",
+  "vtk>=9.0,<9.7",
+  "typer==0.26.8",
+  "pillow"
+]
+
+[dependency-groups]
+doc = [
+  "ansys-sphinx-theme[autoapi,changelog]==1.10.0",
+  "numpydoc==1.10.0",
+  "sphinx-autodoc-typehints==3.13.2",
+  "sphinx-copybutton==0.5.2",
+  "sphinx-design==0.7.0",
+  "sphinx-notfound-page==1.1.0",
+  "sphinxcontrib-video==0.4.2",
+]
+tests = [
+  "pytest==9.1.1",
+  "pytest-asyncio==1.4.0",
+  "pytest-cov==7.1.0",
+  "pytest-mock==3.15.1",
+  "pytest-timeout==2.4.0",
+]
+
+[project.urls]
+Documentation = "https://aedt-mcp.docs.pyansys.com"
+Homepage = "https://github.com/ansys/pyaedt-mcp"
+Issues = "https://github.com/ansys/pyaedt-mcp/issues"
+Repository = "https://github.com/ansys/pyaedt-mcp"
+
+[project.scripts]
+ansys-aedt-mcp = "ansys.aedt.mcp.__main__:launcher"
+
+[tool.flit.module]
+name = "ansys.aedt.mcp"
+
+[tool.ruff]
+fix = true
+format.indent-style = "space"
+format.quote-style = "double"
+line-length = 100
+lint.isort.combine-as-imports = true
+lint.isort.force-sort-within-sections = true
+lint.isort.known-first-party = ["ansys.aedt.mcp"]
+lint.per-file-ignores."!src/**.py" = ["D"]
+lint.per-file-ignores."__init__.py" = ["F401"]
+lint.per-file-ignores."tests/**.py" = ["D", "E501", "N806"]
+lint.pydocstyle.convention = "numpy"
+lint.select = [
+  "D", # pydocstyle
+  "E", # pycodestyle
+  "F", # pyflakes
+  "I", # isort
+  "N", # pep8-naming
+  "PTH", # flake8-use-pathlib
+  "TD", # flake8-todos
+]
+
+[tool.mypy]
+exclude = [
+  "^\\.venv/",
+  "^venv/",
+  "^build/",
+  "^dist/",
+]
+explicit_package_bases = true
+ignore_missing_imports = true
+mypy_path = "src"
+namespace_packages = true
+python_version = "3.14"
+warn_unused_configs = true
+
+[tool.pytest.ini_options]
+addopts = "--cov=ansys.aedt.mcp --cov-report=term-missing --cov-report=html --cov-report=xml --tb=short -q"
+asyncio_default_fixture_loop_scope = "function"
+asyncio_mode = "auto"
+markers = [
+  "integration: marks tests as integration tests (require running AEDT instance)",
+  "system: marks tests that require a dedicated runner with a real AEDT session",
+  "general: marks the live AEDT system tests that cover the general tool surface",
+  "unit: marks tests as unit tests (do not require running AEDT instance)",
+  "slow: Tests that take a long time to run",
+]
+testpaths = ["tests"]
+
+[tool.uv]
+index-strategy = "unsafe-best-match"
+
+[tool.towncrier]
+directory = "doc/changelog.d"
+filename = "doc/source/changelog.rst"
+issue_format = "`#{issue} <https://github.com/ansys/pyaedt-mcp/pull/{issue}>`_"
+package = "ansys.aedt.mcp"
+start_string = ".. towncrier release notes start\n"
+template = "doc/changelog.d/changelog_template.jinja"
+title_format = "`{version} <https://github.com/ansys/pyaedt-mcp/releases/tag/v{version}>`_ - {project_date}"
+
+[[tool.towncrier.type]]
+directory = "breaking"
+name = "Breaking"
+showcontent = true
+
+[[tool.towncrier.type]]
+directory = "added"
+name = "Added"
+showcontent = true
+
+[[tool.towncrier.type]]
+directory = "fixed"
+name = "Fixed"
+showcontent = true
+
+[[tool.towncrier.type]]
+directory = "documentation"
+name = "Documentation"
+showcontent = true
+
+[[tool.towncrier.type]]
+directory = "dependencies"
+name = "Dependencies"
+showcontent = true
+
+[[tool.towncrier.type]]
+directory = "maintenance"
+name = "Maintenance"
+showcontent = true
+
+[[tool.towncrier.type]]
+directory = "miscellaneous"
+name = "Miscellaneous"
+showcontent = true
+
+[[tool.towncrier.type]]
+directory = "test"
+name = "Test"
+showcontent = true

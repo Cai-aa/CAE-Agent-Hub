@@ -1,0 +1,295 @@
+name: CI/CD
+
+on:
+  pull_request:
+  push:
+    tags:
+      - "v*"
+    branches:
+      - main
+  schedule:
+    - cron: "30 4 * * *" # Daily at 04:30 UTC
+
+permissions: {}
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+env:
+  MAIN_PYTHON_VERSION: "3.13"
+  PACKAGE_NAME: "ansys-fluent-mcp"
+  DOCUMENTATION_CNAME: "fluent-mcp.docs.pyansys.com"
+
+jobs:
+  update-changelog:
+    name: "Update CHANGELOG (on release)"
+    if: github.event_name == 'push' && contains(github.ref, 'refs/tags')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write # Needed to read and write repository contents
+      pull-requests: write # Needed to create pull requests
+    steps:
+      - uses: ansys/actions/doc-deploy-changelog@d98e1a4008dab392f8c114a483c2c5624076ccd6 #v11.0.1
+        with:
+          token: ${{ secrets.PYANSYS_CI_BOT_TOKEN }}
+          bot-user: ${{ secrets.PYANSYS_CI_BOT_USERNAME }}
+          bot-email: ${{ secrets.PYANSYS_CI_BOT_EMAIL }}
+
+  code-style:
+    name: "Code style checks"
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read # Needed to checkout the code
+    steps:
+      - name: "Run PyAnsys code style checks"
+        uses: ansys/actions/code-style@d98e1a4008dab392f8c114a483c2c5624076ccd6 #v11.0.1
+        with:
+          python-version: ${{ env.MAIN_PYTHON_VERSION }}
+
+  docs-style:
+    name: "Documentation style checks"
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read # Needed to checkout the code
+    steps:
+      - name: "Run Ansys documentation style checks"
+        uses: ansys/actions/doc-style@d98e1a4008dab392f8c114a483c2c5624076ccd6 #v11.0.1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+  pr-name:
+    if: github.event_name == 'pull_request'
+    name: "Check the name of the PR"
+    permissions:
+      contents: read
+      pull-requests: read # Needed to read pull request title for checks
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check commit name
+        uses: ansys/actions/check-pr-title@d98e1a4008dab392f8c114a483c2c5624076ccd6 #v11.0.1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+  actions-security:
+    name: "Actions security"
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read # Needed to checkout and scan workflows
+    steps:
+      - uses: ansys/actions/check-actions-security@d98e1a4008dab392f8c114a483c2c5624076ccd6 #v11.0.1
+        with:
+          generate-summary: true
+          token: ${{ secrets.GITHUB_TOKEN }}
+          auditing-level: "high"
+
+  vulnerabilities:
+    name: "Vulnerabilities"
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read # Needed to checkout the code
+    steps:
+      - uses: ansys/actions/check-vulnerabilities@d98e1a4008dab392f8c114a483c2c5624076ccd6 #v11.0.1
+        with:
+          python-version: ${{ env.MAIN_PYTHON_VERSION }}
+          python-package-name: ${{ env.PACKAGE_NAME }}
+          token: ${{ secrets.PYANSYS_CI_BOT_TOKEN }}
+          dev-mode: ${{ github.ref != 'refs/heads/main' }}
+
+  smoke-tests:
+    name: "Build and smoke tests"
+    runs-on: ${{ matrix.os }}
+    needs: [code-style]
+    permissions:
+      contents: read # Needed to checkout the code
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        python-version: ["3.12", "3.13", "3.14"]
+        should-release:
+          - ${{ github.event_name == 'push' && contains(github.ref, 'refs/tags') }}
+        exclude:
+          - should-release: false
+            os: macos-latest
+    steps:
+      - name: "Build wheelhouse and perform smoke test"
+        uses: ansys/actions/build-wheelhouse@d98e1a4008dab392f8c114a483c2c5624076ccd6 #v11.0.1
+        with:
+          library-name: ${{ env.PACKAGE_NAME }}
+          operating-system: ${{ matrix.os }}
+          python-version: ${{ matrix.python-version }}
+
+  test:
+    name: "Test Python ${{ matrix.python-version }} on ${{ matrix.os }}"
+    runs-on: ${{ matrix.os }}
+    needs: [smoke-tests]
+    permissions:
+      contents: read
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+        python-version: ["3.12", "3.13", "3.14"]
+    steps:
+      - name: "Run unit tests"
+        uses: ansys/actions/tests-pytest@d98e1a4008dab392f8c114a483c2c5624076ccd6 #v11.0.1
+        with:
+          python-version: ${{ matrix.python-version }}
+          pytest-markers: '-m "not integration"'
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@fb8b3582c8e4def4969c97caa2f19720cb33a72f # v7.0.0
+        if: matrix.os == 'ubuntu-latest' && matrix.python-version == '3.13'
+        with:
+          file: ./coverage.xml
+          flags: unittests
+          name: codecov-umbrella
+          fail_ci_if_error: false
+
+  integration:
+    name: "Integration tests (live Fluent)"
+    runs-on: [public-ubuntu-latest-16-cores]
+    needs: [smoke-tests]
+    # if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
+    permissions:
+      contents: read
+      packages: read # Required to pull ghcr.io/ansys/fluent container image from GitHub Container Registry
+    env:
+      ANSYSLMD_LICENSE_FILE: "1055@${{ secrets.LICENSE_SERVER }}"
+      FLUENT_IMAGE_TAG: "v27.1.232"
+      PYFLUENT_HIDE_LOG_SECRETS: "1"
+      PYFLUENT_LAUNCH_FLUENT_TIMEOUT: "180"
+      PYFLUENT_TIMEOUT_FORCE_EXIT: "30"
+      PYFLUENT_LAUNCH_CONTAINER: "1"
+      PYFLUENT_CONTAINER_INSECURE_MODE: "1"
+      FLUENT_CONTAINER_IMAGE: "ghcr.io/ansys/fluent:v27.1.232"
+      FLUENT_MCP_INTEGRATION_DIMENSION: "2"
+      FLUENT_MCP_INTEGRATION_PRECISION: "double"
+      FLUENT_MCP_INTEGRATION_PROCESSORS: "1"
+      FLUENT_MCP_INTEGRATION_UI_MODE: "no_gui_or_graphics"
+      PYTEST_XDIST_AUTO_NUM_WORKERS: 1
+    steps:
+      - name: "Login to GitHub Container Registry"
+        uses: docker/login-action@dbcb813823bdd20940b903addbd779551569679f # v4.6.0
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: "Pull Fluent docker image"
+        run: docker pull ghcr.io/ansys/fluent:${FLUENT_IMAGE_TAG}
+
+      - name: "Run live Fluent integration tests"
+        uses: ansys/actions/tests-pytest@d98e1a4008dab392f8c114a483c2c5624076ccd6 #v11.0.1
+        with:
+          python-version: ${{ env.MAIN_PYTHON_VERSION }}
+          optional-dependencies-name: "tests"
+          pytest-markers: '-m "integration"'
+
+  build-docs:
+    name: "Build documentation"
+    runs-on: ubuntu-latest
+    needs: [docs-style]
+    permissions:
+      contents: read # Needed to checkout the code
+    steps:
+      - name: Run Ansys documentation building action
+        uses: ansys/actions/doc-build@d98e1a4008dab392f8c114a483c2c5624076ccd6 # v11.0.1
+        with:
+          python-version: ${{ env.MAIN_PYTHON_VERSION }}
+          sphinxopts: "-W --keep-going"
+
+  package:
+    name: "Package library"
+    needs: [test, integration]
+    runs-on: ubuntu-latest
+    permissions:
+      attestations: write # Required to upload provenance attestations
+      contents: read
+      id-token: write # Required for OIDC authentication to upload provenance attestations
+    steps:
+      - name: "Build library source and wheel artifacts"
+        uses: ansys/actions/build-library@d98e1a4008dab392f8c114a483c2c5624076ccd6 # v11.0.1
+        with:
+          library-name: ${{ env.PACKAGE_NAME }}
+          python-version: ${{ env.MAIN_PYTHON_VERSION }}
+          attest-provenance: true
+
+  doc-deploy-dev:
+    name: "Deploy development documentation"
+    # Deploy development only when merging to main
+    if: github.ref == 'refs/heads/main'  && github.event_name == 'push'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write # Needed to push documentation to gh-pages branch
+    needs: [build-docs, package]
+    steps:
+      - name: "Deploy the latest documentation"
+        uses: ansys/actions/doc-deploy-dev@d98e1a4008dab392f8c114a483c2c5624076ccd6 #v11.0.1
+        with:
+          cname: ${{ env.DOCUMENTATION_CNAME }}
+          token: ${{ secrets.PYANSYS_CI_BOT_TOKEN }}
+          bot-user: ${{ secrets.PYANSYS_CI_BOT_USERNAME }}
+          bot-email: ${{ secrets.PYANSYS_CI_BOT_EMAIL }}
+
+  doc-deploy-pr:
+    name: "Deploy PR documentation"
+    if: github.event_name == 'pull_request' && contains(github.event.pull_request.labels.*.name, 'pr-preview')
+    runs-on: ubuntu-latest
+    needs: [build-docs]
+    permissions:
+      contents: write # Needed to push documentation to gh-pages branch
+    steps:
+      - name: "Deploy the PR documentation"
+        uses: ansys/actions/doc-deploy-pr@d98e1a4008dab392f8c114a483c2c5624076ccd6 #v11.0.1
+        with:
+          cname: ${{ env.DOCUMENTATION_CNAME }}
+          token: ${{ secrets.PYANSYS_CI_BOT_TOKEN }}
+          bot-user: ${{ secrets.PYANSYS_CI_BOT_USERNAME }}
+          bot-email: ${{ secrets.PYANSYS_CI_BOT_EMAIL }}
+          maximum-pr-doc-deployments: 10
+
+  release:
+    name: "Release project"
+    if: github.event_name == 'push' && contains(github.ref, 'refs/tags')
+    needs: [package, build-docs, update-changelog]
+    runs-on: ubuntu-latest
+    # Specifying a GitHub environment is optional, but strongly encouraged
+    environment: release
+    permissions:
+      id-token: write # Required for GitHub release
+      contents: write # Required for GitHub release
+    steps:
+      - name: "Release to GitHub"
+        uses: ansys/actions/release-github@d98e1a4008dab392f8c114a483c2c5624076ccd6 # v11.0.1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          library-name: ${{ env.PACKAGE_NAME }}
+          add-artifact-attestation-notes: true
+          changelog-release-notes: true
+
+      - name: "Release to PyPI"
+        uses: pypa/gh-action-pypi-publish@dc37677b2e1c63e2034f94d8a5b11f265b73ba33 # v1.14.2
+        with:
+          repository-url: "https://upload.pypi.org/legacy/"
+          print-hash: true
+          packages-dir: dist/${{ env.PACKAGE_NAME }}-artifacts
+          skip-existing: false
+
+  doc-deploy-stable:
+    name: "Deploy stable documentation"
+    if: github.event_name == 'push' && contains(github.ref, 'refs/tags')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write # Needed to push documentation to gh-pages branch
+    needs: [release]
+    steps:
+      - name: "Deploy the stable documentation"
+        uses: ansys/actions/doc-deploy-stable@d98e1a4008dab392f8c114a483c2c5624076ccd6 #v11.0.1
+        with:
+          cname: ${{ env.DOCUMENTATION_CNAME }}
+          token: ${{ secrets.PYANSYS_CI_BOT_TOKEN }}
+          render-last: "5"
+          bot-user: ${{ secrets.PYANSYS_CI_BOT_USERNAME }}
+          bot-email: ${{ secrets.PYANSYS_CI_BOT_EMAIL }}

@@ -1,0 +1,39 @@
+# Docker Compose file for pymapdl-mcp and MAPDL containers
+services:
+  pymapdl-mcp:
+    depends_on:
+      - mapdl
+    image: pymapdl-mcp:latest
+    container_name: pymapdl-mcp-server
+    ports:
+      - "${HTTP_PORT:-8080}:8080"
+    env_file:
+      - .env
+    environment:
+      # MAPDL connection settings
+      - PYMAPDL_IP=${PYMAPDL_IP:-mapdl} # Use 'host.docker.internal' to connect to a local instance.
+      - PYMAPDL_PORT=${PYMAPDL_PORT:-50052}
+      # HTTP server settings
+      - HTTP_HOST=${HTTP_HOST:-0.0.0.0}
+      - HTTP_PORT=${HTTP_PORT:-8080}
+    restart: unless-stopped
+    networks:
+      - mcp
+
+  mapdl:
+    restart: unless-stopped
+    shm_size: '2gb' # Needed to avoid startup issues
+    container_name: mapdl
+    env_file:
+      - .env
+    environment:
+      - ANSYSLMD_LICENSE_FILE=${ANSYSLMD_LICENSE_FILE:-1055@license-server} # Adjust as needed
+      - ANSYS_LOCK="OFF" # To avoid issues when restarting container
+    image: ghcr.io/ansys/mapdl:v25.2-ubuntu
+    platform: linux/amd64 # Needed for M1/M2 Macs
+    networks:
+      - mcp
+
+networks:
+  mcp:
+    driver: bridge

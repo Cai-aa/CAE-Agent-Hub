@@ -1,0 +1,52 @@
+# Docker Compose file for pymechanical-mcp and Mechanical containers
+services:
+  pymechanical-mcp:
+    depends_on:
+      - mechanical
+    image: pymechanical-mcp:latest
+    container_name: pymechanical-mcp-server
+    ports:
+      - "${HTTP_PORT:-8080}:8080"
+    env_file:
+      - .env
+    environment:
+      # Mechanical connection settings
+      - PYMECHANICAL_IP=${PYMECHANICAL_IP:-mechanical} # Use 'host.docker.internal' to connect to a local instance.
+      - PYMECHANICAL_PORT=${PYMECHANICAL_PORT:-10000}
+      # HTTP server settings
+      - HTTP_HOST=${HTTP_HOST:-0.0.0.0}
+      - HTTP_PORT=${HTTP_PORT:-8080}
+      # gRPC transport mode: auto (default), insecure, mtls, wnua
+      # When auto: uses mtls if certs are mounted, otherwise insecure.
+      - PYMECHANICAL_TRANSPORT_MODE=${PYMECHANICAL_TRANSPORT_MODE:-}
+      # Certificate directory for mTLS (only needed if using mtls)
+      - ANSYS_GRPC_CERTIFICATES=${ANSYS_GRPC_CERTIFICATES:-}
+      # Whether to connect to Mechanical on startup (true/false)
+      - CONNECT_ON_STARTUP=${CONNECT_ON_STARTUP:-false}
+    # Uncomment the volume below to mount mTLS certificates for secure
+    # gRPC connections. The directory must contain: ca.crt, client.crt, client.key
+    # volumes:
+    #   - ./certs:/app/certs:ro
+    restart: unless-stopped
+    networks:
+      - mcp
+
+  mechanical:
+    restart: always
+    shm_size: '8gb'  # Mechanical requires significant shared memory
+    container_name: mechanical
+    mem_reservation: 8g
+    env_file:
+      - .env
+    environment:
+      - ANSYSLMD_LICENSE_FILE=${ANSYSLMD_LICENSE_FILE:-1055@license-server}
+    ports:
+      - '10000:10000'
+    image: 'ghcr.io/ansys/mechanical:26.1.0'
+    user: "0:0"
+    networks:
+      - mcp
+
+networks:
+  mcp:
+    driver: bridge

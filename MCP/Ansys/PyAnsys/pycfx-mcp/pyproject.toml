@@ -1,0 +1,191 @@
+[build-system]
+requires = ["flit_core >=3.2,<5"]
+build-backend = "flit_core.buildapi"
+
+[project]
+name = "ansys-cfx-mcp"
+version = "0.3.dev0"
+description = "Model Context Protocol (MCP) server for ANSYS CFX, built on PyCFX."
+readme = "README.md"
+requires-python = ">=3.12,<3.15"
+authors = [{ name = "Synopsys, Inc. and ANSYS, Inc.", email = "pyansys.core@ansys.com" }]
+maintainers = [{ name = "Synopsys, Inc. and ANSYS, Inc.", email = "pyansys.core@ansys.com" }]
+license = "Apache-2.0"
+license-files = ["LICENSE"]
+keywords = [
+    "ansys",
+    "cfx",
+    "fluids",
+    "cfd",
+    "pycfx",
+    "mcp",
+    "model-context-protocol",
+    "ai",
+    "assistant",
+]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Science/Research",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+    "Topic :: Scientific/Engineering",
+    "Topic :: Scientific/Engineering :: Physics",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Typing :: Typed",
+]
+
+dependencies = [
+    "ansys-cfx-core>=0.3.0",
+    "ansys-common-mcp>=0.3.3",
+    "pydantic>=2",
+    "requests>=2.28",
+]
+
+[dependency-groups]
+tests = [
+    "ansys-cfx-core==0.3.0",
+    "ansys-common-mcp>=0.3.3",
+    "docker==7.2.0",
+    "pydantic==2.13.4",
+    "pytest==9.1.1",
+    "pytest-asyncio==1.4.0",
+    "pytest-cov==7.1.0",
+    "pytest-xdist==3.8.0",
+    "requests==2.34.2",
+
+]
+doc = [
+    "ansys-cfx-core==0.3.0",
+    "ansys-common-mcp>=0.3.3",
+    "ansys-sphinx-theme[autoapi,changelog]==1.10.0",
+    "numpydoc==1.10.0",
+    "pydantic==2.13.4",
+    "requests==2.34.2",
+    "sphinx-autodoc-typehints==3.13.2",
+    "sphinx-notfound-page==1.1.0",
+    "sphinxcontrib-video==0.4.2",
+]
+dev = [
+    "pre-commit>=4.0",
+    "ansys-cfx-mcp[tests]",
+]
+
+[project.urls]
+Homepage = "https://github.com/ansys/pycfx-mcp"
+Documentation = "https://cfx-mcp.docs.pyansys.com"
+Repository = "https://github.com/ansys/pycfx-mcp"
+Issues = "https://github.com/ansys/pycfx-mcp/issues"
+
+[project.scripts]
+ansys-cfx-mcp = "ansys.cfx.mcp.cli:run_cfx"
+
+[tool.flit.module]
+name = "ansys.cfx.mcp"
+
+[tool.ruff]
+line-length = 100
+fix = true
+format.indent-style = "space"
+format.quote-style = "double"
+format.docstring-code-line-length = "dynamic"
+format.docstring-code-format = true
+lint.select = [
+  "D",   # pydocstyle, see https://docs.astral.sh/ruff/rules/#pydocstyle-d
+  "E",   # pycodestyle, see https://docs.astral.sh/ruff/rules/#pycodestyle-e-w
+  "F",   # pyflakes, see https://docs.astral.sh/ruff/rules/#pyflakes-f
+  "I",   # isort, see https://docs.astral.sh/ruff/rules/#isort-i
+  "N",   # pep8-naming, see https://docs.astral.sh/ruff/rules/#pep8-naming-n
+  "PTH", # flake8-use-pathlib, https://docs.astral.sh/ruff/rules/#flake8-use-pathlib-pth
+  "TD",  # flake8-todos, https://docs.astral.sh/ruff/rules/#flake8-todos-td
+]
+# Ignore `D` rules everywhere except for the `src/` directory.
+lint.per-file-ignores."!src/**.py" = [ "D" ]
+# Ignore `F401` (import violations) in all `__init__.py` files.
+lint.per-file-ignores."__init__.py" = [ "F401" ]
+# Ignore `E402` (module level import not at top of file) in `src/ansys/cfx/mcp/__init__.py`.
+lint.per-file-ignores."src/ansys/cfx/mcp/__init__.py" = [ "E402" ]
+lint.isort.combine-as-imports = true
+lint.isort.force-sort-within-sections = true
+lint.isort.known-first-party = [ "ansys.cfx.mcp" ]
+lint.pydocstyle.convention = "numpy"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = "test_*.py"
+python_classes = "Test*"
+python_functions = "test_*"
+asyncio_mode = "auto"
+addopts = [
+    "--verbose",
+    "--cov=ansys.cfx.mcp",
+    "--cov-report=term-missing",
+    "--cov-report=html",
+    "--cov-report=xml",
+]
+markers = [
+    "unit: Unit tests that do not require CFX",
+    "integration: Integration tests that require CFX access",
+    "slow: Tests that take a long time to run",
+]
+
+[tool.coverage.run]
+source = [
+    "ansys.cfx.mcp",
+]
+branch = true
+omit = [
+    "src/ansys/cfx/mcp/cli.py",
+    "src/ansys/cfx/mcp/cfx/backend.py",
+    "src/ansys/cfx/mcp/cfx/worker.py",
+    "src/ansys/cfx/mcp/cfx/sessions/*",
+    "src/ansys/cfx/mcp/common/base.py",
+    "src/ansys/cfx/mcp/common/backend.py",
+]
+
+[tool.coverage.report]
+show_missing = true
+skip_empty = true
+exclude_also = [
+    "def _register_tools",
+    "def _register_resources",
+    "def _tool_",
+]
+
+[tool.mypy]
+python_version = "3.12"
+strict = false
+warn_return_any = true
+warn_unused_configs = true
+ignore_missing_imports = true
+namespace_packages = true
+explicit_package_bases = true
+mypy_path = "src"
+exclude = [
+    "^\\.venv/",
+    "^venv/",
+    "^build/",
+    "^dist/",
+]
+
+[tool.towncrier]
+package = "ansys.cfx.mcp"
+directory = "doc/changelog.d"
+filename = "doc/source/changelog.rst"
+template = "doc/changelog.d/changelog_template.jinja"
+start_string = ".. towncrier release notes start\n"
+title_format = "`{version} <https://github.com/ansys/pycfx-mcp/releases/tag/v{version}>`_ - {project_date}"
+issue_format = "`#{issue} <https://github.com/ansys/pycfx-mcp/pull/{issue}>`_"
+type = [
+    { directory = "breaking", name = "Breaking", showcontent = true },
+    { directory = "added", name = "Added", showcontent = true },
+    { directory = "fixed", name = "Fixed", showcontent = true },
+    { directory = "documentation", name = "Documentation", showcontent = true },
+    { directory = "dependencies", name = "Dependencies", showcontent = true },
+    { directory = "maintenance", name = "Maintenance", showcontent = true },
+    { directory = "miscellaneous", name = "Miscellaneous", showcontent = true },
+    { directory = "test", name = "Test", showcontent = true },
+    { directory = "changed", name = "Changed", showcontent = true },
+]

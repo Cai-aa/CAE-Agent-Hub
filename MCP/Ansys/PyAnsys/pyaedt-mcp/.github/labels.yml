@@ -1,0 +1,35 @@
+- name: bug
+  description: Something isn't working
+  color: d42a34
+
+- name: dependencies
+  description: Related with project dependencies
+  color: ffc0cb
+
+- name: documentation
+  description: Improvements or additions to documentation
+  color: 0677ba
+
+- name: enhancement
+  description: New features or code improvements
+  color: FFD827
+
+- name: good first issue
+  description: Easy to solve for newcomers
+  color: 62ca50
+
+- name: maintenance
+  description: Package and maintenance related
+  color: f78c37
+
+- name: release
+  description: Anything related to an incoming release
+  color: ffffff
+
+- name: testing
+  description: Tests and test related changes
+  color: c5def5
+
+- name: pr-preview
+  description: PR preview related
+  color: 051e7f

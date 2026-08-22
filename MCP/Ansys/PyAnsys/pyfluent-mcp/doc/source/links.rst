@@ -1,0 +1,9 @@
+.. _Python: https://www.python.org/
+.. _Fluent: https://www.ansys.com/products/fluids/ansys-fluent
+.. _PyFluent: https://fluent.docs.pyansys.com/
+.. _Ansys: https://www.ansys.com/
+.. _MCP: https://modelcontextprotocol.io/
+.. _Claude: https://claude.ai/
+.. _GitHub: https://github.com/
+.. _Sphinx: https://www.sphinx-doc.org/
+.. _CFD: https://en.wikipedia.org/wiki/Computational_fluid_dynamics

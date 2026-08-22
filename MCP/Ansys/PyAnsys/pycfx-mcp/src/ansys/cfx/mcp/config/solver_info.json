@@ -1,0 +1,180 @@
+{
+  "type": "object",
+  "help": "Encapsulates a CFX-Solver session (pycfx.Solver).",
+  "commands": {
+    "build_from_cfx_connection": {
+      "type": "command",
+      "help": "Build a ``BaseSession`` object from a ``cfx_connection`` object.",
+      "args": [
+        {
+          "name": "cfx_connection",
+          "type": "CFXConnection"
+        },
+        {
+          "name": "file_transfer_service",
+          "type": "Optional",
+          "default": "None"
+        }
+      ]
+    },
+    "download": {
+      "type": "command",
+      "help": "Download a file from the server.",
+      "args": [
+        {
+          "name": "file_name",
+          "type": "str"
+        },
+        {
+          "name": "local_directory",
+          "type": "Optional",
+          "default": "'.'"
+        }
+      ]
+    },
+    "execute_ccl": {
+      "type": "command",
+      "help": "Execute a CCL command.",
+      "args": [
+        {
+          "name": "command",
+          "type": "str"
+        },
+        {
+          "name": "wait",
+          "type": "bool",
+          "default": "True"
+        }
+      ],
+      "return_type": "None"
+    },
+    "exit": {
+      "type": "command",
+      "help": "Exit session.",
+      "args": [
+        {
+          "name": "kwargs"
+        }
+      ],
+      "return_type": "None"
+    },
+    "force_exit": {
+      "type": "command",
+      "help": "Terminate the CFX session immediately, losing unsaved progress and",
+      "return_type": "None"
+    },
+    "get_cfx_version": {
+      "type": "command",
+      "help": "Get the CFX version.",
+      "return_type": "CFXVersion"
+    },
+    "get_state": {
+      "type": "command",
+      "help": "Get the state of the object.",
+      "return_type": "StateT"
+    },
+    "is_server_healthy": {
+      "type": "command",
+      "help": "Check if the current session is healthy.",
+      "return_type": "bool"
+    },
+    "set_state": {
+      "type": "command",
+      "help": "Set the state of the object.",
+      "args": [
+        {
+          "name": "state",
+          "type": "Optional",
+          "default": "None"
+        },
+        {
+          "name": "kwargs"
+        }
+      ]
+    },
+    "upload": {
+      "type": "command",
+      "help": "Upload a file to the server.",
+      "args": [
+        {
+          "name": "file_name",
+          "type": "str"
+        }
+      ]
+    }
+  },
+  "children": {
+    "solution": {
+      "type": "object",
+      "help": "Controls the CFX-Solver run. Accessed via pysolve.solution.",
+      "commands": {
+        "get_results_file_name": {
+          "type": "command",
+          "help": "Get the name of the results file associated with the current session.",
+          "args": [
+            {
+              "name": "use_engine_path",
+              "type": "bool",
+              "default": "False"
+            }
+          ],
+          "return_type": "str | None"
+        },
+        "get_run_state": {
+          "type": "command",
+          "help": "Get the CFX-Solver run state.",
+          "return_type": "RunState"
+        },
+        "is_running": {
+          "type": "command",
+          "help": "Check if a CFX-Solver run is in progress.",
+          "return_type": "bool"
+        },
+        "start_run": {
+          "type": "command",
+          "help": "Start a CFX-Solver run.",
+          "return_type": "None"
+        },
+        "stop_run": {
+          "type": "command",
+          "help": "Stop the CFX-Solver run currently in progress.",
+          "args": [
+            {
+              "name": "wait_for_run",
+              "default": "True"
+            }
+          ],
+          "return_type": "None"
+        },
+        "wait_for_run": {
+          "type": "command",
+          "help": "Wait for a CFX-Solver run in progress to complete.",
+          "args": [
+            {
+              "name": "interval",
+              "default": "10"
+            },
+            {
+              "name": "timeout",
+              "default": "86400"
+            }
+          ],
+          "return_type": "None"
+        }
+      },
+      "children": {
+        "RunState": {
+          "type": "enum",
+          "help": "Enumerates CFX-Solver run states.",
+          "values": [
+            "NONE",
+            "DEFINED",
+            "IN_PROGRESS",
+            "FINISHED",
+            "ERROR"
+          ]
+        }
+      }
+    }
+  }
+}

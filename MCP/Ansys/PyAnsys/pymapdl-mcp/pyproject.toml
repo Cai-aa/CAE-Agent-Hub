@@ -1,0 +1,214 @@
+[build-system]
+requires = ["flit_core >=3.2,<4"]
+build-backend = "flit_core.buildapi"
+
+[project]
+name = "ansys-mapdl-mcp"
+version = "0.3.dev0"
+description = "Model Context Protocol (MCP) server for Ansys MAPDL through PyMAPDL"
+readme = "README.md"
+requires-python = ">=3.10,<3.15"
+license = { file = "LICENSE" }
+authors = [
+    { name = "ANSYS, Inc.", email = "pyansys.core@ansys.com" }
+]
+maintainers = [
+    { name = "ANSYS, Inc.", email = "pyansys.core@ansys.com" }
+]
+keywords = [
+    "ansys",
+    "mapdl",
+    "pymapdl",
+    "mcp",
+    "model-context-protocol",
+    "ai",
+    "assistant",
+    "finite-element-analysis"
+]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Science/Research",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+    "Topic :: Scientific/Engineering",
+    "Topic :: Software Development :: Libraries :: Python Modules"
+]
+
+dependencies = [
+    "ansys-common-mcp>=0.3.0",
+    "ansys-mapdl-core>=0.72.0"
+]
+
+[project.optional-dependencies]
+tests = [
+    "ansys-common-mcp==0.3.2",
+    "ansys-mapdl-core==0.73.2",
+    "pytest-asyncio==1.4.0",
+    "pytest-cov==7.1.0",
+    "pytest-mock==3.15.1",
+    "pytest==9.1.1"
+]
+
+doc = [
+    "ansys-common-mcp>=0.1.0",
+    "ansys-mapdl-core>=0.72.0",
+    "ansys-sphinx-theme[autoapi,changelog]==1.9.0",
+    "numpydoc==1.10.0",
+    "sphinx-autodoc-typehints==3.0.1; python_version < '3.11'",
+    "sphinx-autodoc-typehints==3.1.0; python_version >= '3.11'",
+    "sphinx-notfound-page==1.1.0",
+    "sphinx==8.1.3; python_version < '3.11'",
+    "sphinx==8.2.3; python_version >= '3.11'",
+    "sphinxcontrib-video==0.4.2"
+]
+
+[project.urls]
+Homepage = "https://github.com/ansys/pymapdl-mcp"
+Documentation = "https://mapdl-mcp.docs.pyansys.com"
+Repository = "https://github.com/ansys/pymapdl-mcp"
+Issues = "https://github.com/ansys/pymapdl-mcp/issues"
+
+[project.scripts]
+ansys-mapdl-mcp = "ansys.mapdl.mcp.__main__:launcher"
+
+[tool.flit.module]
+name = "ansys.mapdl.mcp"
+
+[tool.ruff]
+line-length = 100
+fix = true
+format.indent-style = "space"
+format.quote-style = "double"
+format.docstring-code-line-length = "dynamic"
+format.docstring-code-format = true
+lint.select = [
+  "D",   # pydocstyle, see https://docs.astral.sh/ruff/rules/#pydocstyle-d
+  "E",   # pycodestyle, see https://docs.astral.sh/ruff/rules/#pycodestyle-e-w
+  "F",   # pyflakes, see https://docs.astral.sh/ruff/rules/#pyflakes-f
+  "I",   # isort, see https://docs.astral.sh/ruff/rules/#isort-i
+  "N",   # pep8-naming, see https://docs.astral.sh/ruff/rules/#pep8-naming-n
+  "PTH", # flake8-use-pathlib, https://docs.astral.sh/ruff/rules/#flake8-use-pathlib-pth
+  "TD",  # flake8-todos, https://docs.astral.sh/ruff/rules/#flake8-todos-td
+]
+lint.ignore = [
+  "TD002", # Missing author in TODOs comment
+]
+# Ignore `D` rules everywhere except for the `src/` directory.
+lint.per-file-ignores."!src/**.py" = [ "D" ]
+# Ignore `F401` (import violations) in all `__init__.py` files.
+lint.per-file-ignores."__init__.py" = [ "F401" ]
+# Ignore `E402` (module level import not at top of file) in `src/ansys/mapdl/mcp/__init__.py`.
+lint.per-file-ignores."src/ansys/mapdl/mcp/__init__.py" = [ "E402" ]
+lint.isort.combine-as-imports = true
+lint.isort.force-sort-within-sections = true
+lint.isort.known-first-party = [ "ansys.mapdl.mcp" ]
+lint.pydocstyle.convention = "numpy"
+
+[tool.mypy]
+python_version = "3.10"
+strict = false
+warn_return_any = true
+warn_unused_configs = true
+ignore_missing_imports = true
+namespace_packages = true
+explicit_package_bases = true
+mypy_path = "src"
+exclude = [
+    "^\\.venv/",
+    "^venv/",
+    "^build/",
+    "^dist/"
+]
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = "test_*.py"
+python_classes = "Test*"
+python_functions = "test_*"
+asyncio_mode = "auto"
+addopts = [
+    "--verbose",
+    "--cov=ansys.mapdl.mcp",
+    "--cov-report=term-missing",
+    "--cov-report=html",
+    "--cov-report=xml"
+]
+markers = [
+    "unit: Unit tests that don't require MAPDL",
+    "integration: Integration tests that require MAPDL connection",
+    "slow: Tests that take a long time to run"
+]
+
+[tool.pydocstyle]
+convention = "numpy"
+add_ignore = ["D100", "D104"]  # Missing docstring in public module/package
+
+[tool.flake8]
+max-line-length = 100
+extend-ignore = ["E203", "W503"]
+exclude = [
+    ".git",
+    "__pycache__",
+    ".venv",
+    "venv",
+    "build",
+    "dist"
+]
+
+[tool.towncrier]
+package = "ansys.mapdl.mcp"
+directory = "doc/changelog.d"
+filename = "doc/source/changelog.rst"
+template = "doc/changelog.d/changelog_template.jinja"
+start_string = ".. towncrier release notes start\n"
+title_format = "`{version} <https://github.com/ansys/pymapdl-mcp/releases/tag/v{version}>`_ - {project_date}"
+issue_format = "`#{issue} <https://github.com/ansys/pymapdl-mcp/pull/{issue}>`_"
+
+[[tool.towncrier.type]]
+directory = "breaking"
+name = "Breaking"
+showcontent = true
+
+[[tool.towncrier.type]]
+directory = "added"
+name = "Added"
+showcontent = true
+
+[[tool.towncrier.type]]
+directory = "fixed"
+name = "Fixed"
+showcontent = true
+
+[[tool.towncrier.type]]
+directory = "documentation"
+name = "Documentation"
+showcontent = true
+
+[[tool.towncrier.type]]
+directory = "dependencies"
+name = "Dependencies"
+showcontent = true
+
+[[tool.towncrier.type]]
+directory = "maintenance"
+name = "Maintenance"
+showcontent = true
+
+[[tool.towncrier.type]]
+directory = "miscellaneous"
+name = "Miscellaneous"
+showcontent = true
+
+[[tool.towncrier.type]]
+directory = "test"
+name = "Test"
+showcontent = true
+
+[[tool.towncrier.type]]
+directory = "changed"
+name = "Changed"
+showcontent = true

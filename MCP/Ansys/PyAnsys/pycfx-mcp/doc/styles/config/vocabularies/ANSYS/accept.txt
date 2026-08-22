@@ -1,0 +1,41 @@
+ansys
+Ansys
+ANSYS
+APIs
+CFD
+CFX
+CFX-Pre
+CFD-Post
+FastMCP
+GitHub
+MCP
+Model Context Protocol
+PyAnsys
+PyCFX
+PyCFX-MCP
+Python
+RST
+Sphinx
+Claude
+Claude Code
+Claude Desktop
+HTTP
+JSON
+mcpServers
+PyPI
+pydantic
+pytest
+ruff
+streamable
+TLS
+toctree
+Toolset
+toolset
+toolsets
+towncrier
+Visual Studio Code
+VS Code
+Windows
+uvx
+setuptools
+docstrings

@@ -1,0 +1,18 @@
+# Setting codespaces/development container
+version: '3.3'
+name: "PyMAPDL-MCP-Development"  # this needs to be updated/unique if you want to have multiple containers
+services:
+  pymapdldev:
+    restart: always
+    shm_size: '2gb'  # Increase the shared memory directory to avoid running issues. By Default this is very small (64MB)
+    container_name: "PyMAPDL-Development"  # this needs to be updated/unique if you want to have multiple containers
+    mem_reservation: 8g
+    build:
+      dockerfile: Dockerfile
+      context: .
+    volumes:
+      # Update this to wherever you want VS Code to mount the folder of your project inside the container.
+      - ../:/home/mapdl/pymapdl-mcp:cached
+
+    # Overrides default command so things don't shut down after the process ends.
+    entrypoint: /bin/bash -c "while sleep 10000; do :; done"

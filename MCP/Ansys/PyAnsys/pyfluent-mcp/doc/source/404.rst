@@ -1,0 +1,16 @@
+:orphan:
+
+404 - page not found
+====================
+
+The page you are looking for does not exist.
+
+Check the URL or use the navigation menu.
+
+Common Pages:
+
+- `Homepage <index.html>`_
+- `Getting Started <getting_started/index.html>`_
+- `User Guide <user_guide/index.html>`_
+- `API Reference <api/index.html>`_
+- `Examples <examples/index.html>`_

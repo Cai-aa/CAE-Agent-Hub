@@ -1,0 +1,38 @@
+(i?)HTTP
+(i?)jobname
+(i?)mapdl
+(i?)MCP
+(i?)RST
+[Aa]sync
+[Cc]ompose
+[Cc]onfig
+[Dd]ev
+[Dd]ocker
+[Dd]ocstring
+[Dd]ocstrings
+[Mm]atplotlib
+[Nn]ginx
+[Uu]nescaped
+ansys
+Ansys
+Anthropic's
+Claude Code
+Claude Desktop
+dataclass
+GitHub
+HAProxy
+hostname
+isort
+MAPDL
+MAPDL's
+Model Context Protocol
+numpydoc
+postprocessing
+PyMAPDL
+Python
+PyVista
+toctree
+uv
+uvx
+Visual Studio Code
+PR

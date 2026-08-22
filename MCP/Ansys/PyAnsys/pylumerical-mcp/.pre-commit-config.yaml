@@ -1,0 +1,63 @@
+# Pre-commit hooks for code quality
+# See https://pre-commit.com for more information
+# See https://pre-commit.com/hooks.html for more hooks
+
+repos:
+
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.15.12
+    hooks:
+      # Run the linter.
+      - id: ruff-check
+      # Run the formatter.
+      - id: ruff-format
+
+  # Add copyright statement to files
+  - repo: https://github.com/ansys/pre-commit-hooks
+    rev: v0.8.0
+    hooks:
+    - id: add-license-headers
+      args:
+      - --start_year=2026
+      - --custom_license=Apache-2.0
+
+  # General file checks
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v6.0.0
+    hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: check-yaml
+      - id: check-added-large-files
+        args: ['--maxkb=1000']
+      - id: check-json
+        exclude: ^\.devcontainer/
+      - id: check-toml
+      - id: check-merge-conflict
+      - id: debug-statements
+      - id: mixed-line-ending
+
+  # Type checking with mypy (official mirror)
+  - repo: https://github.com/pre-commit/mirrors-mypy
+    rev: v2.0.0
+    hooks:
+      - id: mypy
+        args: [--config-file=pyproject.toml]
+        exclude: ^(tests/|\.venv/|venv/)
+
+  # Security checks with bandit
+  - repo: https://github.com/PyCQA/bandit
+    rev: 1.9.4
+    hooks:
+      - id: bandit
+        args: ['-c', 'pyproject.toml']
+        additional_dependencies: ['bandit[toml]']
+        exclude: ^tests/
+
+  # Spell checking with typos
+  - repo: https://github.com/crate-ci/typos
+    rev: v1.46.0
+    hooks:
+      - id: typos
+        args: ["--config", "doc/styles/typos.toml"]
+        exclude: "(^doc/styles/config/vocabularies)|(^.github/labels.yml$)"

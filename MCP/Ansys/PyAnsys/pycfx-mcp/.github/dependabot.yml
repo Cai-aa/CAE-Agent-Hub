@@ -1,0 +1,51 @@
+version: 2
+updates:
+  - package-ecosystem: "pip"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    cooldown:
+      default-days: 7
+    labels:
+      - "maintenance"
+      - "dependencies"
+    commit-message:
+      prefix: "build(pip)"
+    groups:
+      pip-deps:
+        patterns:
+          - "*"
+
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    cooldown:
+      default-days: 7
+      exclude:
+        - "ansys/actions/*"
+    labels:
+      - "maintenance"
+    commit-message:
+      prefix: "build(actions)"
+    groups:
+      actions:
+        patterns:
+          - "*"
+
+  - package-ecosystem: "pre-commit"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    cooldown:
+      default-days: 7
+      exclude:
+        - "ansys/pre-commit-hooks"
+    labels:
+      - "maintenance"
+    commit-message:
+      prefix: "build(pre-commit)"
+    groups:
+      pre-commit:
+        patterns:
+          - "*"

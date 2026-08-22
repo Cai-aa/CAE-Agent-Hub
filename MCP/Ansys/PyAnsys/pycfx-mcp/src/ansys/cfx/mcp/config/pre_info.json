@@ -1,0 +1,364 @@
+{
+  "type": "object",
+  "help": "Encapsulates a CFX-Pre (PreProcessing) session (pycfx.PreProcessing). This file covers session-level methods not captured in static_info.json.",
+  "commands": {
+    "from_install": {
+      "type": "command",
+      "help": "Launch a CFX session in standalone mode.",
+      "args": [
+        {
+          "name": "ui_mode",
+          "type": "ansys.cfx.core.launcher.pycfx_enums.UIMode | str | None",
+          "default": "None"
+        },
+        {
+          "name": "product_version",
+          "type": "ansys.cfx.core.utils.cfx_version.CFXVersion | str | float | int | None",
+          "default": "None"
+        },
+        {
+          "name": "journal_file_names",
+          "type": "None | str | list[str]",
+          "default": "None"
+        },
+        {
+          "name": "start_timeout",
+          "type": "int",
+          "default": "60"
+        },
+        {
+          "name": "additional_arguments",
+          "type": "str",
+          "default": "''"
+        },
+        {
+          "name": "env",
+          "type": "Dict",
+          "default": "{}"
+        },
+        {
+          "name": "cleanup_on_exit",
+          "type": "bool",
+          "default": "True"
+        },
+        {
+          "name": "dry_run",
+          "type": "bool",
+          "default": "False"
+        },
+        {
+          "name": "start_transcript",
+          "type": "bool",
+          "default": "True"
+        },
+        {
+          "name": "case_file_name",
+          "type": "str | None",
+          "default": "None"
+        },
+        {
+          "name": "run_directory",
+          "type": "str | None",
+          "default": "None"
+        },
+        {
+          "name": "results_file_name",
+          "type": "str | None",
+          "default": "None"
+        },
+        {
+          "name": "solver_input_file_name",
+          "type": "str | None",
+          "default": "None"
+        },
+        {
+          "name": "cwd",
+          "type": "str | None",
+          "default": "None"
+        },
+        {
+          "name": "topy",
+          "type": "str | list | None",
+          "default": "None"
+        },
+        {
+          "name": "start_watchdog",
+          "type": "bool | None",
+          "default": "None"
+        },
+        {
+          "name": "file_transfer_service",
+          "type": "Optional",
+          "default": "None"
+        }
+      ]
+    },
+    "launch_cfx": {
+      "type": "command",
+      "help": "Launch CFX locally in server mode or connect to a running CFX server",
+      "args": [
+        {
+          "name": "product_version",
+          "type": "Optional",
+          "default": "None"
+        },
+        {
+          "name": "journal_file_names",
+          "type": "Union",
+          "default": "None"
+        },
+        {
+          "name": "start_timeout",
+          "type": "Optional",
+          "default": "None"
+        },
+        {
+          "name": "additional_arguments",
+          "type": "Optional",
+          "default": "''"
+        },
+        {
+          "name": "env",
+          "type": "Optional",
+          "default": "None"
+        },
+        {
+          "name": "start_container",
+          "type": "Optional",
+          "default": "None"
+        },
+        {
+          "name": "container_dict",
+          "type": "Optional",
+          "default": "None"
+        },
+        {
+          "name": "dry_run",
+          "type": "bool",
+          "default": "False"
+        },
+        {
+          "name": "cleanup_on_exit",
+          "type": "bool",
+          "default": "True"
+        },
+        {
+          "name": "start_transcript",
+          "type": "bool",
+          "default": "False"
+        },
+        {
+          "name": "ui_mode",
+          "type": "Union",
+          "default": "None"
+        },
+        {
+          "name": "case_file_name",
+          "type": "Optional",
+          "default": "None"
+        },
+        {
+          "name": "run_directory",
+          "type": "Optional",
+          "default": "None"
+        },
+        {
+          "name": "results_file_name",
+          "type": "Optional",
+          "default": "None"
+        },
+        {
+          "name": "solver_input_file_name",
+          "type": "Optional",
+          "default": "None"
+        },
+        {
+          "name": "mode",
+          "type": "Union",
+          "default": "None"
+        },
+        {
+          "name": "cwd",
+          "type": "Optional",
+          "default": "None"
+        },
+        {
+          "name": "topy",
+          "type": "Union",
+          "default": "None"
+        },
+        {
+          "name": "start_watchdog",
+          "type": "Optional",
+          "default": "None"
+        },
+        {
+          "name": "scheduler_options",
+          "type": "Optional",
+          "default": "None"
+        },
+        {
+          "name": "file_transfer_service",
+          "type": "Optional",
+          "default": "None"
+        },
+        {
+          "name": "kwargs"
+        }
+      ],
+      "return_type": "Union"
+    },
+    "build_from_cfx_connection": {
+      "type": "command",
+      "help": "Build a ``BaseSession`` object from a ``cfx_connection`` object.",
+      "args": [
+        {
+          "name": "cfx_connection",
+          "type": "CFXConnection"
+        },
+        {
+          "name": "file_transfer_service",
+          "type": "Optional",
+          "default": "None"
+        }
+      ]
+    },
+    "download": {
+      "type": "command",
+      "help": "Download a file from the server.",
+      "args": [
+        {
+          "name": "file_name",
+          "type": "str"
+        },
+        {
+          "name": "local_directory",
+          "type": "Optional",
+          "default": "'.'"
+        }
+      ]
+    },
+    "execute_ccl": {
+      "type": "command",
+      "help": "Execute a CCL command.",
+      "args": [
+        {
+          "name": "command",
+          "type": "str"
+        },
+        {
+          "name": "wait",
+          "type": "bool",
+          "default": "True"
+        }
+      ],
+      "return_type": "None"
+    },
+    "exit": {
+      "type": "command",
+      "help": "Exit the session.",
+      "args": [
+        {
+          "name": "kwargs"
+        }
+      ],
+      "return_type": "None"
+    },
+    "force_exit": {
+      "type": "command",
+      "help": "Terminate the CFX session immediately, losing unsaved progress and",
+      "return_type": "None"
+    },
+    "get_cfx_version": {
+      "type": "command",
+      "help": "Get the CFX version.",
+      "return_type": "CFXVersion"
+    },
+    "get_state": {
+      "type": "command",
+      "help": "Get the state of the object.",
+      "return_type": "StateT"
+    },
+    "is_server_healthy": {
+      "type": "command",
+      "help": "Check if the current session is healthy.",
+      "return_type": "bool"
+    },
+    "set_state": {
+      "type": "command",
+      "help": "Set the state of the object.",
+      "args": [
+        {
+          "name": "state",
+          "type": "Optional",
+          "default": "None"
+        },
+        {
+          "name": "kwargs"
+        }
+      ]
+    },
+    "upload": {
+      "type": "command",
+      "help": "Upload a file to the server.",
+      "args": [
+        {
+          "name": "file_name",
+          "type": "str"
+        }
+      ]
+    }
+  },
+  "children": {
+    "journal": {
+      "type": "object",
+      "help": "Controls Python journal recording for the session.",
+      "commands": {
+        "start": {
+          "type": "command",
+          "help": "Start writing a CFX Python journal to the specified file.",
+          "args": [
+            {
+              "name": "file_name",
+              "type": "str"
+            }
+          ]
+        },
+        "stop": {
+          "type": "command",
+          "help": "Stop writing the CFX Python journal."
+        }
+      },
+      "children": {}
+    }
+  },
+  "enums": {
+    "CFXMode": {
+      "type": "enum",
+      "help": "Selects which PyCFX session type to launch.",
+      "values": [
+        "PRE_PROCESSING",
+        "SOLVER",
+        "POST_PROCESSING"
+      ]
+    },
+    "UIMode": {
+      "type": "enum",
+      "help": "Controls GUI visibility when launching CFX.",
+      "values": [
+        "NO_GUI",
+        "HIDDEN_GUI"
+      ]
+    },
+    "LaunchMode": {
+      "type": "enum",
+      "help": "How CFX is launched (standalone, container, PIM, Slurm).",
+      "values": [
+        "STANDALONE",
+        "PIM",
+        "CONTAINER",
+        "SLURM"
+      ]
+    }
+  }
+}

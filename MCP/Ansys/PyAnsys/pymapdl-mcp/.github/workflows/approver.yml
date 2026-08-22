@@ -1,0 +1,116 @@
+name: Approve PRs
+on:
+  workflow_dispatch:
+    inputs:
+      user:
+        description: 'Username'
+        required: true
+        type: string
+      html_url:
+        description: 'URL to the comment'
+        required: true
+        type: string
+      pr:
+        description: 'Pull request to approve'
+        required: true
+        type: number
+      commentid:
+        description: 'Comment ID number'
+        type: number
+        required: true
+
+  issue_comment:
+    types: [created, edited]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions: {}
+
+jobs:
+  autoapprove:
+    # This job only runs for pull request comments
+    name: PR comment
+    if: (github.event.issue.pull_request &&
+        contains(github.event.comment.body, '@pyansys-ci-bot LGTM') && (
+          github.event.comment.user.login == 'germa89'
+        )) || ( github.event_name == 'workflow_dispatch' )
+    permissions:
+      pull-requests: write # Needed to approve pull requests
+    runs-on: ubuntu-latest
+    steps:
+
+      - name: "Settings"
+        id: settings
+        env:
+          event_name: ${{ github.event_name }}
+          inputs_user: ${{ inputs.user }}
+          inputs_html_url: ${{ inputs.html_url }}
+          inputs_pr: ${{ inputs.pr }}
+          inputs_commentid: ${{ inputs.commentid }}
+          github_login: ${{ github.event.comment.user.login }}
+          github_html_url: ${{ github.event.comment.html_url }}
+          github_number: ${{ github.event.issue.number }}
+          github_id: ${{ github.event.comment.id }}
+        run: |
+          if [[ $event_name == "workflow_dispatch" ]] ; then
+            echo "On workflow dispatch"
+            echo "user=${inputs_user}" >> $GITHUB_OUTPUT
+            echo "html_url=${inputs_html_url}" >> $GITHUB_OUTPUT
+            echo "pull_request=${inputs_pr}" >> $GITHUB_OUTPUT
+            echo "commentid=${inputs_commentid}" >> $GITHUB_OUTPUT
+
+          else
+            echo "On $event_name"
+            echo "user=${github_login}" >> $GITHUB_OUTPUT
+            echo "html_url=${github_html_url}" >> $GITHUB_OUTPUT
+            echo "pull_request=${github_number}" >> $GITHUB_OUTPUT
+            echo "commentid=${github_id}" >> $GITHUB_OUTPUT
+          fi;
+
+          echo "On $event_name"
+          echo "user=${inputs_user}"
+          echo "html_url=${inputs_html_url}"
+          echo "pull_request=${inputs_pr}"
+          echo "commentid=${inputs_commentid}"
+
+      - name: React to comment
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 #v9.0.0
+        env:
+          COMMENT_ID: ${{ steps.settings.outputs.commentid }}
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+              const commentId = parseInt(process.env.COMMENT_ID);
+              console.log(`Attempting to add reaction to comment ID: ${commentId}`);
+
+              try {
+                await github.rest.reactions.createForIssueComment({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  comment_id: commentId,
+                  content: '+1',
+                });
+                console.log('Reaction added successfully');
+              } catch (error) {
+                console.log(`Failed to add reaction: ${error.message}`);
+                console.log('This may be expected if the comment was deleted or is inaccessible');
+              }
+
+      - name: "Grab url for GIF"
+        id: image_grabber
+        run: |
+          sudo apt-get install jq
+          export IMG_MSG=$(curl -s 'https://us-central1-lgtm-reloaded.cloudfunctions.net/lgtm' | jq -r '.markdown' | grep -v 'Powered By GIPHY')
+          echo "IMG_MSG=$IMG_MSG" >> $GITHUB_OUTPUT
+
+      - uses: hmarr/auto-approve-action@f0939ea97e9205ef24d872e76833fa908a770363 #v4.0.0
+        with:
+          review-message: |
+            :white_check_mark: Approving this PR because [${{ steps.settings.outputs.user }}](https://github.com/${{ steps.settings.outputs.user }}) said so in [here](${{ steps.settings.outputs.html_url }}) :grimacing:
+
+            ${{ steps.image_grabber.outputs.IMG_MSG }}
+
+          pull-request-number: ${{ steps.settings.outputs.pull_request }}
+          github-token: ${{ secrets.PYANSYS_CI_BOT_TOKEN }}
