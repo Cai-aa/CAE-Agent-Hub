@@ -1,0 +1,57 @@
+{
+  "schemaVersion": 1,
+  "project": {
+    "name": "Text to CAE CalculiX Cantilever Modal",
+    "prompt": "Extract the natural frequencies and the first bending mode shape of a clamped steel cantilever bar using the open-source CalculiX solver.",
+    "solver": "CalculiX (ccx)",
+    "model": "3D modal eigenanalysis (*FREQUENCY step, C3D8 solids)",
+    "source": "MCP/CalculiX/examples/cantilever_modal.inp"
+  },
+  "connection": {
+    "status": "connected",
+    "message": "CalculiX solved the 5-mode *FREQUENCY step; the .dat eigenvalue table and mode-1 eigenvector were exported to result_mesh.json."
+  },
+  "inputs": {
+    "summary": [
+      {
+        "label": { "en": "Geometry", "zh": "几何" },
+        "value": { "en": "120 mm long square bar, 8 x 8 mm cross-section", "zh": "120 mm 长方钢梁，截面 8 x 8 mm" }
+      },
+      {
+        "label": { "en": "Material", "zh": "材料" },
+        "value": { "en": "Steel, E = 210000 MPa, nu = 0.3, rho = 7.85e-9 t/mm^3", "zh": "钢，E = 210000 MPa，泊松比 0.3，密度 7.85e-9 t/mm^3" }
+      },
+      {
+        "label": { "en": "Boundary and step", "zh": "边界与分析步" },
+        "value": { "en": "Root face clamped (ENCASTRE); free vibration, no load, 5 eigenpairs", "zh": "根部端面固支（ENCASTRE）；自由振动无载荷，5 阶模态" }
+      },
+      {
+        "label": { "en": "Mesh", "zh": "网格" },
+        "value": { "en": "C3D8 hexahedral solid elements, 24 x 4 x 4 (384 elements)", "zh": "C3D8 六面体单元，24 x 4 x 4（384 个单元）" }
+      }
+    ],
+    "geometry": { "length_mm": 120.0, "width_mm": 8.0, "height_mm": 8.0 },
+    "material": { "name": "Steel", "youngs_modulus_mpa": 210000.0, "poissons_ratio": 0.3, "density_t_per_mm3": 7.85e-9 },
+    "boundary": { "fixed_end": "x = 0 face (ENCASTRE)", "loads": "none (free vibration)" },
+    "mesh": { "element_family": "C3D8", "element_count": 384 }
+  },
+  "outputs": {
+    "status": "complete",
+    "job_name": "cantilever_modal",
+    "solver": "CalculiX ccx 2.17",
+    "metrics": [
+      { "label": "First natural frequency (mode 1)", "value": 501.6, "unit": "Hz", "state": "complete" },
+      { "label": "Mode 2 (degenerate bending pair)", "value": 501.6, "unit": "Hz", "state": "complete" },
+      { "label": "Mode 3", "value": 3088.7, "unit": "Hz", "state": "complete" },
+      { "label": "Euler-Bernoulli hand calc f1 (reference)", "value": 464.0, "unit": "Hz", "state": "complete" }
+    ],
+    "rendered_field": "Mode 1 eigenvector normalized to max |U| = 1 (colour = |U| magnitude, display scale 18x) - stress-free displacement shape"
+  },
+  "workflow": [
+    { "step": "Parse prompt", "status": "complete", "detail": "Map the request to a clamped steel square bar with a free-vibration *FREQUENCY step (5 eigenpairs)." },
+    { "step": "Build CalculiX deck", "status": "complete", "detail": "Generate cantilever_modal.inp (same mesh as the static case; *FREQUENCY 5 with *NODE PRINT U so eigenvectors reach the .dat)." },
+    { "step": "Solve", "status": "complete", "detail": "Run ccx -i cantilever_modal; a *FREQUENCY step writes a header-only .sta (no increments), so success also accepts a non-empty .dat." },
+    { "step": "Read frequencies", "status": "complete", "detail": "Parse the E I G E N V A L U E O U T P U T table (mode, eigenvalue, rad/s, cycles/s); stop before the participation-factor table." },
+    { "step": "Export mode shape", "status": "complete", "detail": "Parse the per-mode eigenvector blocks (E I G E N V A L U E N U M B E R N) and merge mode 1 with the .inp topology into result_mesh.json for the viewer." }
+  ]
+}

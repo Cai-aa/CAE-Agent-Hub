@@ -5,9 +5,16 @@ Core contracts (all from public CalculiX docs / CLI observation):
 
 * ccx exit code is UNTRUSTED — ccx returns 0 even when it prints ``*ERROR``.
   ``run_solver`` never trusts the returncode; success = (no ``*ERROR`` in stdout)
-  AND (``.sta`` has >=1 data row) AND (no timeout).
+  AND (``.sta`` has >=1 data row OR the ``.dat`` is non-empty) AND (no timeout).
+  The ``.dat`` alternative matters because a ``*FREQUENCY`` step writes a
+  header-only ``.sta`` — an eigenvalue solve has no increments.
 * ``.dat`` has NO von Mises column — only 6 stress components
   (sxx, syy, szz, sxy, sxz, syz); sigma_vm is self-computed.
+* ``*FREQUENCY`` steps print an ``E I G E N V A L U E   O U T P U T`` table
+  (mode, eigenvalue, rad/s, cycles/s) followed by per-mode eigenvector blocks
+  marked ``E I G E N V A L U E    N U M B E R     N``; each block's rows reuse
+  the static ``displacements (vx,vy,vz)`` format. The eigenvectors ARE in the
+  ``.dat``, so mode shapes export without touching the ``.frd``.
 * ``.dat`` has NO total volume/mass — computed from meshio geometry of the
   sibling .inp (shell = area x thickness; solid = element volume) x *DENSITY.
 
@@ -61,8 +68,9 @@ def run_solver(inp_path: str, timeout: int = 1800) -> dict:
     (ccx drops its outputs in cwd). ccx writes its diagnostics, including
     ``*ERROR``, to stdout, so stderr is merged into stdout before scanning. The
     exit code is NOT trusted (ccx returns 0 even on ``*ERROR``); success is
-    judged by: no ``*ERROR`` in stdout AND the ``.sta`` file has at least one
-    data row AND the run did not time out.
+    judged by: no ``*ERROR`` in stdout AND (the ``.sta`` file has at least one
+    data row OR the ``.dat`` is non-empty — ``*FREQUENCY`` steps write a
+    header-only ``.sta``) AND the run did not time out.
 
     Args:
         inp_path: path to the ``.inp`` (absolute is safest; outputs land in its
@@ -139,8 +147,11 @@ def _run_ccx(inp_path: str, timeout: int) -> dict:
     sta_path = job_dir / f"{jobname}.sta"
     dat_path = job_dir / f"{jobname}.dat"
     sta_has_data = _sta_has_data_row(sta_path)
+    # A *FREQUENCY step writes a header-only .sta (no increments in an
+    # eigenvalue solve), so a non-empty .dat also counts as completion evidence.
+    dat_has_content = dat_path.exists() and dat_path.stat().st_size > 0
 
-    has_error = bool(errors) or (not sta_has_data) or timeout_hit
+    has_error = bool(errors) or not (sta_has_data or dat_has_content) or timeout_hit
     status = "error" if has_error else "ok"
 
     return {
@@ -183,6 +194,10 @@ def _sta_has_data_row(sta_path: Path) -> bool:
 
 _STRESS_HDR = re.compile(r"^\s*stresses\s*\(elem", re.IGNORECASE)
 _DISP_HDR = re.compile(r"^\s*displacements\s*\(v", re.IGNORECASE)
+_FREQ_TBL_HDR = re.compile(
+    r"^\s*E\s+I\s+G\s+E\s+N\s+V\s+A\s+L\s+U\s+E\s+O\s+U\s+T\s+P\s+U\s+T"
+)
+_SPACED_HDR = re.compile(r"^\s*[A-Z](?:\s+[A-Z])+\s*$")
 
 
 def read_results(result_path: str) -> dict:
@@ -191,6 +206,8 @@ def read_results(result_path: str) -> dict:
     * ``max_stress_vm`` — von Mises self-computed from the 6 components, then max
       (the .dat has no von Mises column).
     * ``max_disp`` — max displacement magnitude ``|U|``.
+    * ``frequencies`` — ``[{mode, eigenvalue, freq_rad_s, freq_hz}]`` from a
+      ``*FREQUENCY`` step (``None`` for static decks); ``n_modes`` counts them.
     * ``volume`` / ``mass`` — from meshio geometry of the sibling .inp x the
       ``*DENSITY`` value (the .dat has neither).
 
@@ -237,6 +254,7 @@ def _read_ccx_dat(result_path: str) -> dict:
 
     max_vm, n_stress = _parse_max_von_mises(text)
     max_disp, n_disp = _parse_max_disp(text)
+    frequencies, n_modes = _parse_dat_frequencies(text)
     if n_stress == 0:
         warnings.append("no stress data rows parsed (check *EL PRINT ... S in .inp)")
     if n_disp == 0:
@@ -254,6 +272,8 @@ def _read_ccx_dat(result_path: str) -> dict:
         "density": density,
         "n_stress_points": n_stress,
         "n_disp_points": n_disp,
+        "frequencies": frequencies if n_modes else None,
+        "n_modes": n_modes,
         "dat_path": str(dat),
         "warnings": warnings,
     }
@@ -350,6 +370,60 @@ def _parse_max_disp(text: str) -> tuple[float, int]:
             continue
         i += 1
     return max_u, count
+
+
+def _parse_dat_frequencies(text: str) -> tuple[list[dict], int]:
+    """Parse the ``.dat`` eigenvalue table -> ([{mode, eigenvalue, freq_rad_s, freq_hz}], count).
+
+    Observed format (ccx 2.17)::
+
+         E I G E N V A L U E   O U T P U T
+
+         MODE NO    EIGENVALUE                       FREQUENCY
+                                               REAL PART            IMAGINARY PART
+                                     (RAD/TIME)      (CYCLES/TIME     (RAD/TIME)
+
+              1   0.9932799E+07   0.3151634E+04   0.5015982E+03   0.0000000E+00
+
+    Each data row: ``<mode> <eigenvalue (omega^2)> <omega rad/s> <f cycles/s>
+    [<imaginary rad/s>]``; trailing fields are ignored. The column-header
+    lines before the first data row do not parse as numbers and are skipped.
+    A spaced-letter section header ends the table — important because the
+    following ``P A R T I C I P A T I O N   F A C T O R S`` rows also start
+    with an integer mode number and would otherwise be swallowed.
+    """
+    lines = text.splitlines()
+    n = len(lines)
+    out: list[dict] = []
+    i = 0
+    while i < n:
+        if _FREQ_TBL_HDR.search(lines[i]):
+            i += 1
+            while i < n:
+                line = lines[i]
+                if _SPACED_HDR.match(line):
+                    break
+                parts = line.split()
+                if not parts:
+                    i += 1
+                    continue
+                try:
+                    mode = int(parts[0])
+                    eig = float(parts[1])
+                    rad = float(parts[2])
+                    hz = float(parts[3])
+                except (ValueError, IndexError):
+                    if out:
+                        break
+                    i += 1
+                    continue
+                out.append(
+                    {"mode": mode, "eigenvalue": eig, "freq_rad_s": rad, "freq_hz": hz}
+                )
+                i += 1
+            continue
+        i += 1
+    return out, len(out)
 
 
 def _compute_volume_mass(

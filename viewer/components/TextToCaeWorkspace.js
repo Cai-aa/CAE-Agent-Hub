@@ -79,6 +79,14 @@ const CAE_CASES = Object.freeze([
       zh: "CalculiX 悬臂梁",
     },
   },
+  {
+    id: "calculix-modal",
+    directory: "models/text-to-cae-calculix-modal",
+    labels: {
+      en: "CalculiX cantilever mode 1",
+      zh: "CalculiX 悬臂梁一阶振型",
+    },
+  },
 ]);
 
 const PARAMETER_FIELDS = Object.freeze([

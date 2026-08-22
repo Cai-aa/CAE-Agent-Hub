@@ -48,6 +48,9 @@ Typical workflow:
    to stress/displacement bounds by tuning design variables (shell thickness,
    beam section, material, load). Each trial is a full solve, so set
    max_solves to bound wall time.
+9. modal (*FREQUENCY) decks work with the same tools: read_results returns the
+   frequency table (frequencies / n_modes); export_results with mode=N renders
+   that mode shape in the viewer (stress-free displacement field).
 
 Units follow the .inp's working system (commonly mm-t-s-MPa). CalculiX has no
 license; ccx returns 0 even on *ERROR, so never trust the exit code alone.
@@ -128,17 +131,22 @@ def export_results_tool(
     dat_path: str | None = None,
     out_path: str | None = None,
     deformation_scale: float | None = None,
+    mode: int | None = None,
 ) -> dict:
     """Export a CalculiX run to ``result_mesh.json`` (the CAE-Agent-Hub viewer
     format). Mesh topology comes from the ``.inp`` and displacement/stress fields
     from the ``.dat`` (same original node/element labels); when ``dat_path`` is
     omitted a sibling ``<stem>.dat`` is used, and if that is missing a mesh-only
-    file is produced. ``deformation_scale`` is auto-chosen when None."""
+    file is produced. ``deformation_scale`` is auto-chosen when None. For modal
+    (``*FREQUENCY``) runs, pass ``mode=N`` to export that mode's eigenvector as
+    the displacement field (stress-free); the frequencies themselves come from
+    ``read_results``."""
     res = export_result_mesh(
         inp_path,
         dat_path=dat_path,
         out_path=out_path,
         deformation_scale=deformation_scale,
+        mode=mode,
     )
     out = res.pop("_out_path", None)
     return {"out_path": out, "nodes": len(res["nodes"]), "elements": len(res["elements"]),
