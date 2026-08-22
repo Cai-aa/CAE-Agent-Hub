@@ -22,7 +22,7 @@ Issue #14 提出的空白。
 | `run_solver_tool` | 对 deck 跑 `ccx -i <jobname>`。成功判定不看 exit code（见下）。 |
 | `read_results_tool` | 解析 `.dat` 取最大 von Mises（自算）、最大位移、体积、质量；`*FREQUENCY` 步还返回特征值表（`frequencies`、`n_modes`）。 |
 | `export_results_tool` | 把本次求解导出为 `result_mesh.json`（viewer 格式）；模态运行传 `mode=N` 可导第 N 阶振型。 |
-| `optimize_structure_tool` | 两阶段尺寸优化（LHS 粗扫 + 坐标下降精修）：在应力/位移约束下，通过调标量设计变量（壳厚、梁截面、材料、载荷）最小化质量。仅限壳/梁模型——见[优化](#优化)。 |
+| `optimize_structure_tool` | 两阶段尺寸优化（LHS 粗扫 + 坐标下降精修）：在应力/位移约束（静力 deck）或固有频率下限（模态 deck，"避共振"）下，通过调标量设计变量（壳厚、梁截面、材料、载荷）最小化质量。仅限壳/梁模型——见[优化](#优化)。 |
 
 ## CalculiX 实战契约（编码在 solver 里）
 
@@ -41,7 +41,8 @@ Issue #14 提出的空白。
 ## 优化
 
 `optimize_structure_tool` 跑两阶段**尺寸**优化：先 Latin Hypercube 粗扫，再坐标下降
-精修，通过原位改标量卡片，在应力/位移约束下最小化质量。
+精修（跳边界 + 向可行边界反复二分），通过原位改标量卡片，在应力/位移约束下最小化
+质量。
 
 ```python
 optimize_structure_tool(
@@ -50,6 +51,21 @@ optimize_structure_tool(
     n_lhs=8, max_solves=18,
 )
 # -> 最优 ~4.1 mm，减重 ~-48%，应力 < 250 MPa，位移 < 1.5 mm
+```
+
+频率约束（"避共振"）用同一个循环跑 `*FREQUENCY` deck：每次评估是一次特征值求解，
+第 N 阶频率从 `.dat` 特征值表读取，减薄停在模态刚好高于下限处。静力度量和频率度量
+分别来自静力 deck 和模态 deck——约束集合与 deck 不匹配会让所有点不可行，运行会以
+"缺指标"告警的形式报告而不是含糊失败。
+
+```python
+optimize_structure_tool(
+    path="examples/plate_modal.inp",
+    variables={"shell.PLATE.thickness": [2.0, 8.0]},
+    constraints=[{"metric": "freq_1_hz", "op": ">", "value": 30.0}],
+    n_lhs=5, max_solves=24,
+)
+# -> 最优 ~3.23 mm，减重 ~-19%，f1 = 30.4 Hz
 ```
 
 范围与诚实性：
@@ -116,6 +132,11 @@ python3 examples/gen_cantilever.py
 `examples/cantilever_modal.inp` 是同一根梁加 5 阶 `*FREQUENCY` 步：f1 = f2 ≈ 502 Hz
 （简并对）、f3 = f4 ≈ 3089 Hz、f5 ≈ 6309 Hz，对比手算 f1 ≈ 464 Hz（C3D8 剪切锁死）。
 viewer 案例 `models/text-to-cae-calculix-modal` 渲染第 1 阶振型。
+
+`examples/plate_modal.inp`（用 `python3 examples/gen_plate_modal.py` 重新生成）是
+为频率约束尺寸优化准备的 S4 壳悬臂板：t = 4 mm 时 ccx f1 = 37.6 Hz，对比欧拉梁手算
+f1 = (1.8751²/2π)(t/L²)√(E/12ρ) ≈ 37.1 Hz；上面的避共振运行落在 t = 3.23 mm，与
+解析最优 t* = 30/9.29 ≈ 3.23 mm 吻合。
 
 ## 测试
 

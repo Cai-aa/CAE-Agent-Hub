@@ -48,7 +48,7 @@ AI client
 | [Altair HyperWorks MCP](MCP/HyperWorks) | Active | 通过类型化、工作区隔离的工具和经过认证的应用内 Python bridge 控制 HyperWorks 与 live HyperMesh 会话；支持模型与实体检查、受控 batch Tcl 和求解任务管理。 | `src/hyperworks_mcp/server.py`, `hyperworks_extension/`, `install_hyperworks_extension.ps1` | HyperWorks, HyperMesh, HyperView, OptiStruct, Radioss, live Python bridge |
 | [LAMMPS MCP](MCP/LAMMPS) | Active | 检测本地 LAMMPS、运行明确输入文件并保存作业证据。 | `server.py`, `tools/atomistic_bridge.py` | LAMMPS, 分子动力学, trajectory |
 | [OVITO MCP](MCP/OVITO) | Active | 检测 OVITO 脚本能力、运行明确后处理脚本并保存证据日志。 | `server.py`, `tools/atomistic_bridge.py` | OVITO, 原子尺度, visualization |
-| [CalculiX MCP](MCP/CalculiX) | Active | 包装开源有限元求解器 CalculiX（`ccx`，GPLv2，无需 license）：解析 `.inp`、原位修改设计变量、fire-and-forget 运行 ccx、读取 `.dat` 文本结果，并把 `.dat` 结果导出为 viewer 的 `result_mesh.json`，跑两阶段尺寸优化（LHS + 坐标下降）以最小化质量，并提取固有频率（`*FREQUENCY`）与可在 viewer 渲染的振型。 | `mcp_server.py`, `tools/inp_parser.py`, `tools/solver.py`, `tools/result_exporter.py`, `tools/optimizer.py` | CalculiX, FEM, ccx, .inp, .dat, .frd, von Mises, 设计变量, 尺寸优化, 模态分析 |
+| [CalculiX MCP](MCP/CalculiX) | Active | 包装开源有限元求解器 CalculiX（`ccx`，GPLv2，无需 license）：解析 `.inp`、原位修改设计变量、fire-and-forget 运行 ccx、读取 `.dat` 文本结果，并把 `.dat` 结果导出为 viewer 的 `result_mesh.json`，提取固有频率（`*FREQUENCY`）与可在 viewer 渲染的振型，并跑两阶段尺寸优化（LHS + 坐标下降），在应力/位移或频率约束（避共振）下最小化质量。 | `mcp_server.py`, `tools/inp_parser.py`, `tools/solver.py`, `tools/result_exporter.py`, `tools/optimizer.py` | CalculiX, FEM, ccx, .inp, .dat, .frd, von Mises, 设计变量, 尺寸优化, 模态分析, 共振 |
 | [FEP Agent Hub](MCP/FEP-Agent-Hub) | Active | 通过三个独立、工作区隔离的 STDIO MCP 协同 FreeCAD 建模、Elmer FEM 网格/求解与 ParaView 后处理；包含 6 个经门禁验证的热、电磁、结构和层流 profile。 | `mcp/*/src/*_mcp/server.py`, `scripts/protocol_smoke.py`, `scripts/mcp_full_validation.py` | FreeCAD, Elmer FEM, ParaView, FEP, 热传导, 变压器, 简支梁, 层流, 楞次定律 |
 
 > 新增 MCP 时，建议保留可复用源码、示例、测试和中英文 README；不要提交虚拟环境、求解结果、私有路径、许可证或生成的工程数据。
@@ -90,7 +90,7 @@ AI client
 | [aedt-evidence-electromagnetics](Skill/Ansys/aedt-evidence-electromagnetics) | Active | 含 Maxwell 检查的泛用 AEDT 证据工作流。 | AEDT, Maxwell, HFSS, PyAEDT |
 | [comsol-motor-nvh-evidence](Skill/comsol/comsol-motor-nvh-evidence) | Active | 检查点式永磁电机 NVH 工作流，耦合旋转电磁、结构模态、声学与 Campbell 验证。 | COMSOL, 电机 NVH, Maxwell 力, 模态, Campbell |
 | [calculix-fem](Skill/calculix/calculix-fem) | Active | 驱动 CalculiX MCP 的工作流：检视 `.inp`、原位修改设计变量、运行 ccx、读取 `.dat` 结果、导出 `result_mesh.json`。 | CalculiX, FEM, ccx, .inp, 线性静力 |
-| [calculix-sizing-optimization](Skill/calculix/calculix-sizing-optimization) | Active | 在 CalculiX 壳/梁 deck 上跑两阶段尺寸优化（LHS 粗扫 + 坐标下降），在应力/位移约束下最小化质量。 | CalculiX, 尺寸优化, 减重, LHS, 坐标下降 |
+| [calculix-sizing-optimization](Skill/calculix/calculix-sizing-optimization) | Active | 在 CalculiX 壳/梁 deck 上跑两阶段尺寸优化（LHS 粗扫 + 坐标下降），在应力/位移约束下最小化质量；模态 deck 上可用固有频率下限约束（避共振）。 | CalculiX, 尺寸优化, 减重, LHS, 坐标下降, 共振, 固有频率 |
 | [calculix-modal-analysis](Skill/calculix/calculix-modal-analysis) | Active | 从 CalculiX `*FREQUENCY` 步提取固有频率与振型；第 N 阶可导出为 viewer 的无应力振型。 | CalculiX, 模态, 固有频率, 振型, 共振, 振动 |
 | [fep-agent-hub](Skill/fep-agent-hub) | Active | FreeCAD → Elmer FEM → ParaView 证据优先总控 Skill，覆盖已验证 profile、物理门禁、敏感性检查与真实动画口径。 | FEP Agent Hub, FreeCAD, Elmer FEM, ParaView, CAE 验证 |
 

@@ -24,7 +24,7 @@ stopped at FEniCS references), filling the gap noted in Issue #14.
 | `run_solver_tool` | Run `ccx -i <jobname>` on a deck. Success ignores the exit code (see below). |
 | `read_results_tool` | Parse the `.dat` for max von Mises (self-computed), max displacement, volume, mass; for `*FREQUENCY` steps also the eigenvalue table (`frequencies`, `n_modes`). |
 | `export_results_tool` | Export the run to `result_mesh.json` (viewer format); for modal runs pass `mode=N` to export that mode's shape. |
-| `optimize_structure_tool` | Two-stage sizing optimization (LHS sweep + coordinate descent): minimize mass subject to stress/displacement bounds by tuning scalar design variables (shell thickness, beam section, material, load). Shell/beam models only — see [Optimization](#optimization). |
+| `optimize_structure_tool` | Two-stage sizing optimization (LHS sweep + coordinate descent): minimize mass subject to stress/displacement bounds (static decks) or a natural-frequency floor (modal decks, "avoid resonance") by tuning scalar design variables (shell thickness, beam section, material, load). Shell/beam models only — see [Optimization](#optimization). |
 
 ## Hard-won CalculiX contracts (encoded in the solver)
 
@@ -45,8 +45,9 @@ These are why this server is non-trivial — all from public CalculiX behaviour:
 ## Optimization
 
 `optimize_structure_tool` runs two-stage **sizing** optimization: a Latin
-Hypercube coarse sweep, then coordinate-descent refinement, minimizing mass
-subject to stress and displacement constraints by editing scalar cards in place.
+Hypercube coarse sweep, then coordinate-descent refinement (jump-to-bound plus
+repeated bisection toward the feasible boundary), minimizing mass subject to
+stress and displacement constraints by editing scalar cards in place.
 
 ```python
 optimize_structure_tool(
@@ -55,6 +56,23 @@ optimize_structure_tool(
     n_lhs=8, max_solves=18,
 )
 # -> best ~4.1 mm, ~-48% mass, stress < 250 MPa, displacement < 1.5 mm
+```
+
+Frequency constraints ("avoid resonance") run the same loop against a
+`*FREQUENCY` deck: each evaluation is an eigen solve, mode N is read from the
+`.dat` eigenvalue table, and thinning stops where the mode sits just above its
+floor. Static metrics and frequency metrics come from static and modal decks
+respectively — a mismatched constraint set makes every point infeasible, which
+the run reports as a missing-metrics warning.
+
+```python
+optimize_structure_tool(
+    path="examples/plate_modal.inp",
+    variables={"shell.PLATE.thickness": [2.0, 8.0]},
+    constraints=[{"metric": "freq_1_hz", "op": ">", "value": 30.0}],
+    n_lhs=5, max_solves=24,
+)
+# -> best ~3.23 mm, ~-19% mass, f1 = 30.4 Hz
 ```
 
 Scope and honesty:
@@ -128,6 +146,13 @@ deformation for display.
 step: f1 = f2 ≈ 502 Hz (degenerate pair), f3 = f4 ≈ 3089 Hz, f5 ≈ 6309 Hz,
 vs the hand calc f1 ≈ 464 Hz (C3D8 shear locking). The viewer case
 `models/text-to-cae-calculix-modal` renders mode 1.
+
+`examples/plate_modal.inp` (regenerate with
+`python3 examples/gen_plate_modal.py`) is an S4 shell cantilever plate built
+for frequency-constrained sizing: ccx f1 = 37.6 Hz at t = 4 mm vs the
+Euler-Bernoulli hand calc f1 = (1.8751²/2π)(t/L²)√(E/12ρ) ≈ 37.1 Hz, and the
+avoid-resonance run above lands at t = 3.23 mm against the analytic optimum
+t* = 30/9.29 ≈ 3.23 mm.
 
 ## Tests
 

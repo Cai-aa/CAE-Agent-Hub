@@ -1,10 +1,17 @@
 # -*- coding: utf-8 -*-
 """optimizer.py - two-stage sizing/parameter optimization loop for CalculiX.
 
-Minimize mass subject to stress/displacement constraints by tuning scalar
-design variables (shell thickness, beam section, material E/nu/density, load
-magnitude). This is sizing/parameter optimization - the geometry and mesh do
-not change; only scalar cards are edited in place.
+Minimize mass subject to stress/displacement/natural-frequency constraints by
+tuning scalar design variables (shell thickness, beam section, material
+E/nu/density, load magnitude). This is sizing/parameter optimization - the
+geometry and mesh do not change; only scalar cards are edited in place.
+
+Frequency constraints (``freq_<N>_hz``, e.g. ``freq_1_hz > 300`` - "avoid
+resonance") run against a ``*FREQUENCY`` deck: each evaluation is an eigen
+solve, and thickness thinning stops where mode N would drop below its floor.
+A modal deck reports frequencies only (no stress/displacement), so mixing a
+stress constraint into a modal optimization makes every point infeasible by
+construction; the run warns about missing metrics instead of failing opaquely.
 
 Two-stage strategy (``strategy="twostage"``):
 
@@ -34,6 +41,7 @@ from __future__ import annotations
 
 import logging
 import math
+import re
 import shutil
 import sys
 import tempfile
@@ -57,19 +65,30 @@ _DEFAULT_CONSTRAINTS = [
     {"metric": "max_disp", "op": "<", "value": 1.5},
 ]
 
+# Constraint metrics read_results can supply: static quantities plus one
+# freq_<N>_hz per eigenmode of a *FREQUENCY deck (e.g. freq_1_hz in Hz).
+_STATIC_METRICS = {"mass", "max_stress_vm", "max_disp"}
+_FREQ_METRIC = re.compile(r"^freq_(\d+)_hz$")
+
 # Converge once mass improves by less than this for this many consecutive rounds.
 _CONV_ROUNDS = 2
 _CONV_TOL = 0.01
 
 
 def _metrics_from_results(res: dict) -> dict[str, float | None]:
-    """Normalize a ``read_results`` dict to kg / MPa / mm."""
+    """Normalize a ``read_results`` dict to kg / MPa / mm / Hz."""
     mass_t = res.get("mass")
-    return {
+    metrics: dict[str, float | None] = {
         "mass": (mass_t * _T_TO_KG) if mass_t is not None else None,
         "max_stress_vm": res.get("max_stress_vm"),
         "max_disp": res.get("max_disp"),
     }
+    for row in res.get("frequencies") or []:
+        mode = row.get("mode")
+        hz = row.get("freq_hz")
+        if mode is not None and hz is not None:
+            metrics[f"freq_{int(mode)}_hz"] = float(hz)
+    return metrics
 
 
 def _satisfies(value: float, op: str, limit: float) -> bool:
@@ -204,6 +223,7 @@ def _history_entry(
         "mass_kg": metrics["mass"],
         "stress_vm": metrics["max_stress_vm"],
         "disp": metrics["max_disp"],
+        "freq_1_hz": metrics.get("freq_1_hz"),
         "feasible": (
             _check_feasible(metrics, constraints)
             if eval_result["solver_status"] == "ok"
@@ -256,13 +276,17 @@ def _coord_step(
     iter_base: int,
     timeout: int,
     constraints: list[dict],
+    max_probes: int = 4,
 ) -> tuple[dict, dict, dict, int] | None:
     """One coordinate-descent probe on a single variable (jump-to-bound, then bisect).
 
     For minimize-mass: if the current point is feasible, probe toward the lower
     bound (thinner -> lighter); if infeasible, probe toward the upper bound to
     recover feasibility. Try the bound directly first; if that is rejected,
-    bisect once to the midpoint.
+    bisect the remaining interval up to ``max_probes`` times - each rejection
+    halves the interval toward the feasible boundary (a single bisection can
+    strand the search when the boundary sits near one end, e.g. a resonance
+    floor just below the current thickness).
 
     Returns ``(new_vals, eval_result, history_entry, used_solves)`` or None if
     the variable cannot improve.
@@ -272,6 +296,7 @@ def _coord_step(
     target = lo if current_feasible else hi
     if abs(target - cur) < 1e-9:
         return None
+    span = abs(hi - lo)
 
     used = 0
     trial_vals = {**current_vals, vid: target}
@@ -281,15 +306,22 @@ def _coord_step(
     if _accept_step(ev, entry):
         return trial_vals, ev, entry, used
 
-    mid = (cur + target) / 2.0
-    if abs(mid - cur) < 1e-9:
-        return None
-    trial_vals2 = {**current_vals, vid: mid}
-    ev2 = _evaluate(template, trial_vals2, wdir, f"iter{iter_base + used}_coord_{vid}_half", timeout)
-    used += 1
-    entry2 = _history_entry(iter_base + used - 1, "coord", trial_vals2, ev2, constraints)
-    if _accept_step(ev2, entry2):
-        return trial_vals2, ev2, entry2, used
+    # Bisect between the current point and the rejected bound; every rejection
+    # moves the far endpoint to the rejected midpoint.
+    near, far = cur, target
+    while used <= max_probes and abs(far - near) > 0.005 * span:
+        mid = (near + far) / 2.0
+        if abs(mid - near) < 1e-9:
+            break
+        trial_vals = {**current_vals, vid: mid}
+        ev = _evaluate(
+            template, trial_vals, wdir, f"iter{iter_base + used}_coord_{vid}_bis{used}", timeout
+        )
+        used += 1
+        entry = _history_entry(iter_base + used - 1, "coord", trial_vals, ev, constraints)
+        if _accept_step(ev, entry):
+            return trial_vals, ev, entry, used
+        far = mid
     return None
 
 
@@ -312,7 +344,9 @@ def _accept_step(eval_result: dict, entry: dict) -> bool:
     )
 
 
-def _validate_inputs(objective: dict, strategy: str, variables: dict, inp_path: str) -> None:
+def _validate_inputs(
+    objective: dict, strategy: str, variables: dict, inp_path: str, constraints: list[dict]
+) -> None:
     if strategy != "twostage":
         raise NotImplementedError(
             f"strategy={strategy!r} not implemented (only 'twostage')"
@@ -321,6 +355,13 @@ def _validate_inputs(objective: dict, strategy: str, variables: dict, inp_path: 
         raise ValueError(
             f"only objective={{metric:'mass', direction:'minimize'}} supported; got {objective}"
         )
+    for c in constraints:
+        metric = c.get("metric")
+        if metric not in _STATIC_METRICS and not _FREQ_METRIC.match(str(metric)):
+            raise ValueError(
+                f"unknown constraint metric {metric!r}; valid: mass, max_stress_vm, "
+                f"max_disp (static decks) and freq_<N>_hz e.g. freq_1_hz (*FREQUENCY decks)"
+            )
     if not variables:
         raise ValueError("variables is empty; pass at least one {var_id: [lower, upper]}")
     for vid, b in variables.items():
@@ -409,6 +450,7 @@ def _assemble_result(
         "mass_kg": best["mass_kg"],
         "stress_vm": best["stress_vm"],
         "disp": best["disp"],
+        "freq_1_hz": best.get("freq_1_hz"),
         "feasible": best["feasible"],
         "inp_path": best_inp_dest,
         "mass_reduction_pct": reduction_pct,
@@ -427,6 +469,7 @@ def _assemble_result(
             "mass_kg": base_mass,
             "stress_vm": baseline["stress_vm"],
             "disp": baseline["disp"],
+            "freq_1_hz": baseline.get("freq_1_hz"),
             "feasible": baseline["feasible"],
         },
         "best": best_summary,
@@ -462,7 +505,11 @@ def optimize_structure(
         objective: ``{"metric": "mass", "direction": "minimize"}`` (the default).
             Only mass/minimize is supported in this version.
         constraints: ``[{metric, op, value}, ...]`` (default
-            ``max_stress_vm < 250 MPa`` and ``max_disp < 1.5 mm``).
+            ``max_stress_vm < 250 MPa`` and ``max_disp < 1.5 mm``). Static
+            metrics (``max_stress_vm``, ``max_disp``) need a ``*STATIC`` deck;
+            ``freq_<N>_hz`` (e.g. ``{"metric": "freq_1_hz", "op": ">",
+            "value": 300.0}`` - avoid resonance) needs a ``*FREQUENCY`` deck,
+            with mode N read from the ``.dat`` eigenvalue table.
         strategy: only ``"twostage"``.
         max_iters: max coordinate-descent rounds in Stage 2.
         seed: LHS seed (reproducible).
@@ -489,7 +536,7 @@ def optimize_structure(
     obj = objective or dict(_DEFAULT_OBJECTIVE)
     cons = constraints if constraints is not None else [dict(c) for c in _DEFAULT_CONSTRAINTS]
 
-    _validate_inputs(obj, strategy, variables, inp_path)
+    _validate_inputs(obj, strategy, variables, inp_path, cons)
 
     template = Path(inp_path).resolve()
     rng = np.random.default_rng(seed)
@@ -515,6 +562,17 @@ def optimize_structure(
                 f"baseline solve failed (status={baseline_eval['solver_status']}); "
                 f"optimization proceeds against LHS samples"
             )
+        else:
+            missing = [
+                c["metric"] for c in cons
+                if baseline_eval["metrics"].get(c["metric"]) is None
+            ]
+            if missing:
+                warnings.append(
+                    f"baseline reports no result for constraint metric(s) {missing}; a "
+                    f"*FREQUENCY deck yields freq_<N>_hz only, a static deck yields "
+                    f"stress/displacement only - check the constraint set matches the deck"
+                )
 
         best_entry = baseline_entry
         best_metrics = baseline_eval["metrics"]
