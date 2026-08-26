@@ -51,6 +51,10 @@ Typical workflow:
 9. modal (*FREQUENCY) decks work with the same tools: read_results returns the
    frequency table (frequencies / n_modes); export_results with mode=N renders
    that mode shape in the viewer (stress-free displacement field).
+10. avoid-resonance sizing: optimize_structure on a *FREQUENCY deck with a
+   freq_<N>_hz constraint (e.g. freq_1_hz > 300) thins sections until mode N
+   sits just above the floor - static metrics and frequency metrics come from
+   static and modal decks respectively, so match the constraint set to the deck.
 
 Units follow the .inp's working system (commonly mm-t-s-MPa). CalculiX has no
 license; ccx returns 0 even on *ERROR, so never trust the exit code alone.
@@ -166,16 +170,19 @@ def optimize_structure_tool(
     timeout: int = 1800,
 ) -> dict:
     """Run two-stage sizing optimization on a CalculiX ``.inp`` deck: minimize mass
-    subject to stress/displacement constraints by tuning scalar design variables
-    (shell thickness, beam section, material, load). ``variables`` maps each
-    ``var_id`` (from ``list_design_vars``) to ``[lower, upper]``. Defaults:
-    objective = minimize mass; constraints = max von Mises < 250 MPa and max
-    displacement < 1.5 mm. Returns the best feasible design found, its mass
-    reduction vs the baseline, the full evaluation history, and the convergence
-    reason. The best deck is written next to the input as
-    ``<stem>.optimized.inp``. Each evaluation is a real ccx solve, so wall time
-    ~= (1 + n_lhs + coord-descent probes) x per-solve time, bounded by
-    ``max_solves``."""
+    subject to stress/displacement/natural-frequency constraints by tuning scalar
+    design variables (shell thickness, beam section, material, load).
+    ``variables`` maps each ``var_id`` (from ``list_design_vars``) to
+    ``[lower, upper]``. Defaults: objective = minimize mass; constraints = max
+    von Mises < 250 MPa and max displacement < 1.5 mm (needs a ``*STATIC``
+    deck). A frequency constraint such as ``{"metric": "freq_1_hz", "op": ">",
+    "value": 300.0}`` (avoid resonance) instead needs a ``*FREQUENCY`` deck and
+    is evaluated from the ``.dat`` eigenvalue table. Returns the best feasible
+    design found, its mass reduction vs the baseline, the full evaluation
+    history, and the convergence reason. The best deck is written next to the
+    input as ``<stem>.optimized.inp``. Each evaluation is a real ccx solve, so
+    wall time ~= (1 + n_lhs + coord-descent probes) x per-solve time, bounded
+    by ``max_solves``."""
     return optimize_structure(
         path,
         variables,
