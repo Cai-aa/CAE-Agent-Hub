@@ -1,0 +1,4 @@
+interface:
+  display_name: "Cylinder O-Grid"
+  short_description: "跨 CAE 圆柱 O-grid 六面体网格规划、生成与质量验证"
+  default_prompt: "Use $cylinder-o-grid to plan, create, or quality-check a coin-style O-grid hexahedral mesh for a cylindrical CAE model."
