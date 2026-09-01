@@ -623,3 +623,40 @@ def test_model_execute_refuses_when_identity_gate_fails(monkeypatch):
     assert result["ok"] is False
     assert result["status"] == "identity_gate_failed"
     assert mechanical.calls == []
+
+
+def test_bootstrap_bridge_report_preserves_unicode_project_path(monkeypatch):
+    captured: dict[str, str] = {}
+    expected_path = r"D:\工程文件\ansys\0001.wbpj"
+
+    def fake_socket_execute(code: str, timeout: float) -> dict:
+        captured["code"] = code
+        report = {
+            "ok": True,
+            "phase": "SERVER_REUSE_OR_START_ONCE",
+            "pid": 1234,
+            "server_port": 57117,
+            "project_file": expected_path,
+            "systems": ["SYS"],
+            "start_called": False,
+        }
+        return {
+            "ok": True,
+            "response": {
+                "ok": True,
+                "execution": {
+                    "ok": True,
+                    "stdout": "WB_BOOTSTRAP_JSON:"
+                    + json.dumps(report, ensure_ascii=True)
+                    + "\n",
+                },
+            },
+        }
+
+    monkeypatch.setattr(ws, "socket_timer_execute_python", fake_socket_execute)
+
+    result = ws._bootstrap_bridge_report(timeout=1.0)
+
+    assert result["project_file"] == expected_path
+    assert "unicode(GetProjectFile())" in captured["code"]
+    assert "str(GetProjectFile())" not in captured["code"]

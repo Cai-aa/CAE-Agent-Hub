@@ -244,7 +244,7 @@ def _workbench_inventory(client: Any) -> dict[str, Any]:
 def _safe_attr(obj, name):
     try:
         value = getattr(obj, name)
-        return None if value is None else str(value)
+        return None if value is None else unicode(value)
     except Exception:
         return None
 
@@ -256,14 +256,14 @@ def _has_component(system, component_name):
 
 project_file = None
 try:
-    project_file = str(GetProjectFile())
+    project_file = unicode(GetProjectFile())
 except Exception:
     project_file = None
 
 systems = []
 for system in GetAllSystems():
     systems.append({
-        "name": str(system.Name),
+            "name": unicode(system.Name),
         "display_text": _safe_attr(system, "DisplayText"),
         "template_name": _safe_attr(system, "TemplateName"),
         "has_engineering_data": _has_component(system, "Engineering Data"),
@@ -274,7 +274,7 @@ for system in GetAllSystems():
     })
 
 report = {
-    "framework_version": str(GetFrameworkVersion()),
+    "framework_version": unicode(GetFrameworkVersion()),
     "project_file": project_file,
     "systems": systems,
     "system_count": len(systems),
@@ -375,8 +375,8 @@ try:
         "ok": server_port > 0,
         "pid": int(os.getpid()),
         "server_port": server_port,
-        "project_file": str(GetProjectFile()),
-        "systems": [str(system.Name) for system in GetAllSystems()],
+            "project_file": unicode(GetProjectFile()),
+            "systems": [unicode(system.Name) for system in GetAllSystems()],
         "start_called": start_called,
     })
 except Exception as exc:

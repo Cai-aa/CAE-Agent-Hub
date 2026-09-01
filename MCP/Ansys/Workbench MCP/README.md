@@ -177,7 +177,7 @@ The plugin also auto-starts the queue timer and socket timer by default. Set `WO
 
 ## MCP Tools
 
-Version 0.2.0 exposes 45 tools across the original bridge, the high-level Workbench session layer, and the Mechanical structural workflows:
+Version 0.2.1 exposes 45 tools across the original bridge, the high-level Workbench session layer, and the Mechanical structural workflows:
 
 - detecting Workbench and PyMechanical
 - launching Workbench journals

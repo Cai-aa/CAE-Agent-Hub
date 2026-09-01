@@ -177,7 +177,7 @@ WORKBENCH_MCP_PORT=9885
 
 ## MCP 工具
 
-0.2.0 版本共暴露 45 个工具，覆盖原有桥接、高层 Workbench 会话层和 Mechanical 结构分析工作流：
+0.2.1 版本共暴露 45 个工具，覆盖原有桥接、高层 Workbench 会话层和 Mechanical 结构分析工作流：
 
 - 检测 Workbench 和 PyMechanical
 - 启动 Workbench journal
