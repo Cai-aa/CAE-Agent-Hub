@@ -1,0 +1,73 @@
+# Python Script, API Version = V252
+#
+# This is a guarded SpaceClaim template, not a generic one-click extractor.
+# Replace every RECORDER_REQUIRED block with V252 Script Recorder output for
+# the actual Fusion member selection and confirm it against the V252 docs.
+
+import json
+import traceback
+
+SOURCE_STEP = __STEP_PATH_PY__
+UNITS = __UNITS_PY__
+MEMBER_MANIFEST = __MEMBER_MANIFEST_PY__
+
+report = {
+    "schema_version": 1,
+    "workflow": "fusion_step_to_beam_smoke",
+    "phase": "SPACECLAIM_BEAM_IDEALIZATION",
+    "status": "FAIL",
+    "ok": False,
+    "source_step": SOURCE_STEP,
+    "units": UNITS,
+    "gates": {
+        "step_file_check": True,
+        "workbench_step_import": None,
+        "spaceclaim_beam_idealization": None,
+        "mechanical_line_body_import": None,
+    },
+    "members": [],
+    "warnings": [],
+    "errors": [],
+    "evidence": {},
+}
+
+
+def require_recorded_code(member):
+    raise RuntimeError(
+        "RECORDER_REQUIRED: capture V252 Extract Beam/Create Beam selection for member "
+        + str(member.get("name"))
+    )
+
+
+def intended_profile_command(section):
+    kind = section.get("kind")
+    if kind == "rectangular_hollow":
+        return "BeamProfile.CreateRectangular(thickness, width, depth, csName, info)"
+    if kind == "circular_tube":
+        return "BeamProfile.CreateCircular(outerDiameter, innerDiameter, csName, info)"
+    if kind == "solid_rectangle":
+        return "BeamProfile.CreateFlatBar(baseWidth, depth, webRootRadius, csName, info)"
+    if kind == "custom":
+        return "Beam.ExtractProfile(selection, info)"
+    raise RuntimeError("Unsupported section kind: " + str(kind))
+
+
+try:
+    if not MEMBER_MANIFEST:
+        raise RuntimeError("Member manifest is empty")
+    for member in MEMBER_MANIFEST:
+        section = member.get("section", {})
+        report["members"].append({
+            "name": member.get("name"),
+            "source_body": member.get("source_body"),
+            "intended_profile_command": intended_profile_command(section),
+            "converted": False,
+        })
+        # RECORDER_REQUIRED: body selection, centerline extraction/construction,
+        # Beam.Create, Beam.SetOrientation, Beam.SetPosition, and body suppression.
+        require_recorded_code(member)
+except Exception as error:
+    report["errors"].append(str(error))
+    report["traceback"] = traceback.format_exc()
+
+print("ANSYS_STRUCTURAL_JSON:" + json.dumps(report, sort_keys=True))

@@ -1,11 +1,22 @@
 ---
 name: ansys-structural-workbench
-description: Orchestrate evidence-backed ANSYS Workbench and Mechanical structural analyses through a configured MCP, including capability discovery, existing-project or CAD intake, materials, named selections, connections, loads, high-quality mesh planning and repair, solving, convergence diagnosis, deterministic validation, and report export. Use for linear static, nonlinear static, contact, modal, eigenvalue buckling, or related structural-analysis work when Codex must operate or inspect a live Workbench session instead of only explaining theory.
+description: "Operate or inspect live ANSYS Workbench Mechanical structural simulations through the configured MCP, including model setup, materials, connections, loads, mesh, solve, convergence, validation, and reporting. Use whenever a user asks Codex to create, configure, inspect, mesh, solve, troubleshoot, or validate a live Workbench structural analysis. Before model decisions or mutation, load ansys-workbench-practical-reference once as the book-distilled router and then the matching narrow reference Skill. Load static-modeling for every Static Structural task, plus nonlinear-contact for contact, friction, plasticity, large deformation, buckling, or nonlinear convergence. Do not use for theory-only questions or Fluent/CFX operation."
 ---
 
 # ANSYS Structural Workbench
 
 Operate Workbench as an engineering workflow with explicit quality gates. Treat the MCP as the execution adapter and this Skill as the analysis, meshing, validation, and reporting policy.
+
+## Mandatory book-guidance route
+
+Before inspecting settings for engineering acceptance, mutating the model, meshing, or solving, load `ansys-workbench-practical-reference` once and use it to select the physics-specific book-derived guidance. This is a required intake gate, not an optional source lookup.
+
+- Every Static Structural task must load `ansys-workbench-static-modeling-reference`.
+- A static task with contact or friction must load both `ansys-workbench-static-modeling-reference` and `ansys-workbench-nonlinear-contact-reference`.
+- Also load `ansys-workbench-nonlinear-contact-reference` for plasticity, large deflection, buckling, stabilization, changing contact state, or nonlinear convergence.
+- Modal, transient, explicit, thermal, and optimization tasks load only their matching narrow reference Skill; do not load unrelated book domains.
+
+The book-derived Skills govern modeling assumptions and physical checks. This Skill governs live MCP actions, evidence, and safe execution. Record which guidance Skills were loaded in the task intake or final report. Do not repeatedly re-route after the applicable set has been loaded.
 
 ## Start safely
 

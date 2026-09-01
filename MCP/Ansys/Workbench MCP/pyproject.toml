@@ -1,7 +1,12 @@
+[build-system]
+requires = ["setuptools>=77", "wheel"]
+build-backend = "setuptools.build_meta"
+
 [project]
 name = "ansys-workbench-mcp"
-version = "0.1.0"
+version = "0.2.0"
 description = "MCP server and ANSYS Mechanical ACT bridge for Workbench automation"
+readme = "README.md"
 requires-python = ">=3.10"
 dependencies = [
     "fastmcp>=2.0,<3",
@@ -10,10 +15,30 @@ dependencies = [
 
 [project.optional-dependencies]
 mechanical = ["ansys-mechanical-core>=0.11"]
+workbench = [
+    "ansys-workbench-core>=0.14,<0.15",
+    "ansys-mechanical-core>=0.13,<0.14",
+    "psutil>=5.9,<8",
+]
 dev = ["pytest>=8.0,<9"]
+
+[project.scripts]
+ansys-workbench-mcp = "server:main"
+
+[tool.setuptools]
+include-package-data = true
+py-modules = ["server"]
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["tools*", "workbench_plugin*", "examples*"]
+
+[tool.setuptools.package-data]
+examples = ["*.json", "*.template", "*.toml"]
+workbench_plugin = ["*.xml"]
 
 [tool.pytest.ini_options]
 pythonpath = ["."]
 
 [tool.uv]
-package = false
+package = true

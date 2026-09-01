@@ -1,0 +1,81 @@
+SetScriptVersion(Version="25.2.170")
+
+import json
+import os
+import traceback
+
+STEP_PATH = __STEP_PATH_PY__
+PROJECT_PATH = __PROJECT_PATH_PY__
+STATUS_PATH = __STATUS_PATH_PY__
+SYSTEM_NAME = __SYSTEM_NAME_PY__
+UNITS = __UNITS_PY__
+ALLOW_OVERWRITE = __ALLOW_OVERWRITE_PY__
+OPEN_SPACECLAIM = __OPEN_SPACECLAIM_PY__
+
+
+def emit(report):
+    payload = json.dumps(report, sort_keys=True)
+    stream = open(STATUS_PATH, "w")
+    try:
+        stream.write(payload)
+    finally:
+        stream.close()
+    print("ANSYS_STRUCTURAL_JSON:" + payload)
+
+
+report = {
+    "schema_version": 1,
+    "workflow": "fusion_step_to_beam_smoke",
+    "phase": "WORKBENCH_STEP_IMPORT",
+    "status": "FAIL",
+    "ok": False,
+    "source_step": STEP_PATH,
+    "project_path": PROJECT_PATH,
+    "units": UNITS,
+    "gates": {
+        "step_file_check": None,
+        "workbench_step_import": None,
+        "spaceclaim_beam_idealization": None,
+        "mechanical_line_body_import": None,
+    },
+    "warnings": [],
+    "errors": [],
+    "evidence": {},
+}
+
+try:
+    if not os.path.isfile(STEP_PATH):
+        raise RuntimeError("STEP file does not exist: " + STEP_PATH)
+    if os.path.getsize(STEP_PATH) <= 0:
+        raise RuntimeError("STEP file is empty: " + STEP_PATH)
+    report["gates"]["step_file_check"] = True
+    if os.path.exists(PROJECT_PATH) and not ALLOW_OVERWRITE:
+        raise RuntimeError("Output project already exists; overwrite is not authorized: " + PROJECT_PATH)
+
+    template = GetTemplate(TemplateName="Static Structural", Solver="ANSYS")
+    system = template.CreateSystem()
+    system.DisplayText = SYSTEM_NAME
+    geometry = system.GetContainer(ComponentName="Geometry")
+    props = geometry.GetGeometryProperties()
+    props.GeometryImportSolidBodies = True
+    props.GeometryImportSurfaceBodies = False
+    props.GeometryImportLineBodies = False
+    props.GeometryImportAnalysisType = "AnalysisType_3D"
+    geometry.SetFile(FilePath=STEP_PATH)
+    Save(FilePath=PROJECT_PATH, Overwrite=ALLOW_OVERWRITE)
+
+    report["status"] = "BLOCKED"
+    report["evidence"]["journal_completed"] = True
+    report["evidence"]["project_saved"] = os.path.isfile(PROJECT_PATH)
+    report["warnings"].append(
+        "Workbench accepted the STEP source and saved the project, but solid inventory must be observed in SpaceClaim before STEP_IMPORT can pass."
+    )
+    if OPEN_SPACECLAIM:
+        geometry.Edit(IsSpaceClaimGeometry=True)
+        report["evidence"]["spaceclaim_edit_requested"] = True
+    emit(report)
+except Exception as error:
+    report["errors"].append(str(error))
+    report["traceback"] = traceback.format_exc()
+    emit(report)
+    raise
