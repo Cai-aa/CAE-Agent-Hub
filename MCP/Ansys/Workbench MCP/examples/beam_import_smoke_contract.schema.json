@@ -1,0 +1,48 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://local.invalid/ansys/beam-import-smoke-contract.schema.json",
+  "title": "Fusion STEP to ANSYS beam import smoke result",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "workflow",
+    "phase",
+    "status",
+    "ok",
+    "source_step",
+    "units",
+    "gates",
+    "warnings",
+    "errors",
+    "evidence"
+  ],
+  "properties": {
+    "schema_version": {"const": 1},
+    "workflow": {"const": "fusion_step_to_beam_smoke"},
+    "phase": {
+      "enum": ["PREPARED", "WORKBENCH_STEP_IMPORT", "SPACECLAIM_BEAM_IDEALIZATION", "MECHANICAL_LINE_BODY_IMPORT"]
+    },
+    "status": {"enum": ["NOT_RUN", "BLOCKED", "FAIL", "PASS"]},
+    "ok": {"type": "boolean"},
+    "source_step": {"type": "string", "minLength": 1},
+    "project_path": {"type": ["string", "null"]},
+    "units": {"enum": ["mm", "m", "in"]},
+    "gates": {
+      "type": "object",
+      "required": ["step_file_check", "workbench_step_import", "spaceclaim_beam_idealization", "mechanical_line_body_import"],
+      "properties": {
+        "step_file_check": {"type": ["boolean", "null"]},
+        "workbench_step_import": {"type": ["boolean", "null"]},
+        "spaceclaim_beam_idealization": {"type": ["boolean", "null"]},
+        "mechanical_line_body_import": {"type": ["boolean", "null"]}
+      },
+      "additionalProperties": false
+    },
+    "members": {"type": "array", "items": {"type": "object"}},
+    "counts": {"type": "object"},
+    "warnings": {"type": "array", "items": {"type": "string"}},
+    "errors": {"type": "array", "items": {"type": "string"}},
+    "evidence": {"type": "object"}
+  },
+  "additionalProperties": true
+}

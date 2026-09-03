@@ -19,7 +19,7 @@ From this folder:
 ```powershell
 py -m venv .venv
 .\.venv\Scripts\python.exe -m pip install -U pip
-.\.venv\Scripts\python.exe -m pip install -e .[mechanical]
+.\.venv\Scripts\python.exe -m pip install -e .[workbench]
 ```
 
 Copy `.env.example` to `.env` and set your local ANSYS paths.
@@ -50,7 +50,7 @@ Please configure Codex MCP with a stdio server named `ansys-workbench`:
 If the virtual environment does not exist, create it and install the project with:
 py -m venv .venv
 .\.venv\Scripts\python.exe -m pip install -U pip
-.\.venv\Scripts\python.exe -m pip install -e .[mechanical]
+.\.venv\Scripts\python.exe -m pip install -e .[workbench]
 
 After configuring the server, verify it by listing MCP tools and then run `workbench_detect_tool`.
 ```
@@ -73,7 +73,7 @@ Use a stdio MCP server named `ansys-workbench`:
   - WORKBENCH_MCP_QUEUE_ROOT=<repo>\workbench_queue
   - WORKBENCH_MCP_PORT=9885
 
-If dependencies are missing, create `.venv` and run `pip install -e .[mechanical]`.
+If dependencies are missing, create `.venv` and run `pip install -e .[workbench]`.
 Then restart Claude Code and confirm the Workbench MCP tools are available.
 ```
 
@@ -122,7 +122,7 @@ Add a stdio MCP server named `ansys-workbench` using:
   - WORKBENCH_MCP_HOST=127.0.0.1
   - WORKBENCH_MCP_PORT=9885
 
-If `.venv` is missing, create it and install dependencies with `pip install -e .[mechanical]`.
+If `.venv` is missing, create it and install dependencies with `pip install -e .[workbench]`.
 After saving the MCP settings, reload Cursor and run a tool discovery check.
 ```
 
@@ -177,7 +177,7 @@ The plugin also auto-starts the queue timer and socket timer by default. Set `WO
 
 ## MCP Tools
 
-The server exposes tools for:
+Version 0.2.1 exposes 45 tools across the original bridge, the high-level Workbench session layer, and the Mechanical structural workflows:
 
 - detecting Workbench and PyMechanical
 - launching Workbench journals
@@ -185,6 +185,24 @@ The server exposes tools for:
 - reading job logs and status
 - submitting queue requests to Mechanical
 - executing Python in the currently open Mechanical session through the queue or socket timer bridge
+
+### High-level Workbench session tools
+
+- `workbench_session_status_tool`: process and managed-session inventory.
+- `workbench_bootstrap_current_tool`: identity-gated bootstrap of the one current Workbench through the live bridge.
+- `workbench_attach_current_tool`: attach to a known Workbench `StartServer` endpoint.
+- `workbench_launch_managed_tool`: launch only when no Workbench process already exists.
+- `workbench_project_inventory_tool`: exact project and internal-system inventory.
+- `workbench_project_open_tool`: guarded `.wbpj` open in an empty managed session.
+- `workbench_project_save_as_tool`: non-overwriting save-as by default.
+- `workbench_model_open_tool`: open/connect one exact Mechanical Model session.
+- `workbench_model_state_tool`: verify project, system, bodies, analyses, and types.
+- `workbench_model_execute_python_tool`: execute Mechanical Python after the identity gate passes.
+- `workbench_session_disconnect_tool`: close MCP client channels without terminating Workbench or Mechanical.
+
+MCP tool discovery is performed when the stdio server starts. After upgrading,
+restart or reload the MCP server process; an already running process keeps its
+previous tool registry.
 
 ### Rotating-static and prestressed-modal tools
 
@@ -247,6 +265,29 @@ Run the offline tests with:
 $env:PYTHONDONTWRITEBYTECODE='1'
 python -m unittest discover -s tests -v
 ```
+
+## Fusion STEP to beam intake templates
+
+The repository includes a guarded V252 intake kit for Fusion 360 thin-wall solids that will later become SpaceClaim/Mechanical beam bodies:
+
+- `examples/workbench_import_step_v252.wbjn.template`: Workbench STEP intake journal.
+- `tools/prepare_beam_import_smoke.py`: validates the source file, refuses unapproved overwrite, and renders the journal plus a `NOT_RUN` request record.
+- `examples/spaceclaim_thinwall_step_to_beam_v252.py.template`: recorder-first SpaceClaim conversion skeleton. It intentionally stops at `RECORDER_REQUIRED` until the active V252 selection/extraction commands are captured.
+- `examples/mechanical_line_body_inspection_v252.py`: read-only Mechanical Line Body inventory for the main-context queue.
+- `examples/beam_import_smoke_contract.schema.json` and `tools/validate_beam_import_contract.py`: common evidence contract and static validator.
+
+Prepare, but do not run, an import journal:
+
+```powershell
+.\.venv\Scripts\python.exe tools\prepare_beam_import_smoke.py `
+  --step "C:\absolute\model.step" `
+  --project "C:\absolute\output\model.wbpj" `
+  --output-dir "C:\absolute\output\prepared" `
+  --units mm `
+  --open-spaceclaim
+```
+
+Then submit the rendered `.wbjn` through `workbench_run_journal_tool` with `batch=false` when a graphical SpaceClaim session is required. Workbench journal completion is not proof that beam idealization or Mechanical Line Body intake passed; those gates require their own observed reports.
 
 ## Notes
 

@@ -47,6 +47,21 @@ from tools.mechanical_workflows import (
 )
 
 
+from tools.workbench_session import (
+    workbench_attach_current,
+    workbench_bootstrap_current,
+    workbench_launch_managed,
+    workbench_model_execute_python,
+    workbench_model_open,
+    workbench_model_state,
+    workbench_project_inventory,
+    workbench_project_open,
+    workbench_project_save_as,
+    workbench_session_disconnect,
+    workbench_session_status,
+)
+
+
 load_dotenv()
 
 mcp = FastMCP("Ansys Workbench MCP")
@@ -379,5 +394,144 @@ def mechanical_export_evidence_tool(
     )
 
 
+@mcp.tool()
+def workbench_session_status_tool() -> dict:
+    """Inspect Workbench/Mechanical processes and managed MCP sessions."""
+    return workbench_session_status()
+
+
+@mcp.tool()
+def workbench_bootstrap_current_tool(
+    expected_project_path: str | None = None,
+    expected_system_name: str | None = None,
+    security: str = "wnua",
+    host: str = "localhost",
+    bridge_timeout: float = 10.0,
+) -> dict:
+    """Safely attach to the one existing Workbench through its live bridge."""
+    return workbench_bootstrap_current(
+        expected_project_path=expected_project_path,
+        expected_system_name=expected_system_name,
+        security=security,
+        host=host,
+        bridge_timeout=bridge_timeout,
+    )
+
+
+@mcp.tool()
+def workbench_attach_current_tool(
+    port: int,
+    security: str = "mtls",
+    host: str = "localhost",
+) -> dict:
+    """Attach to an existing Workbench instance whose StartServer port is known."""
+    return workbench_attach_current(port=port, security=security, host=host)
+
+
+@mcp.tool()
+def workbench_launch_managed_tool(
+    version: str = "252",
+    show_gui: bool = True,
+    server_workdir: str | None = None,
+    use_insecure_connection: bool = False,
+) -> dict:
+    """Launch one PyWorkbench-managed instance; refuse when Workbench already exists."""
+    return workbench_launch_managed(
+        version=version,
+        show_gui=show_gui,
+        server_workdir=server_workdir,
+        use_insecure_connection=use_insecure_connection,
+    )
+
+
+@mcp.tool()
+def workbench_project_inventory_tool(session_id: str) -> dict:
+    """List the active Workbench project and its exact internal system names."""
+    return workbench_project_inventory(session_id=session_id)
+
+
+@mcp.tool()
+def workbench_project_open_tool(session_id: str, project_path: str) -> dict:
+    """Open an existing .wbpj in a managed empty Workbench session."""
+    return workbench_project_open(session_id=session_id, project_path=project_path)
+
+
+@mcp.tool()
+def workbench_project_save_as_tool(
+    session_id: str,
+    target_path: str,
+    overwrite: bool = False,
+) -> dict:
+    """Save the active Workbench project under a new path without overwriting by default."""
+    return workbench_project_save_as(
+        session_id=session_id,
+        target_path=target_path,
+        overwrite=overwrite,
+    )
+
+
+@mcp.tool()
+def workbench_model_open_tool(
+    session_id: str,
+    system_name: str | None = None,
+    transport_mode: str | None = None,
+    connect_timeout: float = 120.0,
+    mechanical_port: int | None = None,
+) -> dict:
+    """Start and connect to the Mechanical Model for one exact Workbench system."""
+    return workbench_model_open(
+        session_id=session_id,
+        system_name=system_name,
+        transport_mode=transport_mode,
+        connect_timeout=connect_timeout,
+        mechanical_port=mechanical_port,
+    )
+
+
+@mcp.tool()
+def workbench_model_state_tool(
+    model_session_id: str,
+    expected_body_count: int | None = None,
+    expected_analysis_count: int | None = None,
+    expected_project_path: str | None = None,
+    expected_system_name: str | None = None,
+    expected_body_names: list[str] | None = None,
+    expected_analysis_names: list[str] | None = None,
+    expected_analysis_types: list[str] | None = None,
+) -> dict:
+    """Verify a Workbench-managed Mechanical Model by body and analysis counts."""
+    return workbench_model_state(
+        model_session_id=model_session_id,
+        expected_body_count=expected_body_count,
+        expected_analysis_count=expected_analysis_count,
+        expected_project_path=expected_project_path,
+        expected_system_name=expected_system_name,
+        expected_body_names=expected_body_names,
+        expected_analysis_names=expected_analysis_names,
+        expected_analysis_types=expected_analysis_types,
+    )
+
+
+@mcp.tool()
+def workbench_model_execute_python_tool(model_session_id: str, code: str) -> dict:
+    """Execute Mechanical Python in one explicitly selected model session."""
+    return workbench_model_execute_python(model_session_id=model_session_id, code=code)
+
+
+@mcp.tool()
+def workbench_session_disconnect_tool(session_id: str) -> dict:
+    """Disconnect MCP clients without closing Workbench or Mechanical processes."""
+    return workbench_session_disconnect(session_id=session_id)
+
+
+def main() -> None:
+    """Run the stdio MCP server without a Unicode startup banner."""
+
+    # Codex consumes MCP stdio and diagnostic streams as UTF-8.  Suppress the
+    # Rich/Unicode startup banner so a Windows legacy code page cannot corrupt
+    # the startup stream before the initialize handshake completes.
+    mcp.run(show_banner=False)
+
+
 if __name__ == "__main__":
-    mcp.run()
+    main()

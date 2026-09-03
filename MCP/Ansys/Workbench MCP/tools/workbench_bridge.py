@@ -171,24 +171,53 @@ def launch_workbench_journal(
     if extra_args:
         cmd.extend(extra_args)
 
-    stdout = stdout_path.open("w", encoding="utf-8", errors="replace")
-    stderr = stderr_path.open("w", encoding="utf-8", errors="replace")
-    proc = subprocess.Popen(
-        cmd,
-        cwd=str(run_cwd),
-        stdout=stdout,
-        stderr=stderr,
-        stdin=subprocess.DEVNULL,
-        creationflags=getattr(subprocess, "CREATE_NO_WINDOW", 0),
-    )
-    stdout.close()
-    stderr.close()
+    stdout_path.touch()
+    stderr_path.touch()
+    if os.name == "nt":
+        launch_exe = cmd[0]
+        launch_args = cmd[1:]
+        if Path(launch_exe).suffix.lower() in {".bat", ".cmd"}:
+            launch_args = [
+                "/d",
+                "/s",
+                "/c",
+                "call",
+                '"' + launch_exe + '"',
+                *launch_args,
+            ]
+            launch_exe = os.environ.get("ComSpec", "cmd.exe")
+        launch_env = os.environ.copy()
+        launch_env["WORKBENCH_MCP_LAUNCH_EXE"] = launch_exe
+        launch_env["WORKBENCH_MCP_LAUNCH_ARGS"] = json.dumps(launch_args)
+        launch_env["WORKBENCH_MCP_LAUNCH_CWD"] = str(run_cwd)
+        launcher = subprocess.run(
+            [
+                "powershell.exe",
+                "-NoProfile",
+                "-NonInteractive",
+                "-Command",
+                "$a = ConvertFrom-Json $env:WORKBENCH_MCP_LAUNCH_ARGS; "
+                "$p = Start-Process -FilePath $env:WORKBENCH_MCP_LAUNCH_EXE "
+                "-ArgumentList $a -WorkingDirectory $env:WORKBENCH_MCP_LAUNCH_CWD "
+                "-PassThru; $p.Id",
+            ],
+            text=True,
+            capture_output=True,
+            env=launch_env,
+            timeout=30,
+        )
+        if launcher.returncode != 0:
+            raise RuntimeError(launcher.stderr.strip() or "Start-Process failed")
+        pid = int(launcher.stdout.strip().splitlines()[-1])
+    else:
+        proc = subprocess.Popen(cmd, cwd=str(run_cwd))
+        pid = proc.pid
 
     payload = {
         "job_id": job_id,
         "kind": "workbench_journal",
         "status": "running",
-        "pid": proc.pid,
+        "pid": pid,
         "command": cmd,
         "cwd": str(run_cwd),
         "journal_path": str(journal),
@@ -235,24 +264,41 @@ def launch_mechanical_script(
     if script_args:
         cmd.extend(["--script-args", script_args])
 
-    stdout = stdout_path.open("w", encoding="utf-8", errors="replace")
-    stderr = stderr_path.open("w", encoding="utf-8", errors="replace")
-    proc = subprocess.Popen(
-        cmd,
-        cwd=str(script.parent),
-        stdout=stdout,
-        stderr=stderr,
-        stdin=subprocess.DEVNULL,
-        creationflags=getattr(subprocess, "CREATE_NO_WINDOW", 0),
-    )
-    stdout.close()
-    stderr.close()
+    stdout_path.touch()
+    stderr_path.touch()
+    if os.name == "nt":
+        launch_env = os.environ.copy()
+        launch_env["WORKBENCH_MCP_LAUNCH_EXE"] = cmd[0]
+        launch_env["WORKBENCH_MCP_LAUNCH_ARGS"] = json.dumps(cmd[1:])
+        launch_env["WORKBENCH_MCP_LAUNCH_CWD"] = str(script.parent)
+        launcher = subprocess.run(
+            [
+                "powershell.exe",
+                "-NoProfile",
+                "-NonInteractive",
+                "-Command",
+                "$a = ConvertFrom-Json $env:WORKBENCH_MCP_LAUNCH_ARGS; "
+                "$p = Start-Process -FilePath $env:WORKBENCH_MCP_LAUNCH_EXE "
+                "-ArgumentList $a -WorkingDirectory $env:WORKBENCH_MCP_LAUNCH_CWD "
+                "-PassThru; $p.Id",
+            ],
+            text=True,
+            capture_output=True,
+            env=launch_env,
+            timeout=30,
+        )
+        if launcher.returncode != 0:
+            raise RuntimeError(launcher.stderr.strip() or "Start-Process failed")
+        pid = int(launcher.stdout.strip().splitlines()[-1])
+    else:
+        proc = subprocess.Popen(cmd, cwd=str(script.parent))
+        pid = proc.pid
 
     payload = {
         "job_id": job_id,
         "kind": "mechanical_script",
         "status": "running",
-        "pid": proc.pid,
+        "pid": pid,
         "command": cmd,
         "cwd": str(script.parent),
         "script_path": str(script),

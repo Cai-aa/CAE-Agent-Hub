@@ -19,7 +19,7 @@
 ```powershell
 py -m venv .venv
 .\.venv\Scripts\python.exe -m pip install -U pip
-.\.venv\Scripts\python.exe -m pip install -e .[mechanical]
+.\.venv\Scripts\python.exe -m pip install -e .[workbench]
 ```
 
 复制 `.env.example` 为 `.env`，然后填入你本机的 ANSYS 路径。
@@ -50,7 +50,7 @@ py -m venv .venv
 如果虚拟环境还不存在，请先创建并安装依赖：
 py -m venv .venv
 .\.venv\Scripts\python.exe -m pip install -U pip
-.\.venv\Scripts\python.exe -m pip install -e .[mechanical]
+.\.venv\Scripts\python.exe -m pip install -e .[workbench]
 
 配置完成后，请通过列出 MCP tools 来验证，并运行 `workbench_detect_tool`。
 ```
@@ -73,7 +73,7 @@ py -m venv .venv
   - WORKBENCH_MCP_QUEUE_ROOT=<repo>\workbench_queue
   - WORKBENCH_MCP_PORT=9885
 
-如果依赖缺失，请创建 `.venv` 并运行 `pip install -e .[mechanical]`。
+如果依赖缺失，请创建 `.venv` 并运行 `pip install -e .[workbench]`。
 然后重启 Claude Code，确认 Workbench MCP tools 已可用。
 ```
 
@@ -122,7 +122,7 @@ py -m venv .venv
   - WORKBENCH_MCP_HOST=127.0.0.1
   - WORKBENCH_MCP_PORT=9885
 
-如果 `.venv` 不存在，请创建虚拟环境并安装依赖：`pip install -e .[mechanical]`。
+如果 `.venv` 不存在，请创建虚拟环境并安装依赖：`pip install -e .[workbench]`。
 保存 MCP 设置后，重新加载 Cursor，并执行一次 tool discovery 检查。
 ```
 
@@ -177,7 +177,7 @@ WORKBENCH_MCP_PORT=9885
 
 ## MCP 工具
 
-服务器提供以下工具：
+0.2.1 版本共暴露 45 个工具，覆盖原有桥接、高层 Workbench 会话层和 Mechanical 结构分析工作流：
 
 - 检测 Workbench 和 PyMechanical
 - 启动 Workbench journal
@@ -185,6 +185,23 @@ WORKBENCH_MCP_PORT=9885
 - 读取作业日志和状态
 - 向 Mechanical 提交队列请求
 - 通过队列或 socket timer 在当前打开的 Mechanical 会话中执行 Python
+
+### 高层 Workbench 会话工具
+
+- `workbench_session_status_tool`：进程和托管会话盘点。
+- `workbench_bootstrap_current_tool`：通过实时桥对唯一现有 Workbench 做身份门控启动/复用。
+- `workbench_attach_current_tool`：连接已知的 Workbench `StartServer` 端点。
+- `workbench_launch_managed_tool`：仅在没有现有 Workbench 进程时启动实例。
+- `workbench_project_inventory_tool`：读取精确工程和内部 System 名称。
+- `workbench_project_open_tool`：只在空托管会话中受保护地打开 `.wbpj`。
+- `workbench_project_save_as_tool`：默认禁止覆盖的另存为。
+- `workbench_model_open_tool`：打开并连接指定 System 的 Mechanical Model。
+- `workbench_model_state_tool`：核验工程、System、实体、分析及其类型。
+- `workbench_model_execute_python_tool`：仅在身份门通过后执行 Mechanical Python。
+- `workbench_session_disconnect_tool`：只关闭 MCP 客户端通道，不终止 Workbench 或 Mechanical。
+
+MCP 工具发现发生在 stdio server 启动时。升级后必须重载或重启 MCP server
+进程；已经运行的进程会继续保留旧工具注册表。
 
 ### 旋转静力与预应力模态工具
 
@@ -247,6 +264,29 @@ mechanical_readiness_tool
 $env:PYTHONDONTWRITEBYTECODE='1'
 python -m unittest discover -s tests -v
 ```
+
+## Fusion STEP 到梁模型的导入模板
+
+仓库现包含一套受保护的 V252 导入配套，用于把 Fusion 360 薄壁实体先导入 Workbench，后续再在 SpaceClaim/Mechanical 中转成梁体：
+
+- `examples/workbench_import_step_v252.wbjn.template`：Workbench STEP 导入 Journal。
+- `tools/prepare_beam_import_smoke.py`：检查源文件、拒绝未经授权的覆盖，并生成 Journal 和标记为 `NOT_RUN` 的请求记录。
+- `examples/spaceclaim_thinwall_step_to_beam_v252.py.template`：以 Script Recorder 为准的 SpaceClaim 转换骨架。在当前 V252 的选择/提取命令尚未录制前，会在 `RECORDER_REQUIRED` 主动停止。
+- `examples/mechanical_line_body_inspection_v252.py`：通过主线程队列执行的 Mechanical Line Body 只读盘点脚本。
+- `examples/beam_import_smoke_contract.schema.json` 与 `tools/validate_beam_import_contract.py`：统一证据契约和静态校验器。
+
+只准备、不运行导入 Journal：
+
+```powershell
+.\.venv\Scripts\python.exe tools\prepare_beam_import_smoke.py `
+  --step "C:\绝对路径\model.step" `
+  --project "C:\绝对路径\output\model.wbpj" `
+  --output-dir "C:\绝对路径\output\prepared" `
+  --units mm `
+  --open-spaceclaim
+```
+
+需要图形化 SpaceClaim 时，再通过 `workbench_run_journal_tool` 以 `batch=false` 提交生成的 `.wbjn`。Journal 执行完成不代表梁理想化或 Mechanical Line Body 导入通过；每个阶段必须有独立的实际观测报告。
 
 ## 说明
 

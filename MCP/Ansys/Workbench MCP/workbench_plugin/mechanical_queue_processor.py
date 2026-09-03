@@ -197,12 +197,27 @@ def _execute_python(code):
     sys.stdout = stdout
     sys.stderr = stderr
     try:
+        data_model = ExtAPI.DataModel
+        project = data_model.Project
+        model = None
+        if project is not None:
+            model = project.Model
+        tree = None
+        try:
+            tree = data_model.Tree
+        except Exception:
+            pass
         env = {
             "ExtAPI": ExtAPI,
-            "Model": Model,
-            "DataModel": DataModel,
-            "Tree": Tree,
+            "Model": model,
+            "DataModel": data_model,
+            "Tree": tree,
         }
+        try:
+            from Ansys.Core.Units import Quantity
+            env["Quantity"] = Quantity
+        except Exception:
+            pass
         exec(code, env, env)
         return {
             "ok": True,
