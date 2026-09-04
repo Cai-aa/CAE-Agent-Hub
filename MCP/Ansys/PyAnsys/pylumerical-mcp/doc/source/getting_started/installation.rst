@@ -6,7 +6,7 @@ This page describes how to install PyLumerical-MCP.
 Check prerequisites
 -------------------
 
-- Python 3.11 or later
+- Python 3.12 or later
 - A valid Lumerical installation and license
 
 For information on setting up your license, see the following article in the Lumerical Knowledge Base:

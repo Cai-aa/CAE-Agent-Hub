@@ -26,7 +26,7 @@ jobs:
       pull-requests: write # Needed to synchronize labels on pull requests
     steps:
       - name: "Checkout repository"
-        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
 
@@ -46,7 +46,7 @@ jobs:
 
     # Label based on modified files
     - name: "Label based on changed files"
-      uses: actions/labeler@b8dd2d9be0f68b860e7dae5dae7d772984eacd6d # v6.2.0
+      uses: actions/labeler@bf12e9b00b37c5c0ca2b87b79b2daf7891dbda13 # v7.0.0
       with:
         repo-token: "${{ secrets.GITHUB_TOKEN }}"
         sync-labels: true
@@ -129,7 +129,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: "Changelog fragment"
-      uses: ansys/actions/doc-changelog@7419880d64bb0bba83f968ca803611df0b76faf0 #v10.3.4
+      uses: ansys/actions/doc-changelog@7e89e00c5619374a1da8c2e876309d8b15ff0559 #v11.0.3
       with:
         use-pull-request-title: true
         use-default-towncrier-config: true

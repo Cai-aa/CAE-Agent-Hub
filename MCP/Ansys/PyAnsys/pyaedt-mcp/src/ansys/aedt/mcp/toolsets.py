@@ -92,11 +92,15 @@ _TOOLSET_CATALOGUE: dict[str, dict[str, Any]] = {
     "simulation": {
         "description": ("Tools for configuring and running AEDT solver analyses."),
         "skill": (
+            "Use validate_design to run AEDT design checks before solving, "
+            "especially after creating or modifying a specific design. "
             "Use analyze_design to run a configured setup/sweep on the "
-            "active design. Use export_config to persist the current setup "
-            "and sweep configuration for reproducibility or sharing."
+            "active design after validation passes. Use export_config to "
+            "persist the current setup and sweep configuration for "
+            "reproducibility or sharing."
         ),
         "tools": [
+            "validate_design",
             "analyze_design",
             "export_config",
         ],

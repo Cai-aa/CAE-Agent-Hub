@@ -33,6 +33,8 @@ Always available (before connection)
      - Verify that Mechanical is installed and discoverable.
    * - ``check_mechanical_status``
      - Inspect current MCP connection state.
+   * - ``get_session_diagnostics``
+     - Return non-sensitive Mechanical and persistent Python session diagnostics.
    * - ``list_mechanical_instances``
      - List running Mechanical processes.
    * - ``launch_mechanical``
@@ -69,6 +71,8 @@ Available after connection
      - Upload local file to Mechanical working directory.
    * - ``download_file``
      - Download file from Mechanical working directory.
+   * - ``download_project``
+     - Download all supported project files, optionally filtered by extension.
    * - ``list_files``
      - List files in working directory.
    * - ``solve_analysis``

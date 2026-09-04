@@ -1,5 +1,5 @@
 [build-system]
-requires = ["flit_core >=3.2,<4"]
+requires = ["flit_core >=3.2,<5"]
 build-backend = "flit_core.buildapi"
 
 [project]
@@ -7,7 +7,7 @@ name = "ansys-lumerical-mcp"
 version = "0.1.dev0"
 description = "Model Context Protocol (MCP) server for Ansys Lumerical through PyLumerical"
 readme = "README.md"
-requires-python = ">=3.11,<4"
+requires-python = ">=3.12,<4"
 license = { file = "LICENSE" }
 authors = [
     { name = "ANSYS, Inc.", email = "pyansys.core@ansys.com" }
@@ -27,30 +27,28 @@ keywords = [
     "mcp",
     "model-context-protocol",
     "ai",
-    "assistant",
+    "assistant"
 ]
 classifiers = [
     "Development Status :: 3 - Alpha",
     "Intended Audience :: Developers",
     "Intended Audience :: Science/Research",
-    "License :: OSI Approved :: Apache Software License",
     "Operating System :: OS Independent",
-    "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.13",
     "Programming Language :: Python :: 3.14",
     "Topic :: Scientific/Engineering",
-    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: Software Development :: Libraries :: Python Modules"
 ]
 dependencies = [
     "ansys-lumerical-core>=0.3",
     "python-dotenv>=1.0.0",
-    "ansys-common-mcp>=0.3",
+    "ansys-common-mcp>=0.3.3",
 ]
 
 [project.optional-dependencies]
 tests = [
-    "ansys-common-mcp==0.3.2",
+    "ansys-common-mcp==0.3.3",
     "ansys-lumerical-core==0.3.0",
     "pytest==9.1.1",
     "pytest-asyncio==1.4.0",
@@ -58,17 +56,17 @@ tests = [
     "pytest-timeout==2.4.0",
     "pytest-xdist==3.8.0",
     "pytest-cov==7.1.0",
-    "python-dotenv==1.2.2",
+    "python-dotenv==1.2.3"
 ]
 
 doc = [
-    "ansys-common-mcp==0.3.2",
+    "ansys-common-mcp==0.3.3",
     "ansys-lumerical-core==0.3.0",
-    "ansys-sphinx-theme[autoapi,changelog]>=1.8.2; python_version >= '3.12'",
-    "numpydoc>=1.10.0; python_version >= '3.12'",
-    "python-dotenv==1.2.2",
-    "sphinx>=9.1.0; python_version >= '3.12'",
-    "sphinx-copybutton>=0.5.2; python_version >='3.12'"
+    "ansys-sphinx-theme[autoapi,changelog]>=1.8.2",
+    "numpydoc>=1.10.0",
+    "python-dotenv==1.2.3",
+    "sphinx>=9.1.0",
+    "sphinx-copybutton>=0.5.2",
 ]
 
 [project.urls]
@@ -114,7 +112,7 @@ lint.isort.known-first-party = [ "ansys.lumerical.mcp" ]
 lint.pydocstyle.convention = "numpy"
 
 [tool.mypy]
-python_version = "3.11"
+python_version = "3.12"
 strict = false
 warn_return_any = true
 warn_unused_configs = true
@@ -126,7 +124,7 @@ exclude = [
     "^\\.venv/",
     "^venv/",
     "^build/",
-    "^dist/",
+    "^dist/"
 ]
 
 [tool.pytest.ini_options]
@@ -139,14 +137,14 @@ timeout = 120
 markers = [
     "integration: tests requiring Lumerical installation",
     "unit: Unit tests that don't require Lumerical",
-    "slow: Tests that take a long time to run",
+    "slow: Tests that take a long time to run"
 ]
 addopts = [
     "--verbose",
     "--cov=ansys.lumerical.mcp",
     "--cov-report=term-missing",
     "--cov-report=html",
-    "--cov-report=xml",
+    "--cov-report=xml"
 ]
 
 [tool.pydocstyle]
@@ -162,7 +160,7 @@ exclude = [
     ".venv",
     "venv",
     "build",
-    "dist",
+    "dist"
 ]
 
 [tool.towncrier]

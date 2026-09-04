@@ -22,6 +22,7 @@ loaded when the persistent Python session starts.
 
 import base64
 from io import BytesIO, TextIOWrapper
+import os
 import sys
 
 # Set UTF-8 encoding for stdout and stderr to handle Unicode characters
@@ -30,35 +31,42 @@ if sys.stdout.encoding != "utf-8":
 if sys.stderr.encoding != "utf-8":
     sys.stderr = TextIOWrapper(sys.stderr.buffer, encoding="utf-8", errors="replace")
 
-# Matplotlib is optional; needed only for create_custom_plot
-try:
-    import matplotlib
-    import matplotlib.pyplot as plt
+# Configure optional plotting packages only when a plotting helper is called.
+# Starting a plotting/VTK stack during the MCP initialize handshake can delay
+# clients that never request a custom plot. This environment setting also makes
+# user code that imports pyplot use a non-interactive backend in headless hosts.
+os.environ.setdefault("MPLBACKEND", "Agg")
+os.environ.setdefault("PYVISTA_OFF_SCREEN", "true")
 
-    matplotlib.use("Agg")
-    MATPLOTLIB_AVAILABLE = True
-except ImportError:
-    MATPLOTLIB_AVAILABLE = False
 
-# Optional: Try to import PyVista for 3D visualization
-try:
-    from PIL import Image
-    import pyvista as pv
+def _load_matplotlib():
+    """Load Matplotlib with the non-interactive backend selected first."""
+    try:
+        import matplotlib
 
-    # Enable off-screen rendering globally
-    pv.OFF_SCREEN = True
+        matplotlib.use("Agg", force=True)
+        import matplotlib.pyplot as plt
 
-    # Set a clean default theme
-    pv.set_plot_theme("document")
+        return plt
+    except Exception:
+        return None
 
-    PYVISTA_AVAILABLE = True
-except ImportError:
-    PYVISTA_AVAILABLE = False
+
+def _load_pyvista():
+    """Load PyVista only when a three-dimensional plot is requested."""
+    try:
+        from PIL import Image
+        import pyvista as pv
+
+        pv.OFF_SCREEN = True
+        pv.set_plot_theme("document")
+        return Image, pv
+    except Exception:
+        return None, None
 
 
 def save_plot(plotter) -> str:
-    """
-    Save the PyVista plot to file and return as base64.
+    """Save the PyVista plot to file and return as base64.
 
     Parameters
     ----------
@@ -70,40 +78,26 @@ def save_plot(plotter) -> str:
     str
         Base64 data URI of the plot.
     """
-    if not PYVISTA_AVAILABLE:
+    image_module, _ = _load_pyvista()
+    if image_module is None:
         return "Error: PyVista is not available"
 
     try:
-        # Capture screenshot
         img_array = plotter.screenshot(return_img=True, transparent_background=False)
-
-        # Convert to PIL Image
-        img = Image.fromarray(img_array)
-
-        # Save to buffer
+        img = image_module.fromarray(img_array)
         buffer = BytesIO()
         img.save(buffer, format="PNG")
-
-        # Seek to beginning before reading
         buffer.seek(0)
-
-        # Encode to base64
         img_base64 = base64.b64encode(buffer.read()).decode("utf-8")
-
-        # Create data URI
-        result = f"data:image/png;base64,{img_base64}"
-
-        # Clean up and return
         plotter.close()
-        return result
+        return f"data:image/png;base64,{img_base64}"
     except Exception as e:
         plotter.close()
         return f"Error in save_plot: {str(e)}"
 
 
 def save_matplotlib_plot(dpi=150):
-    """
-    Return the current Matplotlib plot as a base64-encoded PNG image.
+    """Return the current Matplotlib plot as a base64-encoded PNG image.
 
     Parameters
     ----------
@@ -115,25 +109,14 @@ def save_matplotlib_plot(dpi=150):
     str
         Base64 data URI of the plot.
     """
-    if not MATPLOTLIB_AVAILABLE:
+    plt = _load_matplotlib()
+    if plt is None:
         return "Error: matplotlib is not available"
 
     buffer = BytesIO()
     plt.savefig(buffer, format="png", dpi=dpi, bbox_inches="tight")
     buffer.seek(0)
-
     img_base64 = base64.b64encode(buffer.read()).decode("utf-8")
     result = f"data:image/png;base64,{img_base64}"
     plt.close()
     return result
-
-
-# Print confirmation
-if MATPLOTLIB_AVAILABLE:
-    print("Matplotlib configured with non-interactive backend (Agg)")
-else:
-    print("Matplotlib not available (optional: install for custom plots)")
-if PYVISTA_AVAILABLE:
-    print("PyVista configured for off-screen rendering")
-else:
-    print("PyVista not available (optional)")

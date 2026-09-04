@@ -284,7 +284,7 @@ class TestPythonPersistentSessionIntegration:
         ctx.request_context.lifespan_context = lc
         return ctx
 
-    def test_run_python_code_executes_simple(self, persistent_real_context, capsys):
+    async def test_run_python_code_executes_simple(self, persistent_real_context, capsys):
         """Light-weight execution test using mocked python_session near integration suite."""
         import json
         from unittest.mock import MagicMock
@@ -305,7 +305,7 @@ class TestPythonPersistentSessionIntegration:
         persistent_real_context.request_context.lifespan_context.python_session = session
 
         with capsys.disabled():
-            result = run_python_code(persistent_real_context, code="print('hello')")
+            result = await run_python_code(persistent_real_context, code="print('hello')")
         data = json.loads(result)
         assert data["success"] is True
         assert data["stdout"].strip() == "hello"

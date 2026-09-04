@@ -128,7 +128,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: "Changelog fragment"
-      uses: ansys/actions/doc-changelog@84b6533ae76f5dde69a1df26c18682160a8121cf # v10.3.5
+      uses: ansys/actions/doc-changelog@7e89e00c5619374a1da8c2e876309d8b15ff0559 # v11.0.3
       with:
         use-pull-request-title: true
         use-default-towncrier-config: true

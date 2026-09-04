@@ -128,6 +128,13 @@ class TestToolsetsResource:
         assert "connected session has no open projects" in lifecycle_skill
         assert "call create_design with the matching app_type" in lifecycle_skill
 
+    def test_simulation_toolset_includes_design_validation(self):
+        simulation_tools = _TOOLSET_CATALOGUE["simulation"]["tools"]
+        simulation_skill = _TOOLSET_CATALOGUE["simulation"]["skill"]
+
+        assert "validate_design" in simulation_tools
+        assert "Use validate_design" in simulation_skill
+
 
 if __name__ == "__main__":
     pytest.main([__file__, "-v"])

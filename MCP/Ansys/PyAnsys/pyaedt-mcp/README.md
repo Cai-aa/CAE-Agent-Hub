@@ -28,6 +28,10 @@ Supported AEDT applications include HFSS, Maxwell 2D/3D, Q2D, Q3D, Icepak, Circu
 
 ### Run without cloning
 
+Install [uv](https://docs.astral.sh/uv/getting-started/installation/) first.
+It includes `uvx`, which downloads and runs PyAEDT-MCP without cloning the
+repository.
+
 ```bash
 uvx --from git+https://github.com/ansys/pyaedt-mcp.git ansys-aedt-mcp
 ```
@@ -80,64 +84,27 @@ pre-commit install
 
    > PyAEDT-MCP can also launch AEDT for you if it is not already running.
 
-2. Start PyAEDT-MCP:
+2. Choose an MCP transport:
+
+   - **stdio** is the simplest option for one local client. The client starts
+     PyAEDT-MCP automatically through `uvx` or from a cloned repository's
+     virtual environment.
+   - **HTTP** connects the client to a separately running server. Use it for
+     local development, Docker, or a remote server.
+
+   Start an HTTP server through `uvx` without cloning:
 
    ```bash
-   ansys-aedt-mcp
-   ```
-
-   You can also use one of these common variants:
-
-   ```bash
-   # Connect on startup
-   ansys-aedt-mcp --connect --machine localhost --port 50051
-
-   # Expose HTTP transport instead of STDIO
-   ansys-aedt-mcp --transport http --http-host 127.0.0.1 --http-port 8080
-
-   # Register optional context helper tools
-   ansys-aedt-mcp --include-context
-
-   # Hide AEDT-only tools until a connection exists
-   ansys-aedt-mcp --dynamic-tool-discovery
+   uvx --index-strategy unsafe-best-match \
+     --from git+https://github.com/ansys/pyaedt-mcp.git ansys-aedt-mcp \
+     --transport http --http-host 127.0.0.1 --http-port 8080
    ```
 
 3. Point an MCP client at the server:
 
-   ***Visual Studio Code**
-
-   ```json
-   {
-     "mcp": {
-       "servers": {
-         "pyaedt-mcp": {
-           "command": "uvx",
-           "args": [
-             "--index-strategy", "unsafe-best-match",
-             "--from", "git+https://github.com/ansys/pyaedt-mcp.git",
-             "ansys-aedt-mcp"
-           ]
-         }
-       }
-     }
-   }
-   ```
-
-   **Claude Desktop**
-
-   ```json
-   {
-     "mcpServers": {
-       "pyaedt-mcp": {
-         "command": "uvx",
-         "args": [
-           "--from", "git+https://github.com/ansys/pyaedt-mcp.git",
-           "ansys-aedt-mcp"
-         ]
-       }
-     }
-   }
-   ```
+   Use the [IDE and client configuration guide](https://aedt-mcp.docs.pyansys.com/version/dev/getting_started/ide_configuration.html)
+   for short HTTP and stdio configurations for VS Code/Copilot, Claude,
+   OpenCode, and Codex, plus local virtual-environment instructions.
 
 ## Tool reference
 

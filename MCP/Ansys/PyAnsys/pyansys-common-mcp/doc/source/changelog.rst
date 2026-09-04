@@ -9,6 +9,70 @@ This document contains the release notes for the PyAnsys Common MCP project.
 
 .. towncrier release notes start
 
+`0.3.4 <https://github.com/ansys/pyansys-common-mcp/releases/tag/v0.3.4>`_ - September 03, 2026
+===============================================================================================
+
+.. tab-set::
+
+
+  .. tab-item:: Added
+
+    .. list-table::
+        :header-rows: 0
+        :widths: auto
+
+        * - Make check for consecutive empty reads timeout configurable
+          - `#129 <https://github.com/ansys/pyansys-common-mcp/pull/129>`_
+
+
+  .. tab-item:: Fixed
+
+    .. list-table::
+        :header-rows: 0
+        :widths: auto
+
+        * - Fix execution of Python code requiring indentation
+          - `#127 <https://github.com/ansys/pyansys-common-mcp/pull/127>`_
+
+
+  .. tab-item:: Dependencies
+
+    .. list-table::
+        :header-rows: 0
+        :widths: auto
+
+        * - Bump pandas from 3.0.3 to 3.0.5
+          - `#145 <https://github.com/ansys/pyansys-common-mcp/pull/145>`_
+
+        * - Bump actions/labeler from 6.2.0 to 7.0.0
+          - `#150 <https://github.com/ansys/pyansys-common-mcp/pull/150>`_
+
+        * - Bump ansys/actions/tests-pytest from 10.3.4 to 10.3.5
+          - `#154 <https://github.com/ansys/pyansys-common-mcp/pull/154>`_
+
+        * - Bump ansys-sphinx-theme from 1.9.0 to 1.10.0
+          - `#155 <https://github.com/ansys/pyansys-common-mcp/pull/155>`_
+
+        * - Bump pypa/gh-action-pypi-publish from 1.14.0 to 1.14.2
+          - `#156 <https://github.com/ansys/pyansys-common-mcp/pull/156>`_
+
+        * - Bump fastmcp from 3.4.4 to 3.4.5
+          - `#157 <https://github.com/ansys/pyansys-common-mcp/pull/157>`_
+
+        * - Bump sphinx-autodoc-typehints from 3.13.0 to 3.13.2
+          - `#161 <https://github.com/ansys/pyansys-common-mcp/pull/161>`_
+
+
+  .. tab-item:: Maintenance
+
+    .. list-table::
+        :header-rows: 0
+        :widths: auto
+
+        * - Update CHANGELOG for v0.3.3
+          - `#143 <https://github.com/ansys/pyansys-common-mcp/pull/143>`_
+
+
 `0.3.3 <https://github.com/ansys/pyansys-common-mcp/releases/tag/v0.3.3>`_ - July 29, 2026
 ==========================================================================================
 

@@ -228,6 +228,21 @@ def _resolve_pyaedt_log_file() -> str | None:
     return None
 
 
+def _get_native_aedt_messages(desktop: Any) -> dict[str, Any]:
+    """Return native AEDT info and error messages for the active design."""
+    from ansys.aedt.core import get_pyaedt_app
+
+    aedt_app = get_pyaedt_app(desktop=desktop)
+    project_name = aedt_app.project_name
+    design_name = aedt_app.design_name
+    return {
+        "project": project_name,
+        "design": design_name,
+        "info_messages": list(aedt_app.odesktop.GetMessages(project_name, design_name, 0)),
+        "error_messages": list(aedt_app.odesktop.GetMessages(project_name, design_name, 2)),
+    }
+
+
 # AEDT Application types supported
 AEDTAppType = Literal[
     "Hfss",
@@ -338,11 +353,12 @@ def get_pyaedt_logs(
     contains: str | None = None,
     max_chars: int = 40000,
 ) -> str:
-    """Return recent entries from the PyAEDT global logger.
+    """Return recent PyAEDT file logs and native AEDT Desktop messages.
 
     This tool reads the active PyAEDT global log file and returns a tail view
-    of the log contents. Optionally filter lines using a case-insensitive
-    substring.
+    of its contents. When AEDT is connected, it also retrieves native info and
+    error messages for the active project and design. Optionally filter file
+    log lines using a case-insensitive substring.
 
     Parameters
     ----------
@@ -353,15 +369,14 @@ def get_pyaedt_logs(
     contains : str, default: None
         Case-insensitive substring used to filter log lines.
     max_chars : int, default: 40000
-        Hard cap for returned log text length.
+        Hard cap for returned file-log text length.
 
     Returns
     -------
     str
-        JSON string with log metadata and selected log text.
+        JSON string with file-log metadata, selected file-log text, and native
+        AEDT messages when an active AEDT design is available.
     """
-    del ctx  # tool does not require an active AEDT connection
-
     if tail_lines <= 0:
         return "Invalid parameter: tail_lines must be greater than 0."
     if max_chars <= 0:
@@ -372,39 +387,59 @@ def get_pyaedt_logs(
 
     try:
         log_file = _resolve_pyaedt_log_file()
-        if log_file is None:
-            return (
+        payload: dict[str, Any] = {
+            "log_file": log_file,
+            "contains": contains,
+            "total_lines": 0,
+            "matched_lines": 0,
+            "returned_lines": 0,
+            "tail_lines_requested": tail_lines,
+            "max_chars_requested": max_chars,
+            "truncated": False,
+            "logs": "",
+            "native_messages": None,
+        }
+
+        if log_file is not None:
+            with Path(log_file).open("r", encoding="utf-8", errors="replace") as file_handle:
+                all_lines = file_handle.readlines()
+
+            filtered_lines = all_lines
+            if contains:
+                filter_token = contains.lower()
+                filtered_lines = [line for line in all_lines if filter_token in line.lower()]
+
+            selected_lines = filtered_lines[-safe_tail_lines:]
+            log_text = "".join(selected_lines)
+
+            if len(log_text) > safe_max_chars:
+                log_text = log_text[-safe_max_chars:]
+                payload["truncated"] = True
+
+            payload.update(
+                {
+                    "total_lines": len(all_lines),
+                    "matched_lines": len(filtered_lines),
+                    "returned_lines": len(selected_lines),
+                    "logs": log_text,
+                }
+            )
+        else:
+            payload["file_log_error"] = (
                 "PyAEDT global log file could not be resolved. "
                 "Run a PyAEDT operation first to initialize the logger."
             )
 
-        with Path(log_file).open("r", encoding="utf-8", errors="replace") as file_handle:
-            all_lines = file_handle.readlines()
+        desktop = ctx.request_context.lifespan_context.desktop
+        if desktop is not None:
+            try:
+                payload["native_messages"] = _get_native_aedt_messages(desktop)
+            except Exception as exc:
+                payload["native_messages_error"] = f"Error reading native AEDT messages: {exc}"
 
-        filtered_lines = all_lines
-        if contains:
-            filter_token = contains.lower()
-            filtered_lines = [line for line in all_lines if filter_token in line.lower()]
+        if log_file is None and desktop is None:
+            return payload["file_log_error"]
 
-        selected_lines = filtered_lines[-safe_tail_lines:]
-        log_text = "".join(selected_lines)
-
-        truncated = False
-        if len(log_text) > safe_max_chars:
-            log_text = log_text[-safe_max_chars:]
-            truncated = True
-
-        payload = {
-            "log_file": log_file,
-            "contains": contains,
-            "total_lines": len(all_lines),
-            "matched_lines": len(filtered_lines),
-            "returned_lines": len(selected_lines),
-            "tail_lines_requested": tail_lines,
-            "max_chars_requested": max_chars,
-            "truncated": truncated,
-            "logs": log_text,
-        }
         return json.dumps(payload, indent=2)
 
     except Exception as e:
@@ -693,9 +728,9 @@ async def connect_to_aedt(
         except TypeError:
             open_projects = []
 
-        connected_app = None
+        aedt_app = None
         if design_name is not None:
-            connected_app = get_pyaedt_app(
+            aedt_app = get_pyaedt_app(
                 project_name=project_name,
                 design_name=design_name,
                 desktop=desktop,
@@ -712,11 +747,11 @@ async def connect_to_aedt(
             f"Version: {desktop.aedt_version_id}\n"
             f"gRPC Mode: {desktop.is_grpc_api}\n"
         )
-        if connected_app is not None:
+        if aedt_app is not None:
             message += (
-                f"Project: {connected_app.project_name}\n"
-                f"Design: {connected_app.design_name}\n"
-                f"Application: {connected_app.design_type}\n"
+                f"Project: {aedt_app.project_name}\n"
+                f"Design: {aedt_app.design_name}\n"
+                f"Application: {aedt_app.design_type}\n"
             )
         elif not open_projects:
             message += (
@@ -1150,6 +1185,83 @@ def create_design(
         return error_msg
 
 
+def _validate_active_design(app_instance: Any) -> str | None:
+    """Run ``validate_simple`` and return error details when validation fails."""
+    with tempfile.TemporaryDirectory() as temporary_directory:
+        validation_log_file = Path(temporary_directory) / "validation.log"
+        if not app_instance.validate_simple(log_file=validation_log_file):
+            if validation_log_file.is_file():
+                return validation_log_file.read_text(encoding="utf-8", errors="replace")
+            return "Design validation failed."
+    return None
+
+
+@app.tool(tags={"aedt_tools", REQUIRES_AEDT_TAG}, timeout=_TIMEOUT_MEDIUM)
+def validate_design(
+    ctx: Context,
+    project_name: str | None = None,
+    design_name: str | None = None,
+) -> str:
+    """Validate an AEDT design without starting a solve.
+
+    Parameters
+    ----------
+    ctx : Context
+        MCP context containing server session and application context.
+    project_name : str, default: None
+        Name of the project to validate. If ``None``, the active project is used.
+    design_name : str, default: None
+        Name of the design to validate. If ``None``, the active design is used.
+
+    Returns
+    -------
+    str
+        Validation status and details from AEDT validation logs when available.
+    """
+    desktop = ctx.request_context.lifespan_context.desktop
+
+    if desktop is None:
+        return "No AEDT connection is available. Use connect_to_aedt or launch_aedt first."
+
+    try:
+        from ansys.aedt.core import get_pyaedt_app
+
+        aedt_app = get_pyaedt_app(
+            project_name=project_name,
+            design_name=design_name,
+            desktop=desktop,
+        )
+
+        resolved_project_name = aedt_app.project_name or project_name
+        resolved_design_name = aedt_app.design_name or design_name
+
+        logger.info(
+            "Validating design project=%s design=%s",
+            resolved_project_name or aedt_app.project_name or "active project",
+            resolved_design_name or aedt_app.design_name or "active design",
+        )
+
+        validation_error = _validate_active_design(aedt_app)
+        if validation_error is not None:
+            return (
+                "Design validation failed.\n"
+                f"Project: {resolved_project_name or aedt_app.project_name or 'Unknown'}\n"
+                f"Design: {resolved_design_name or aedt_app.design_name or 'Unknown'}\n"
+                f"Details:\n{validation_error}"
+            )
+
+        return (
+            "Design validation passed.\n"
+            f"Project: {resolved_project_name or aedt_app.project_name or 'Unknown'}\n"
+            f"Design: {resolved_design_name or aedt_app.design_name or 'Unknown'}"
+        )
+
+    except Exception as e:
+        error_msg = f"Error during design validation: {str(e)}"
+        logger.error(error_msg)
+        return error_msg
+
+
 @app.tool(tags={"aedt_tools", REQUIRES_AEDT_TAG}, timeout=_TIMEOUT_LONG)
 def analyze_design(
     ctx: Context,
@@ -1241,23 +1353,27 @@ def analyze_design(
 
         from ansys.aedt.core import get_pyaedt_app
 
-        app_instance = get_pyaedt_app(
+        aedt_app = get_pyaedt_app(
             project_name=project_name,
             design_name=design_name,
             desktop=desktop,
         )
 
-        resolved_project_name = app_instance.project_name or project_name
-        resolved_design_name = app_instance.design_name or design_name
+        resolved_project_name = aedt_app.project_name or project_name
+        resolved_design_name = aedt_app.design_name or design_name
 
         logger.info(
             "Running design analysis on project=%s design=%s setup=%s",
-            resolved_project_name or app_instance.project_name or "active project",
-            resolved_design_name or app_instance.design_name or "active design",
+            resolved_project_name or aedt_app.project_name or "active project",
+            resolved_design_name or aedt_app.design_name or "active design",
             setup_name or "all setups",
         )
 
-        result = app_instance.analyze(
+        validation_error = _validate_active_design(aedt_app)
+        if validation_error is not None:
+            return validation_error
+
+        result = aedt_app.analyze(
             setup=setup_name,
             cores=num_cores,
             tasks=num_tasks,
@@ -1274,15 +1390,15 @@ def analyze_design(
         if not result:
             return (
                 "Analysis failed.\n"
-                f"Project: {resolved_project_name or app_instance.project_name or 'Unknown'}\n"
-                f"Design: {resolved_design_name or app_instance.design_name or 'Unknown'}\n"
+                f"Project: {resolved_project_name or aedt_app.project_name or 'Unknown'}\n"
+                f"Design: {resolved_design_name or aedt_app.design_name or 'Unknown'}\n"
                 f"Setup: {setup_name or 'all setups'}"
             )
 
         return (
             "Analysis started successfully and is running asynchronously.\n"
-            f"Project: {resolved_project_name or app_instance.project_name or 'Unknown'}\n"
-            f"Design: {resolved_design_name or app_instance.design_name or 'Unknown'}\n"
+            f"Project: {resolved_project_name or aedt_app.project_name or 'Unknown'}\n"
+            f"Design: {resolved_design_name or aedt_app.design_name or 'Unknown'}\n"
             f"Setup: {setup_name or 'all setups'}\n"
             f"Mode: {'batch' if solve_in_batch else 'interactive'}\n"
             f"Result: {result}\n"
@@ -1332,14 +1448,14 @@ def export_results(
         try:
             from ansys.aedt.core import get_pyaedt_app
 
-            app_instance = get_pyaedt_app(desktop=desktop)
+            aedt_app = get_pyaedt_app(desktop=desktop)
         except Exception as resolve_error:
             logger.info("Unable to resolve active design for export: %s", resolve_error)
             return (
                 "Export functionality requires an active application. "
                 "Connect to a design or provide an active design context first."
             )
-        if app_instance is None:
+        if aedt_app is None:
             return (
                 "Export functionality requires an active application. "
                 "Connect to a design or provide an active design context first."
@@ -1350,32 +1466,27 @@ def export_results(
             setup_kwargs["setup"] = setup_name
 
         if export_type == "touchstone":
-            if not hasattr(app_instance, "export_touchstone"):
-                return (
-                    f"Touchstone export is not available for {type(app_instance).__name__} designs."
-                )
-            result = app_instance.export_touchstone(output_file=output_path, **setup_kwargs)
+            if not hasattr(aedt_app, "export_touchstone"):
+                return f"Touchstone export is not available for {type(aedt_app).__name__} designs."
+            result = aedt_app.export_touchstone(output_file=output_path, **setup_kwargs)
             return f"Touchstone exported to: {output_path}\nResult: {result}"
 
         elif export_type == "profile":
-            if not hasattr(app_instance, "export_profile"):
-                return f"Profile export is not available for {type(app_instance).__name__} designs."
-            result = app_instance.export_profile(output_file=output_path, **setup_kwargs)
+            if not hasattr(aedt_app, "export_profile"):
+                return f"Profile export is not available for {type(aedt_app).__name__} designs."
+            result = aedt_app.export_profile(output_file=output_path, **setup_kwargs)
             return f"Profile exported to: {output_path}\nResult: {result}"
 
         elif export_type == "convergence":
-            if not hasattr(app_instance, "export_convergence"):
-                return (
-                    "Convergence export is not available for "
-                    f"{type(app_instance).__name__} designs."
-                )
-            result = app_instance.export_convergence(output_file=output_path, **setup_kwargs)
+            if not hasattr(aedt_app, "export_convergence"):
+                return f"Convergence export is not available for {type(aedt_app).__name__} designs."
+            result = aedt_app.export_convergence(output_file=output_path, **setup_kwargs)
             return f"Convergence data exported to: {output_path}\nResult: {result}"
 
         elif export_type == "mesh":
-            if not hasattr(app_instance, "export_mesh_stats"):
-                return f"Mesh export is not available for {type(app_instance).__name__} designs."
-            result = app_instance.export_mesh_stats(output_file=output_path, **setup_kwargs)
+            if not hasattr(aedt_app, "export_mesh_stats"):
+                return f"Mesh export is not available for {type(aedt_app).__name__} designs."
+            result = aedt_app.export_mesh_stats(output_file=output_path, **setup_kwargs)
             return f"Mesh stats exported to: {output_path}\nResult: {result}"
 
         else:
@@ -1449,7 +1560,7 @@ def screenshot(
         try:
             from ansys.aedt.core import get_pyaedt_app
 
-            app_instance = get_pyaedt_app(
+            aedt_app = get_pyaedt_app(
                 project_name=project,
                 design_name=design,
                 desktop=desktop,
@@ -1465,7 +1576,7 @@ def screenshot(
 
         # Export image as JPG
         try:
-            app_instance.post.export_model_picture(
+            aedt_app.post.export_model_picture(
                 full_name=output_path,
                 width=width,
                 height=height,
@@ -1493,8 +1604,8 @@ def screenshot(
 
         status_lines = [
             f"Screenshot saved to '{output_path}'",
-            f"Design: {app_instance.design_name}",
-            f"Project: {app_instance.project_name}",
+            f"Design: {aedt_app.design_name}",
+            f"Project: {aedt_app.project_name}",
         ]
         if open_viewer:
             status_lines.append(viewer_message or "Opened screenshot in the default image viewer.")
@@ -1554,7 +1665,7 @@ def export_config(
     try:
         from ansys.aedt.core import get_pyaedt_app
 
-        app_instance = get_pyaedt_app(
+        aedt_app = get_pyaedt_app(
             project_name=project,
             design_name=design,
             desktop=desktop,
@@ -1568,7 +1679,7 @@ def export_config(
             Path(config_target).unlink()
             temp_config_file = config_target
 
-        config_file = app_instance.configurations.export_config(
+        config_file = aedt_app.configurations.export_config(
             config_file=config_target, overwrite=overwrite
         )
         if not config_file:
@@ -1579,8 +1690,8 @@ def export_config(
 
         data: dict[str, Any] = {
             "config": config_content,
-            "design": app_instance.design_name,
-            "project": app_instance.project_name,
+            "design": aedt_app.design_name,
+            "project": aedt_app.project_name,
         }
         if output:
             data["config_file"] = config_file

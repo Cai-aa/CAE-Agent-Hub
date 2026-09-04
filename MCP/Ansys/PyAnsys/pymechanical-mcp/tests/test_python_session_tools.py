@@ -35,7 +35,7 @@ def mock_python_session():
 
 @pytest.mark.unit
 class TestRunPythonCode:
-    def test_no_python_session(self, mock_context_no_mechanical):
+    async def test_no_python_session(self, mock_context_no_mechanical):
         # Ensure no python_session attribute or explicit None
         setattr(
             mock_context_no_mechanical.request_context.lifespan_context,
@@ -43,13 +43,13 @@ class TestRunPythonCode:
             None,
         )
 
-        result = run_python_code(mock_context_no_mechanical, code="print('hi')")
+        result = await run_python_code(mock_context_no_mechanical, code="print('hi')")
 
         data = json.loads(result)
         assert data["success"] is False
         assert "persistent Python session was not initialized" in data["error"]
 
-    def test_success_with_dict_result(self, mock_context, mock_python_session):
+    async def test_success_with_dict_result(self, mock_context, mock_python_session):
         mock_context.request_context.lifespan_context.python_session = mock_python_session
         mock_python_session.execute.return_value = {
             "success": True,
@@ -57,13 +57,13 @@ class TestRunPythonCode:
             "stderr": "",
         }
 
-        result = run_python_code(mock_context, code="print('ok')")
+        result = await run_python_code(mock_context, code="print('ok')")
         data = json.loads(result)
         assert data["success"] is True
         assert data["stdout"].strip() == "ok"
         assert data["stderr"] == ""
 
-    def test_failure_with_error_message(self, mock_context, mock_python_session):
+    async def test_failure_with_error_message(self, mock_context, mock_python_session):
         mock_context.request_context.lifespan_context.python_session = mock_python_session
         mock_python_session.execute.return_value = {
             "success": False,
@@ -72,32 +72,32 @@ class TestRunPythonCode:
             "error": "Boom!",
         }
 
-        result = run_python_code(mock_context, code="raise SystemExit")
+        result = await run_python_code(mock_context, code="raise SystemExit")
         data = json.loads(result)
         assert data["success"] is False
         assert data["error"].startswith("Boom!")
 
-    def test_non_dict_result_is_wrapped(self, mock_context, mock_python_session):
+    async def test_non_dict_result_is_wrapped(self, mock_context, mock_python_session):
         mock_context.request_context.lifespan_context.python_session = mock_python_session
         mock_python_session.execute.return_value = "SOME OUTPUT"
 
-        result = run_python_code(mock_context, code="'SOME OUTPUT'")
+        result = await run_python_code(mock_context, code="'SOME OUTPUT'")
         data = json.loads(result)
         assert data["success"] is True
         assert data["stdout"] == "SOME OUTPUT"
         assert data["stderr"] == ""
 
-    def test_timeout(self, mock_context, mock_python_session):
+    async def test_timeout(self, mock_context, mock_python_session):
         mock_context.request_context.lifespan_context.python_session = mock_python_session
         mock_python_session.metadata["mechanical"] = MagicMock()
         mock_python_session.execute.side_effect = TimeoutError("too slow")
 
-        result = run_python_code(mock_context, code="while True: pass", timeout=1)
+        result = await run_python_code(mock_context, code="while True: pass", timeout=1)
         data = json.loads(result)
         assert data["success"] is False
         assert "timed out" in data["error"].lower()
 
-    def test_code_is_sanitized_before_execute(self, mock_context, mock_python_session):
+    async def test_code_is_sanitized_before_execute(self, mock_context, mock_python_session):
         mock_context.request_context.lifespan_context.python_session = mock_python_session
         mock_python_session.execute.return_value = {
             "success": True,
@@ -106,14 +106,14 @@ class TestRunPythonCode:
         }
 
         dirty = "print('bullet:\u2022 and check:\u2713 and nbsp:\u00a0')"
-        run_python_code(mock_context, code=dirty)
+        await run_python_code(mock_context, code=dirty)
 
         passed_code = mock_python_session.execute.call_args[0][0]
         assert "\u2022" not in passed_code
         assert "\u2713" not in passed_code
         assert "\u00a0" not in passed_code
 
-    def test_stdout_is_sanitized(self, mock_context, mock_python_session):
+    async def test_stdout_is_sanitized(self, mock_context, mock_python_session):
         mock_context.request_context.lifespan_context.python_session = mock_python_session
 
         # stdout includes characters that should be sanitized by _sanitize_output
@@ -124,7 +124,7 @@ class TestRunPythonCode:
             "stderr": "",
         }
 
-        result = run_python_code(mock_context, code="print('irrelevant')")
+        result = await run_python_code(mock_context, code="print('irrelevant')")
         data = json.loads(result)
         assert data["success"] is True
         # Confirm mapped replacements are present and problematic chars gone
@@ -133,7 +133,7 @@ class TestRunPythonCode:
         assert "#" in data["stdout"] or "|" in data["stdout"]
         assert "nb sp" in data["stdout"] or "nb  sp" in data["stdout"]
 
-    def test_stderr_is_sanitized(self, mock_context, mock_python_session):
+    async def test_stderr_is_sanitized(self, mock_context, mock_python_session):
         mock_context.request_context.lifespan_context.python_session = mock_python_session
 
         raw_stderr = "\u2717 error | box \u2514\u2502\u2500 | nb\u00a0sp"
@@ -144,7 +144,7 @@ class TestRunPythonCode:
             "error": "boom",
         }
 
-        result = run_python_code(mock_context, code="raise SystemExit")
+        result = await run_python_code(mock_context, code="raise SystemExit")
         data = json.loads(result)
         assert data["success"] is False
         assert "[X]" in data["stderr"]

@@ -4,7 +4,7 @@ build-backend = "flit_core.buildapi"
 
 [project]
 name = "ansys-mechanical-mcp"
-version = "0.2.0"
+version = "0.2.1"
 description = "Model Context Protocol (MCP) server for Ansys Mechanical through PyMechanical"
 readme = "README.md"
 requires-python = ">=3.12,<4"
@@ -50,7 +50,7 @@ dependencies = [
 [project.optional-dependencies]
 tests = [
     "ansys-common-mcp==0.3.3",
-    "ansys-mechanical-core==0.13.1",
+    "ansys-mechanical-core==0.13.2",
     "matplotlib==3.11.1",
     "pytest==9.1.1",
     "pytest-asyncio==1.4.0",
@@ -61,11 +61,11 @@ tests = [
 
 doc = [
     "ansys-common-mcp==0.3.3",
-    "ansys-mechanical-core==0.13.1",
+    "ansys-mechanical-core==0.13.2",
     "ansys-sphinx-theme[autoapi,changelog]==1.10.0",
     "matplotlib==3.11.1",
     "numpydoc==1.10.0",
-    "sphinx-autodoc-typehints==3.13.2",
+    "sphinx-autodoc-typehints==3.13.4",
     "sphinx-design==0.7.0",
     "sphinx-notfound-page==1.1.0",
     "tabulate==0.10.0",

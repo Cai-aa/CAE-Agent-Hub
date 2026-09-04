@@ -58,6 +58,8 @@ these tools are hidden again.
      - Save the active project to disk.
    * - ``create_design``
      - Create a new design (HFSS, Maxwell, Icepak, Circuit, and so on).
+   * - ``validate_design``
+     - Run design validation checks before solving.
    * - ``analyze_design``
      - Run the configured solver analysis on the active design.
    * - ``export_config``
@@ -138,6 +140,11 @@ and run them with ``run_python_code``.
 Run an analysis
 ~~~~~~~~~~~~~~~
 
+Run design validation before starting a solve, especially after geometry,
+boundary, setup, or sweep changes.
+
+*"Validate the active design before solving."*
+
 *"Analyze the active design."*
 
 *"Run setup 'Setup1' on the active design."*
@@ -192,7 +199,7 @@ server indefinitely.
    * - Medium
      - 120 seconds
      - ``launch_aedt``, ``connect_to_aedt``, ``disconnect_from_aedt``,
-       ``open_project``, ``save_project``, ``create_design``,
+       ``open_project``, ``save_project``, ``create_design``, ``validate_design``,
        ``screenshot``, ``clear_aedt``, and ``export_config``
    * - Long
      - 600 s

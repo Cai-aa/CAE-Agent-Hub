@@ -162,10 +162,10 @@ def test_sanitize_output_replacements():
 def test_startup_code_error_paths(monkeypatch):
     from ansys.mechanical.mcp.mechanical_helper import startup_code
 
-    monkeypatch.setattr(startup_code, "MATPLOTLIB_AVAILABLE", False)
+    monkeypatch.setattr(startup_code, "_load_matplotlib", lambda: None)
     assert startup_code.save_matplotlib_plot() == "Error: matplotlib is not available"
 
-    monkeypatch.setattr(startup_code, "PYVISTA_AVAILABLE", False)
+    monkeypatch.setattr(startup_code, "_load_pyvista", lambda: (None, None))
     assert startup_code.save_plot(MagicMock()) == "Error: PyVista is not available"
 
 
@@ -180,8 +180,7 @@ def test_startup_code_save_matplotlib_plot_success(monkeypatch):
     fake_plt.savefig.side_effect = fake_plot.savefig
     fake_plt.close.return_value = None
 
-    monkeypatch.setattr(startup_code, "MATPLOTLIB_AVAILABLE", True)
-    monkeypatch.setattr(startup_code, "plt", fake_plt)
+    monkeypatch.setattr(startup_code, "_load_matplotlib", lambda: fake_plt)
     monkeypatch.setattr(startup_code, "BytesIO", lambda: buffer)
 
     result = startup_code.save_matplotlib_plot(dpi=200)
@@ -204,8 +203,7 @@ def test_startup_code_save_plot_success(monkeypatch):
     fake_plotter.screenshot.return_value = [1, 2, 3]
     fake_plotter.close.return_value = None
 
-    monkeypatch.setattr(startup_code, "PYVISTA_AVAILABLE", True)
-    monkeypatch.setattr(startup_code, "Image", fake_image_module)
+    monkeypatch.setattr(startup_code, "_load_pyvista", lambda: (fake_image_module, MagicMock()))
     monkeypatch.setattr(startup_code, "BytesIO", lambda: buffer)
     monkeypatch.setattr(startup_code.base64, "b64encode", lambda data: b"encoded")
 
@@ -215,6 +213,26 @@ def test_startup_code_save_plot_success(monkeypatch):
     fake_plotter.screenshot.assert_called_once_with(return_img=True, transparent_background=False)
     image.save.assert_called_once_with(buffer, format="PNG")
     fake_plotter.close.assert_called_once()
+
+
+def test_startup_code_defers_optional_plotting_imports():
+    from ansys.mechanical.mcp.mechanical_helper import startup_code
+
+    assert "matplotlib.pyplot" not in startup_code.__dict__
+    assert "pyvista" not in startup_code.__dict__
+
+
+def test_load_matplotlib_selects_agg_before_pyplot(monkeypatch):
+    from ansys.mechanical.mcp.mechanical_helper import startup_code
+
+    matplotlib = MagicMock()
+    pyplot = MagicMock()
+    matplotlib.pyplot = pyplot
+    monkeypatch.setitem(sys.modules, "matplotlib", matplotlib)
+    monkeypatch.setitem(sys.modules, "matplotlib.pyplot", pyplot)
+
+    assert startup_code._load_matplotlib() is pyplot
+    matplotlib.use.assert_called_once_with("Agg", force=True)
 
 
 def test_module_entrypoint_invokes_launcher(monkeypatch):

@@ -48,8 +48,8 @@ dependencies = [
   "ansys-tools-visualization-interface",
   "pyvista[io]>=0.38.0,<0.49",
   "matplotlib>=3.11.1",
-  "vtk>=9.0,<9.7",
-  "typer==0.26.8",
+  "vtk>=9.0,<9.8",
+  "typer==0.27.1",
   "pillow"
 ]
 
@@ -57,7 +57,7 @@ dependencies = [
 doc = [
   "ansys-sphinx-theme[autoapi,changelog]==1.10.0",
   "numpydoc==1.10.0",
-  "sphinx-autodoc-typehints==3.13.2",
+  "sphinx-autodoc-typehints==3.13.4",
   "sphinx-copybutton==0.5.2",
   "sphinx-design==0.7.0",
   "sphinx-notfound-page==1.1.0",

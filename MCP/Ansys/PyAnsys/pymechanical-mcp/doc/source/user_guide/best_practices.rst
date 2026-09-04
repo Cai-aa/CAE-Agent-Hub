@@ -11,6 +11,7 @@ Repeated launch/connect cycles increase runtime and can create confusion in
 stateful workflows.
 
 - Call ``check_mechanical_status`` before starting each major step.
+- Call ``get_session_diagnostics`` when diagnosing persistent Python startup or connection issues.
 - Use ``connect_to_mechanical`` if a compatible instance already exists.
 - Use ``disconnect_from_mechanical`` for clean shutdowns.
 
@@ -52,6 +53,7 @@ File transfer hygiene
 - Use ``upload_file`` for all client-side artifacts (geometry and scripts).
 - Keep working directory contents organized (prefix or suffix by workflow).
 - Retrieve only required artifacts with ``download_file``.
+- Use ``download_project`` when a complete project archive is required.
 
 AI workflow guidance
 --------------------

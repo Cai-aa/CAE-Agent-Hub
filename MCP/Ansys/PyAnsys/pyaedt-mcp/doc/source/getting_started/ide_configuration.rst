@@ -3,372 +3,293 @@
 IDE and client configuration
 =============================
 
-PyAEDT-MCP works with any MCP-compatible client. This page covers the most
-common ones: Claude Code, Visual Studio Code, and Claude Desktop.
+PyAEDT-MCP works with any MCP-compatible client. This page shows the HTTP and
+stdio configurations for Visual Studio Code with Copilot, Claude Code, OpenCode,
+and Codex.
 
-Claude Code
------------
+Prerequisite: install uv
+------------------------
 
-Claude Code is Anthropic's AI-powered code editor with built-in MCP support.
+Install uv, which includes ``uvx``, before using the ``uvx`` examples below.
+``uvx`` downloads and runs PyAEDT-MCP without cloning this repository. Follow
+the `uv installation instructions <https://docs.astral.sh/uv/getting-started/installation/>`_.
 
-Configure for a specific project (recommended)
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-Configure PyAEDT-MCP for a specific project:
-
-**Linux (bash):**
-
-.. code-block:: bash
-
-   cd my-project
-   claude mcp add --transport stdio pyaedt-mcp -- \
-     uvx --from git+https://github.com/ansys/pyaedt-mcp ansys-aedt-mcp
-
-On Windows PowerShell, run:
+For example, on Windows:
 
 .. code-block:: powershell
 
-   cd my-project
-   claude mcp add --transport stdio pyaedt-mcp -- `
-     uvx --from git+https://github.com/ansys/pyaedt-mcp ansys-aedt-mcp
+   winget install --id=astral-sh.uv -e
 
-Advantages:
-
-- Scoped to the project, shareable via version control.
-- Supports per-project CLI flags (for example ``--include-context``).
-
-Configure globally
-~~~~~~~~~~~~~~~~~~
-
-Configure PyAEDT-MCP for all your Claude Code projects:
-
-**Linux (bash):**
+On macOS or Linux:
 
 .. code-block:: bash
 
-   claude mcp add --transport stdio --scope user pyaedt-mcp -- \
-     uvx --from git+https://github.com/ansys/pyaedt-mcp ansys-aedt-mcp
+   curl -LsSf https://astral.sh/uv/install.sh | sh
 
-On Windows PowerShell, run:
-
-.. code-block:: powershell
-
-   claude mcp add --transport stdio --scope user pyaedt-mcp -- `
-     uvx --from git+https://github.com/ansys/pyaedt-mcp ansys-aedt-mcp
-
-Advantages:
-
-- Available in all Claude Code projects without per-project configuration.
-
-See `Claude Code MCP installation
-<https://code.claude.com/docs/en/mcp#installing-mcp-servers>`_ for details.
-
-Visual Studio Code
+Choose a transport
 ------------------
 
-Visual Studio Code integrates MCP servers through the Copilot extension.
+Choose HTTP when a PyAEDT-MCP server is already running locally. It is
+appropriate for debugging or development. The client connects to the URL; it does
+not start the server on its own.
 
-Start from GitHub (recommended)
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Choose stdio when the client should launch PyAEDT-MCP as a local child process.
+It starts automatically from the client configuration with ``uvx`` or from the
+virtual environment in a cloned repository. Stdio is normally the simplest
+option for a single local client.
 
-Add this to the ``.vscode/mcp.json`` file in your project directory:
+Transport configurations
+------------------------
 
-.. code-block:: json
+.. tab-set::
 
-   {
-     "servers": {
-       "pyaedt-mcp": {
-         "type": "stdio",
-         "command": "uvx",
-         "args": [
-           "--index-strategy", "unsafe-best-match",
-           "--from", "git+https://github.com/ansys/pyaedt-mcp.git",
-           "ansys-aedt-mcp"
-         ]
-       }
-     }
-   }
+   .. tab-item:: HTTP
 
-If the ``.vscode/mcp.json`` file does not exist, create it.
+      HTTP client configurations require a running PyAEDT-MCP server. Start it
+      from a cloned repository after creating and installing a virtual
+      environment:
 
-Set up for local development
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      **Windows PowerShell**
 
-Use this configuration when working from a local clone of the repository:
+      .. code-block:: powershell
 
-.. code-block:: json
+         git clone https://github.com/ansys/pyaedt-mcp.git
+         cd pyaedt-mcp
+         uv venv
+         uv pip install .
+         .venv\Scripts\ansys-aedt-mcp --transport http --http-host 127.0.0.1 --http-port 8080
 
-   {
-     "servers": {
-       "pyaedt-mcp": {
-         "type": "stdio",
-         "command": ".venv/Scripts/python",
-         "args": ["-m", "ansys.aedt.mcp"],
-         "env": {
-           "FASTMCP_LOG_LEVEL": "DEBUG"
-         }
-       }
-     }
-   }
+      **macOS or Linux**
 
-.. note::
-  On Linux or macOS, use ``bin/python`` instead of ``Scripts/python``.
+      .. code-block:: bash
 
-Use uv as an alternative
-~~~~~~~~~~~~~~~~~~~~~~~~
+         git clone https://github.com/ansys/pyaedt-mcp.git
+         cd pyaedt-mcp
+         uv venv
+         uv pip install .
+         .venv/bin/ansys-aedt-mcp --transport http --http-host 127.0.0.1 --http-port 8080
 
-If you prefer, you can use uv as your Python package and project manager:
+      Or run the server directly with ``uvx`` without cloning the repository:
 
-.. code-block:: json
+      .. code-block:: console
 
-   {
-     "servers": {
-       "pyaedt-mcp": {
-         "type": "stdio",
-         "command": "uv",
-         "args": ["run", "python", "-m", "ansys.aedt.mcp"]
-       }
-     }
-   }
+         uvx --index-strategy unsafe-best-match \
+           --from git+https://github.com/ansys/pyaedt-mcp.git ansys-aedt-mcp \
+           --transport http --http-host 127.0.0.1 --http-port 8080
 
-Configure HTTP transport
-~~~~~~~~~~~~~~~~~~~~~~~~
+      Keep the command running while the HTTP client is in use. For Docker and
+      remote deployment options, see :doc:`../user_guide/docker`.
 
-If you start PyAEDT-MCP with ``--transport http``, use this client configuration:
+      .. tab-set::
 
-.. code-block:: json
+         .. tab-item:: VS Code and Copilot
 
-   {
-     "servers": {
-       "pyaedt-mcp": {
-         "type": "http",
-         "url": "http://127.0.0.1:8080"
-       }
-     }
-   }
+            Add this configuration to ``.vscode/mcp.json``.
 
-Start PyAEDT-MCP before you connect. This command works in any terminal:
+            .. code-block:: json
 
-.. code-block:: console
+               {
+                 "servers": {
+                   "pyaedt-mcp": {
+                     "type": "http",
+                     "url": "http://127.0.0.1:8080/mcp"
+                   }
+                 }
+               }
 
-   ansys-aedt-mcp --transport http --http-host 127.0.0.1 --http-port 8080
+         .. tab-item:: Claude
 
-Use Docker endpoint
-~~~~~~~~~~~~~~~~~~~
+            Configure Claude Code for the current project:
 
-If you start PyAEDT-MCP with Docker Compose, use the default HTTP endpoint:
+            .. code-block:: bash
 
-.. code-block:: json
+               claude mcp add --transport http pyaedt-mcp http://127.0.0.1:8080/mcp
 
-   {
-     "servers": {
-       "pyaedt-mcp": {
-         "type": "http",
-         "url": "http://localhost:8080"
-       }
-     }
-   }
+         .. tab-item:: OpenCode
 
-For more information, see :doc:`../user_guide/docker`.
+            Add this entry to the ``mcp`` object in ``opencode.json`` or
+            ``opencode.jsonc``:
 
-Enable MCP in Visual Studio Code
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+            .. code-block:: json
 
-1. Open VS Code settings (``Ctrl+,`` or ``Cmd+,``).
-2. Search for ``MCP``.
-3. Enable the settings that allow Copilot to use MCP servers.
+               {
+                 "mcp": {
+                   "pyaedt-mcp": {
+                     "type": "remote",
+                     "url": "http://127.0.0.1:8080/mcp"
+                   }
+                 }
+               }
 
-   For more information, see `Add and manage MCP servers in VS Code
-   <https://code.visualstudio.com/docs/agents/reference/mcp-configuration>`_
-   in the Visual Studio Code documentation.
+         .. tab-item:: Codex
 
-4. Restart Visual Studio Code.
+            Add this entry to ``~/.codex/config.toml``:
 
-Claude Desktop
---------------
+            .. code-block:: toml
 
-Claude Desktop is Anthropic’s macOS desktop app with full MCP support.
-Edit the ``~/Library/Application Support/Claude/claude_desktop_config.json``
-file on macOS or the equivalent path on Windows:
+               [mcp_servers.pyaedt-mcp]
+               url = "http://127.0.0.1:8080/mcp"
 
-.. code-block:: json
+   .. tab-item:: stdio
 
-   {
-     "mcpServers": {
-       "pyaedt-mcp": {
-         "command": "uvx",
-         "args": [
-           "--from", "git+https://github.com/ansys/pyaedt-mcp.git",
-           "ansys-aedt-mcp"
-         ],
-        "description": "MCP server for Ansys AEDT through PyAEDT",
-        "version": "0.0.1",
-        "language": "python"
-       }
-     }
-   }
+      Stdio clients launch the local server automatically when needed. The
+      following examples use ``uvx``. To run from a cloned repository instead,
+      create the virtual environment with ``uv venv`` and install the project
+      with ``uv pip install .``. Then replace ``uvx`` and its arguments with
+      ``.venv\\Scripts\\ansys-aedt-mcp`` on Windows or
+      ``.venv/bin/ansys-aedt-mcp`` on macOS and Linux.
 
-Claude Code versus Visual Studio Code
--------------------------------------
+      .. tab-set::
 
-.. list-table::
-   :header-rows: 1
+         .. tab-item:: VS Code and Copilot
 
-   * - Feature
-     - Claude Code
-     - Visual Studio Code
-   * - Configuration method
-     - CLI command (``claude mcp add``)
-     - JSON file (``.vscode/mcp.json``)
-   * - Setup level
-     - Project or global
-     - Project-level only
-   * - Transport support
-     - STDIO (default)
-     - STDIO or HTTP
-   * - Team sharing
-     - With project config files
-     - With ``.vscode/mcp.json`` in the repository
-   * - Learning curve
-     - Low (CLI-based)
-     - Medium (JSON configuration)
+            Add this configuration to ``.vscode/mcp.json``. Use the Command
+            Palette command ``MCP: List Servers`` to start, stop, or inspect
+            the server.
+
+            .. code-block:: json
+
+               {
+                 "servers": {
+                   "pyaedt-mcp": {
+                     "type": "stdio",
+                     "command": "uvx",
+                     "args": [
+                       "--index-strategy", "unsafe-best-match",
+                       "--from", "git+https://github.com/ansys/pyaedt-mcp.git",
+                       "ansys-aedt-mcp"
+                     ]
+                   }
+                 }
+               }
+
+         .. tab-item:: Claude
+
+            Configure Claude Code for the current project. Add ``--scope user``
+            before ``pyaedt-mcp`` to make it available in all projects.
+
+            .. code-block:: bash
+
+               claude mcp add --transport stdio pyaedt-mcp -- \
+                 uvx --index-strategy unsafe-best-match \
+                 --from git+https://github.com/ansys/pyaedt-mcp.git ansys-aedt-mcp
+
+            On Windows PowerShell, use a backtick (`` ` ``) instead of ``\`` for
+            line continuation. Claude Desktop supports local stdio servers
+            through its ``mcpServers`` configuration; use the same ``command``
+            and ``args`` values as the VS Code configuration above.
+
+         .. tab-item:: OpenCode
+
+            Add this entry to the ``mcp`` object in ``opencode.json`` or
+            ``opencode.jsonc``:
+
+            .. code-block:: json
+
+               {
+                 "mcp": {
+                   "pyaedt-mcp": {
+                     "type": "local",
+                     "command": [
+                       "uvx",
+                       "--index-strategy", "unsafe-best-match",
+                       "--from", "git+https://github.com/ansys/pyaedt-mcp.git",
+                       "ansys-aedt-mcp"
+                     ]
+                   }
+                 }
+               }
+
+         .. tab-item:: Codex
+
+            Add this entry to ``~/.codex/config.toml``:
+
+            .. code-block:: toml
+
+               [mcp_servers.pyaedt-mcp]
+               command = "uvx"
+               args = [
+                 "--index-strategy", "unsafe-best-match",
+                 "--from", "git+https://github.com/ansys/pyaedt-mcp.git",
+                 "ansys-aedt-mcp"
+               ]
+
+See `MCP configuration reference in VS Code
+<https://code.visualstudio.com/docs/agents/reference/mcp-configuration>`_,
+`Connect Claude Code to tools via MCP <https://code.claude.com/docs/en/mcp>`_,
+the `OpenCode MCP server documentation <https://opencode.ai/docs/mcp-servers/>`_,
+and the `Codex MCP documentation <https://developers.openai.com/codex/mcp/>`_
+for client-specific configuration and authentication options.
 
 Advanced configuration
 ----------------------
 
-Auto-connect to AEDT on startup
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Add the following server arguments after ``ansys-aedt-mcp`` in a stdio
+configuration, or to the command used to start an HTTP server.
 
-Pass ``--connect`` to have the server connect to AEDT during initialization.
-Use ``--machine`` and ``--port`` to target a specific gRPC endpoint:
+.. list-table::
+   :header-rows: 1
+   :widths: 25 20 55
 
-**Visual Studio Code**
+   * - Argument
+     - Default
+     - Description
+   * - ``--transport {stdio,http}``
+     - ``stdio``
+     - Select the MCP transport. Set this to ``http`` only when starting a
+       standalone HTTP server; stdio clients start the server with the default.
+   * - ``--machine HOST``
+     - ``localhost``
+     - AEDT gRPC host name or IP address for a startup connection.
+   * - ``--port PORT``
+     - ``50051``
+     - AEDT gRPC port for a startup connection. Values must be from 1 through
+       65535.
+   * - ``--version VERSION``
+     - Unset
+     - AEDT version to use, for example ``2026.1`` or ``261``.
+   * - ``--graphical``
+     - Non-graphical
+     - Launch AEDT with its graphical interface. Omit it to use the default
+       non-graphical mode.
+   * - ``--non-graphical``
+     - Enabled
+     - Explicitly launch AEDT without its graphical interface.
+   * - ``--connect``
+     - Disabled
+     - Connect to AEDT when PyAEDT-MCP starts, using ``--machine`` and
+       ``--port``. This locks the connection, disabling ``launch_aedt``,
+       ``connect_to_aedt``, and ``disconnect_from_aedt`` for the server lifetime.
+   * - ``--include-context``
+     - Disabled
+     - Register the optional AEDT and PyAEDT workflow guidance tools.
+   * - ``--dynamic-tool-discovery``
+     - Disabled
+     - Hide AEDT-only tools until an AEDT connection is established, reducing
+       the initial client context.
+   * - ``--http-host HOST``
+     - ``127.0.0.1``
+     - Network interface used by HTTP transport. This argument applies only
+       with ``--transport http``.
+   * - ``--http-port PORT``
+     - ``8080``
+     - Network port used by HTTP transport. This argument applies only with
+       ``--transport http`` and must be from 1 through 65535.
+   * - ``--cors-origins ORIGIN [ORIGIN ...]``
+     - Unset
+     - Space-separated origins allowed by the HTTP server's CORS policy. This
+       argument applies only with ``--transport http``.
 
-Edit the ``.vscode/mcp.json`` file:
-
-.. code-block:: json
-
-   {
-     "servers": {
-       "pyaedt-mcp": {
-         "type": "stdio",
-         "command": "uvx",
-         "args": [
-           "--index-strategy", "unsafe-best-match",
-           "--from", "git+https://github.com/ansys/pyaedt-mcp.git",
-           "ansys-aedt-mcp",
-           "--connect",
-           "--machine", "192.168.1.100",
-           "--port", "50051"
-         ]
-       }
-     }
-   }
-
-**Claude Code:**
-
-**Linux (bash):**
-
-.. code-block:: bash
-
-   claude mcp add --transport stdio pyaedt-mcp -- \
-     uvx --from git+https://github.com/ansys/pyaedt-mcp ansys-aedt-mcp \
-     --connect --machine 192.168.1.100 --port 50051
-
-**Windows PowerShell:**
-
-.. code-block:: powershell
-
-   claude mcp add --transport stdio pyaedt-mcp -- `
-     uvx --from git+https://github.com/ansys/pyaedt-mcp ansys-aedt-mcp `
-     --connect --machine 192.168.1.100 --port 50051
-
-.. warning::
-   When ``--connect`` is used, the server locks the connection. The
-   ``launch_aedt``, ``connect_to_aedt``, and ``disconnect_from_aedt`` tools
-   are disabled for the lifetime of the server process.
-
-Enable optional context tools
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-The ``--include-context`` flag registers ``get_guidelines_for``, which provides
-inline AEDT and PyAEDT workflow guidance to the AI assistant.
-
-.. code-block:: json
-
-   {
-     "servers": {
-       "pyaedt-mcp": {
-         "type": "stdio",
-         "command": "uvx",
-         "args": [
-           "--index-strategy", "unsafe-best-match",
-           "--from", "git+https://github.com/ansys/pyaedt-mcp.git",
-           "ansys-aedt-mcp",
-           "--include-context"
-         ]
-       }
-     }
-   }
-
-Enable dynamic tool discovery
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-Use ``--dynamic-tool-discovery`` to hide AEDT-only tools until a session is
-established. This keeps the AI assistant's context small before connection.
+For example, append the arguments below to any stdio command to connect to a
+specific AEDT gRPC session and register the optional context tools:
 
 .. code-block:: console
 
-   ansys-aedt-mcp --dynamic-tool-discovery
-
-Enable debug logging
-~~~~~~~~~~~~~~~~~~~~~
-
-Set the ``FASTMCP_LOG_LEVEL`` environment variable to ``DEBUG``:
-
-**Visual Studio Code**
-
-Edit the ``.vscode/mcp.json`` file:
-
-.. code-block:: json
-
-   {
-     "servers": {
-       "pyaedt-mcp": {
-         "type": "stdio",
-         "command": "uvx",
-         "args": [
-           "--index-strategy", "unsafe-best-match",
-           "--from", "git+https://github.com/ansys/pyaedt-mcp.git",
-           "ansys-aedt-mcp"
-         ],
-         "env": {
-           "FASTMCP_LOG_LEVEL": "DEBUG"
-         }
-       }
-     }
-   }
-
-**Linux (bash):**
-
-.. code-block:: bash
-
-   FASTMCP_LOG_LEVEL=DEBUG ansys-aedt-mcp
-
-**Windows PowerShell:**
-
-.. code-block:: powershell
-
-  $env:FASTMCP_LOG_LEVEL = "DEBUG"
-  ansys-aedt-mcp
-
-Connect with HTTP (Docker or remote)
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-For containerized or remote deployments, see :doc:`../user_guide/docker`.
+   ansys-aedt-mcp --connect --machine 192.168.1.100 --port 50051 --include-context
 
 Next steps
 ----------
 
-- To understand which tools are available, see :doc:`../user_guide/tools_and_capabilities`.
-- For recommended usage patterns, see :doc:`../user_guide/best_practices`.
+After PyAEDT-MCP connects, follow :doc:`../user_guide/best_practices` for recommended
+workflows and :doc:`../user_guide/tools_and_capabilities` to explore the
+available tools.

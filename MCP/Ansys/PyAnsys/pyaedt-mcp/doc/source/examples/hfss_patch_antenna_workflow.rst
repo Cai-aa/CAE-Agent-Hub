@@ -32,7 +32,7 @@ reduces token cost.
        ``get_guidelines_for``
    * - After ``launch_aedt`` or ``connect_to_aedt``
      - ``check_aedt_status``, ``create_design``, ``open_project``,
-       ``save_project``, ``analyze_design``, ``screenshot``,
+       ``save_project``, ``validate_design``, ``analyze_design``, ``screenshot``,
        ``run_python_code``, ``run_python_script``, and related tools
 
 The tool set expands automatically as part of the launch or connect call
@@ -227,16 +227,11 @@ Create setup and frequency sweep
        name="Sweep1"
    )
 
-   # Validate design
-   valid = hfss.validate_full_design()
-
-   result = "Setup and sweep created. Setup: {}, Sweep: Sweep1, Valid: {}".format(
-       setup.name, valid[1] if isinstance(valid, tuple) else valid
-   )
+   result = "Setup and sweep created. Setup: {}, Sweep: Sweep1".format(setup.name)
 
 .. code-block:: text
 
-   Response: Setup and sweep created. Setup: Setup1, Sweep: Sweep1, Valid: True
+   Response: Setup and sweep created. Setup: Setup1, Sweep: Sweep1
 
 Capture pre-solve screenshot
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -245,6 +240,20 @@ Capture pre-solve screenshot
 
 The tool returns a PNG file of the AEDT viewport showing the antenna
 geometry.
+
+Validate design
+~~~~~~~~~~~~~~~
+
+**Tool:** ``validate_design``
+
+Run this tool after design/setup changes and before solving.
+
+.. code-block:: text
+
+   Response:
+     Design validation passed.
+     Project: Project6
+     Design: PatchAntenna_Validation
 
 Solve design
 ~~~~~~~~~~~~

@@ -30,12 +30,12 @@ Key features:
 
 ## Tool surface
 
-You can use 21 tools exposed by the server, grouped as follows:
+You can use 23 tools exposed by the server, grouped as follows:
 
 | Group | Tools |
 |-------|-------|
-| Connection and lifecycle | `check_mechanical_status`, `check_mechanical_installed`, `launch_mechanical`, `connect_to_mechanical`, `disconnect_from_mechanical`, `list_mechanical_instances` |
-| File and project management | `list_files`, `upload_file`, `download_file`, `clear_mechanical`, `save_project`, `open_project` |
+| Connection and lifecycle | `check_mechanical_status`, `get_session_diagnostics`, `check_mechanical_installed`, `launch_mechanical`, `connect_to_mechanical`, `disconnect_from_mechanical`, `list_mechanical_instances` |
+| File and project management | `list_files`, `upload_file`, `download_file`, `download_project`, `clear_mechanical`, `save_project`, `open_project` |
 | Mechanical scripting and solve | `run_python_script`, `solve_analysis`, `get_model_info`, `export_results` |
 | Visualization and diagnostics | `screenshot`, `create_custom_plot`, `get_mechanical_logs` |
 | Persistent Python execution | `run_python_code` |

@@ -344,7 +344,7 @@ def list_instances(
     return str(tabulate(table, headers))
 
 
-def get_info(mechanical: "Mechanical") -> dict[str, str | dict[str, Any]]:
+def get_info(mechanical: "Mechanical") -> dict[str, Any]:
     """
     Get information from the Mechanical instance.
 

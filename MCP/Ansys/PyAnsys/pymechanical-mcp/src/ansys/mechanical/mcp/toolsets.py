@@ -54,6 +54,7 @@ _TOOLSET_CATALOGUE: dict[str, dict[str, Any]] = {
         "tools": [
             "check_mechanical_installed",
             "check_mechanical_status",
+            "get_session_diagnostics",
             "list_mechanical_instances",
             "launch_mechanical",
             "connect_to_mechanical",
@@ -105,6 +106,7 @@ _TOOLSET_CATALOGUE: dict[str, dict[str, Any]] = {
         "tools": [
             "upload_file",
             "download_file",
+            "download_project",
             "list_files",
         ],
     },

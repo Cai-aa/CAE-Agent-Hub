@@ -52,13 +52,14 @@ you can plan workflows before connecting.
    between `launch_aedt` and `connect_to_aedt`.)
 - `launch_aedt`: Start a new AEDT session.
 - `connect_to_aedt`: Connect to an already-running AEDT instance.
-- `get_pyaedt_logs`: Read the local PyAEDT log file.
+- `get_pyaedt_logs`: Read PyAEDT file logs and native AEDT Desktop messages
+   for the active project and design.
 
 **Also visible from startup, but callable only after AEDT is connected:**
 
 - Lifecycle: `disconnect_from_aedt`
 - Project/design: `list_designs`, `list_projects`, `open_project`,
-  `save_project`, `create_design`, `analyze_design`
+  `save_project`, `create_design`, `validate_design`, `analyze_design`
 - Execution: `run_python_script`, `run_python_code`
 - Export/inspection: `export_results`, `screenshot`, `export_config`,
   `get_model_info`
@@ -86,10 +87,16 @@ you can plan workflows before connecting.
 4. If the MCP lacks a tool for the requested AEDT step, write PyAEDT code
    directly and prefer `run_python_code` over `run_python_script` unless the
    user already has a script file.
-5. Before code intended for `run_python_code`, include
+5. When the user asks to build, modify, or troubleshoot a specific design,
+   call `validate_design` programmatically after design changes and before
+   calling `analyze_design`.
+6. Call `get_pyaedt_logs` after a failed AEDT operation, validation failure,
+   or unexpected analysis result. Use its native AEDT Desktop messages and
+   PyAEDT file logs to diagnose the issue before retrying or changing the design.
+7. Before code intended for `run_python_code`, include
    `from ansys.aedt.core import settings`, set `settings.release_on_exception = False`
    and `settings.pyedb_use_grpc = True`.
-6. Use the correct PyAEDT app class for the solver: `Hfss`, `Maxwell3d`, `Maxwell2d`,
+8. Use the correct PyAEDT app class for the solver: `Hfss`, `Maxwell3d`, `Maxwell2d`,
    `Icepak`, `Circuit`, `Q3d`, `Q2d`, `TwinBuilder`, `Mechanical`, `Emit`, `RMXprt`,
    `Hfss3dLayout`.
 """
@@ -116,7 +123,8 @@ call depends on whether an AEDT session is connected.
    between `launch_aedt` and `connect_to_aedt`.)
 - `launch_aedt`: Start a new AEDT session.
 - `connect_to_aedt`: Connect to an already-running AEDT instance.
-- `get_pyaedt_logs`: Read the local PyAEDT log file.
+- `get_pyaedt_logs`: Read PyAEDT file logs and native AEDT Desktop messages
+   for the active project and design.
 
 **Unlocked automatically once `launch_aedt` or `connect_to_aedt` succeeds:**
 
@@ -126,6 +134,7 @@ call depends on whether an AEDT session is connected.
 - `open_project`: Open an existing project.
 - `save_project`: Save the current project.
 - `create_design`: Create a new design in the current project.
+- `validate_design`: Run AEDT design validation checks without solving.
 - `analyze_design`: Run the analysis for the current design.
 - Execution: `run_python_script`, `run_python_code`
 - Export/inspection: `export_results`, `screenshot`, `export_config`,
@@ -154,10 +163,16 @@ call depends on whether an AEDT session is connected.
 4. If the MCP lacks a tool for the requested AEDT step, write PyAEDT code
    directly and prefer `run_python_code` over `run_python_script` unless the
    user already has a script file.
-5. Before code intended for `run_python_code`, include
+5. When the user asks to build, modify, or troubleshoot a specific design,
+   call `validate_design` programmatically after design changes and before
+   calling `analyze_design`.
+6. Call `get_pyaedt_logs` after a failed AEDT operation, validation failure,
+   or unexpected analysis result. Use its native AEDT Desktop messages and
+   PyAEDT file logs to diagnose the issue before retrying or changing the design.
+7. Before code intended for `run_python_code`, include
    `from ansys.aedt.core import settings`, set `settings.release_on_exception = False`
    and `settings.pyedb_use_grpc = True`.
-6. Use the correct PyAEDT app class for the solver: `Hfss`, `Maxwell3d`, `Maxwell2d`,
+8. Use the correct PyAEDT app class for the solver: `Hfss`, `Maxwell3d`, `Maxwell2d`,
    `Icepak`, `Circuit`, `Q3d`, `Q2d`, `TwinBuilder`, `Mechanical`, `Emit`, `RMXprt`,
    `Hfss3dLayout`.
 """

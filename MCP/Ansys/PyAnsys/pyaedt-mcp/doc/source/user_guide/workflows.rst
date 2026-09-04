@@ -19,6 +19,7 @@ Maxwell motor analysis
 #. Create a design with ``create_design`` and ``app_type="Maxwell3d"``.
 #. Run ``run_python_code`` to build the motor geometry and assign materials.
 #. Run ``run_python_code`` to assign windings, excitations, and motion setup.
+#. Run ``validate_design`` to catch model/setup issues before solving.
 #. Run ``analyze_design`` to analyze your design.
 #. Run ``run_python_code`` to create a torque and speed report.
 
@@ -29,6 +30,7 @@ Icepak thermal analysis
 #. Create a design with ``create_design`` and ``app_type="Icepak"``.
 #. Run ``run_python_code`` to create the PCB, components, and heat sources.
 #. Run ``run_python_code`` to assign boundary conditions.
+#. Run ``validate_design`` to catch model/setup issues before solving.
 #. Run ``analyze_design`` to analyze your design.
 #. Run ``run_python_code`` to create a temperature contour plot.
 #. Run ``export_results`` to export the simulation results.

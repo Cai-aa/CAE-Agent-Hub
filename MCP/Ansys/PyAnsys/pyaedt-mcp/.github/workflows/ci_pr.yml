@@ -1,0 +1,265 @@
+name: CI PR
+
+on:
+  pull_request:
+    branches:
+      - main
+    types: [opened, synchronize, reopened, ready_for_review]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions: {}
+
+env:
+  ANSYSLMD_LICENSE_FILE: ${{ format('1055@{0}', secrets.LICENSE_SERVER) }}
+  ON_CI: True
+  PYTEST_ARGUMENTS: -vvv --color=yes -ra --durations=25 --maxfail=10
+  MAIN_PYTHON_VERSION: "3.14"
+  TESTS_PYTHON_VERSION: "3.12"
+  PACKAGE_NAME: "ansys-aedt-mcp"
+  DOCUMENTATION_CNAME: "aedt-mcp.docs.pyansys.com"
+
+jobs:
+
+  # NOTE: We do not allow dependabot to trigger the CI/CD pipeline automatically.
+  # This is to mitigate supply chain attacks, where a malicious dependency update
+  # could execute arbitrary code in our build environment.
+  # Dependabot PRs must be reviewed carefully and approved manually before
+  # running the CI.
+  block-dependabot:
+    name: "Block dependabot (on dependabot PR)"
+    runs-on: ubuntu-latest
+    steps:
+      - name: Exit if dependabot triggered the workflow # zizmor: ignore[bot-conditions] safe ignore because we exit if dependabot is triggering the action
+        if: github.triggering_actor == 'dependabot[bot]'
+        run: |
+          echo "::warning::Dependabot is not allowed to trigger this workflow. Please review carefully the changes before running the workflow manually."
+          exit 1
+
+  # NOTE: We do not allow the pre-commit-ci bot to trigger the CI/CD pipeline
+  # automatically on PR it creates.
+  # This is to mitigate supply chain attacks, where a malicious dependency update
+  # could execute arbitrary code in our build environment.
+  # PRs opened by the pre-commit-ci bot must be reviewed carefully and approved
+  # manually before running the CI.
+  block-pre-commit-ci-bot-PR:
+    name: "Block pre-commit-ci bot (on pre-commit-ci bot PR only)"
+    runs-on: ubuntu-latest
+    steps:
+      - name: Exit if pre-commit-ci bot triggered the workflow # zizmor: ignore[bot-conditions] safe ignore because we exit if pre-commit-ci bot is triggering the action
+        if: github.triggering_actor == 'pre-commit-ci[bot]' && github.event.pull_request.head.ref == 'pre-commit-ci-update-config'
+        run: |
+          echo "::warning::pre-commit-ci bot is not allowed to trigger this workflow. Please review carefully the changes before running the workflow manually."
+          exit 1
+
+  # NOTE: We do not allow pyansys-ci-bot to trigger the CI/CD pipeline automatically
+  # on dependabot's and pre-commit-ci bot's PR. This is to mitigate supply chain attacks,
+  # where a malicious dependency update could execute arbitrary code in our build environment.
+  # Dependabot and pre-commit-ci bot PRs must be reviewed carefully and approved manually before
+  # running the CI.
+  block-pyansys-ci-bot:
+    name: "Block PyAnsys-CI-bot (on dependabot and pre-commit-ci bot PR)"
+    needs: [block-dependabot, block-pre-commit-ci-bot-PR]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Exit if pyansys-ci-bot triggered the workflow on dependabot's PR
+        if: github.triggering_actor == 'pyansys-ci-bot' && startsWith(github.head_ref, 'dependabot')
+        run: |
+          echo "::warning::PyAnsys CI bot is not allowed to trigger this workflow in dependabot's PR. Please review carefully the changes before running the workflow manually."
+          exit 1
+      - name: Exit if pyansys-ci-bot triggered the workflow on pre-commit-ci bot's PR
+        if: github.triggering_actor == 'pyansys-ci-bot' && github.event.pull_request.head.ref == 'pre-commit-ci-update-config'
+        run: |
+          echo "::warning::PyAnsys CI bot is not allowed to trigger this workflow in pre-commit-ci bot's PR. Please review carefully the changes before running the workflow manually."
+          exit 1
+
+  code-style:
+    name: "Code style checks"
+    needs: [block-pyansys-ci-bot]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read # Needed to checkout the code
+    steps:
+      - name: "Run PyAnsys code style checks"
+        uses: ansys/actions/code-style@3ad3b285bd9b67045477dafc7f9865a3aa39f692 #v11.0.6
+        with:
+          python-version: ${{ env.MAIN_PYTHON_VERSION }}
+
+  docs-style:
+    name: "Documentation style checks"
+    needs: [block-pyansys-ci-bot]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read # Needed to checkout the code
+      checks: write # Needed for reviewdog to create check runs
+    steps:
+      - name: "Run Ansys documentation style checks"
+        uses: ansys/actions/doc-style@3ad3b285bd9b67045477dafc7f9865a3aa39f692 #v11.0.6
+        with:
+            token: ${{ secrets.PYANSYS_CI_BOT_TOKEN }}
+
+  pr-name:
+    if: github.event_name == 'pull_request'
+    name: "Check the name of the PR"
+    needs: [block-pyansys-ci-bot]
+    permissions:
+      contents: read # Needed to checkout the code
+      pull-requests: read # Needed to read pull request title for checks
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check commit name
+        uses: ansys/actions/check-pr-title@3ad3b285bd9b67045477dafc7f9865a3aa39f692 #v11.0.6
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+  actions-security:
+    name: "Actions security"
+    needs: [block-pyansys-ci-bot]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read # Needed to checkout and scan workflows
+    steps:
+      - uses: ansys/actions/check-actions-security@3ad3b285bd9b67045477dafc7f9865a3aa39f692 #v11.0.6
+        with:
+          generate-summary: true
+          token: ${{ secrets.GITHUB_TOKEN }}
+          auditing-level: 'high'
+
+  vulnerabilities:
+    name: "Vulnerabilities"
+    needs: [block-pyansys-ci-bot]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read # Needed to checkout the code
+      security-events: write # Needed to create security advisories
+      issues: write # Needed to create issues for new advisories
+    steps:
+      - uses: ansys/actions/check-vulnerabilities@3ad3b285bd9b67045477dafc7f9865a3aa39f692 #v11.0.6
+        with:
+          python-version: ${{ env.MAIN_PYTHON_VERSION }}
+          python-package-name: ${{ env.PACKAGE_NAME }}
+          token: ${{ secrets.PYANSYS_CI_BOT_TOKEN }}
+          dev-mode: ${{ github.ref != 'refs/heads/main' }}
+          exit-with-error-on-new-advisory: false
+
+  smoke-tests:
+    name: "Build and smoke tests"
+    runs-on: ${{ matrix.os }}
+    needs: [code-style]
+    permissions:
+      contents: read # Needed to checkout the code
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+        python-version: ['3.12', '3.13', '3.14']
+    steps:
+      - name: "Build wheelhouse and perform smoke test"
+        uses: ansys/actions/build-wheelhouse@3ad3b285bd9b67045477dafc7f9865a3aa39f692 #v11.0.6
+        with:
+          library-name: ${{ env.PACKAGE_NAME }}
+          operating-system: ${{ matrix.os }}
+          python-version: ${{ matrix.python-version }}
+          whitelist-license-check: 'fpdf2'
+
+  test:
+    name: "Test Python ${{ matrix.python-version }} on ${{ matrix.os }}"
+    runs-on: ${{ matrix.os }}
+    needs: [smoke-tests]
+    permissions:
+      contents: read # Needed to checkout the code
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+        python-version: ['3.12', '3.13', '3.14']
+    steps:
+      - name: "Run unit tests"
+        uses: ansys/actions/tests-pytest@3ad3b285bd9b67045477dafc7f9865a3aa39f692 #v11.0.6
+        with:
+          python-version: ${{ matrix.python-version }}
+          pytest-extra-args: '${{ env.PYTEST_ARGUMENTS }} tests --ignore=tests/integration'
+          pytest-markers: '-m "not integration and not system"'
+          group-dependencies-name: tests
+
+  system-tests-tools-linux:
+    name: "System tests (tools, linux)"
+    runs-on: [self-hosted, Linux, pyaedt-toolkit]
+    needs: [test]
+    permissions:
+      contents: read # Needed to checkout the code
+    if: github.event_name != 'pull_request' || github.event.pull_request.draft == false
+    env:
+      ANSYSEM_ROOT261: '/usr/ansys_inc/v261/AnsysEM'
+      ANS_NODEPCHECK: "1"
+    steps:
+      - name: "Checkout repository"
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: "Set up Python"
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: ${{ env.TESTS_PYTHON_VERSION }}
+
+      - name: "Set up uv"
+        uses: astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d # v10.0.1
+        with:
+          activate-environment: true
+          enable-cache: false
+          prune-cache: true
+          python-version: ${{ env.TESTS_PYTHON_VERSION }}
+
+      - name: "Install package and test dependencies"
+        run: |
+          uv sync --group tests
+
+      - name: "Remove Ansys processes (if any)"
+        shell: bash
+        run: |
+          for pid in $(ps -eo pid,comm,args | grep -iE "ansys.inc|ansysem" | grep -v grep | awk '{print $1}'); do
+            echo "Killing PID $pid"
+            kill -9 "$pid"
+          done
+
+      - name: "Run integration tests"
+        env:
+          PYTHONMALLOC: malloc
+          PYTEST_EXTRA_ARGS: ${{ env.PYTEST_ARGUMENTS }}
+        run: |
+          pytest ${PYTEST_EXTRA_ARGS} tests/integration -m "integration and system"
+
+  build-docs:
+    name: "Build documentation"
+    runs-on: ubuntu-latest
+    needs: [docs-style]
+    permissions:
+      contents: read # Needed to checkout the code
+    steps:
+      - name: "Run Ansys documentation building action"
+        uses: ansys/actions/doc-build@3ad3b285bd9b67045477dafc7f9865a3aa39f692 # v11.0.6
+        with:
+          python-version: ${{ env.MAIN_PYTHON_VERSION }}
+          dependencies: 'zip libgl1 libglx-mesa0 xvfb'
+          sphinxopts: '-W --keep-going'
+          group-dependencies-name: doc
+
+  doc-deploy-pr:
+    name: "Deploy PR documentation"
+    if: github.event_name == 'pull_request' && contains(github.event.pull_request.labels.*.name, 'pr-preview')
+    runs-on: ubuntu-latest
+    needs: [build-docs]
+    permissions:
+      contents: write # Needed to push documentation to gh-pages branch
+    steps:
+      - name: "Deploy the PR documentation"
+        uses: ansys/actions/doc-deploy-pr@3ad3b285bd9b67045477dafc7f9865a3aa39f692 #v11.0.6
+        with:
+          cname: ${{ env.DOCUMENTATION_CNAME }}
+          token: ${{ secrets.PYANSYS_CI_BOT_TOKEN }}
+          bot-user: ${{ secrets.PYANSYS_CI_BOT_USERNAME }}
+          bot-email: ${{ secrets.PYANSYS_CI_BOT_EMAIL }}
+          maximum-pr-doc-deployments: 10

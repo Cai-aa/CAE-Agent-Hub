@@ -30,6 +30,7 @@ from ansys.mechanical.mcp.tools import (
     disconnect_from_mechanical,
     download_file,
     get_model_info,
+    get_session_diagnostics,
     launch_mechanical,
     list_files,
     list_mechanical_instances,
@@ -69,7 +70,9 @@ class TestCheckMechanicalStatus:
 
         # Should return helpful error message instead of raising exception
         assert isinstance(result, str)
-        assert "No Mechanical connection available" in result
+        data = json.loads(result)
+        assert data["error_code"] == "not_connected"
+        assert "No Mechanical connection available" in data["error"]
         assert "connect_to_mechanical" in result
 
     def test_check_status_with_exited_mechanical(self, mock_context):
@@ -102,6 +105,56 @@ class TestCheckMechanicalStatus:
         assert "version" in data["connection"]
         assert "project_directory" in data["connection"]
         assert "is_alive" in data["connection"]
+
+    def test_check_status_includes_python_session_diagnostics(self, mock_context):
+        mock_context.request_context.lifespan_context.mechanical.exited = False
+        mock_context.request_context.lifespan_context.mechanical.busy = False
+        session = MagicMock()
+        session.is_running.return_value = True
+        session.python_executable = "python"
+        mock_context.request_context.lifespan_context.python_session = session
+
+        data = json.loads(check_mechanical_status(mock_context))
+
+        assert data["python_session"] == {
+            "available": True,
+            "running": True,
+            "python_executable": "python",
+        }
+
+
+@pytest.mark.unit
+class TestSessionDiagnostics:
+    def test_reports_connection_and_python_session_state(self, mock_context):
+        session = MagicMock()
+        session.is_running.return_value = True
+        session.python_executable = "C:/Python/python.exe"
+        mock_context.request_context.lifespan_context.python_session = session
+
+        data = json.loads(get_session_diagnostics(mock_context))
+
+        assert data["mechanical_connected"] is True
+        assert data["persistent_python"]["running"] is True
+        assert data["persistent_python"]["python_executable"] == "C:/Python/python.exe"
+
+    def test_reports_missing_python_session(self, mock_context):
+        mock_context.request_context.lifespan_context.python_session = None
+
+        data = json.loads(get_session_diagnostics(mock_context))
+
+        assert data["persistent_python"]["available"] is False
+        assert data["persistent_python"]["running"] is False
+
+    def test_handles_python_session_state_failure(self, mock_context):
+        session = MagicMock()
+        session.is_running.side_effect = RuntimeError("process unavailable")
+        session.python_executable = "python"
+        mock_context.request_context.lifespan_context.python_session = session
+
+        data = json.loads(get_session_diagnostics(mock_context))
+
+        assert data["persistent_python"]["running"] is False
+        assert data["persistent_python"]["error"] == "process unavailable"
 
 
 @pytest.mark.unit
@@ -1845,6 +1898,7 @@ class TestRequiresMechanicalVisibility:
         ALWAYS_AVAILABLE_TOOLS = {
             "check_mechanical_installed",
             "check_mechanical_status",
+            "get_session_diagnostics",
             "launch_mechanical",
             "connect_to_mechanical",
             "list_mechanical_instances",

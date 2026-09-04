@@ -64,7 +64,7 @@ doc = [
     "numpydoc==1.10.0",
     "pydantic==2.13.4",
     "requests==2.34.2",
-    "sphinx-autodoc-typehints==3.13.2",
+    "sphinx-autodoc-typehints==3.13.4",
     "sphinx-notfound-page==1.1.0",
     "sphinxcontrib-video==0.4.2",
 ]
