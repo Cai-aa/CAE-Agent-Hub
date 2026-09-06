@@ -1,6 +1,6 @@
 # Ansys AEDT MCP
 
-该模块通过 PyAEDT 让 Codex 等 MCP 客户端控制 Ansys Electronics Desktop 2026 R1。
+该模块通过 PyAEDT 让 Codex 等 MCP 客户端控制 Ansys Electronics Desktop。默认并经过实机验收的目标版本是 AEDT 2026 R1。
 
 ## 架构
 
@@ -24,7 +24,7 @@ py -3.10 -m venv .venv
 .\.venv\Scripts\python.exe -m pip install -e .
 ```
 
-项目固定使用面向 AEDT 2026 R1 的 PyAEDT 1.1.0。使用 `launch_aedt` 时，`AEDT_INSTALL_DIR` 必须指向包含 `ansysedt.exe` 的目录。
+项目固定使用 PyAEDT 1.5.0，与本适配器对齐的官方 PyAEDT MCP 能力基线一致。使用 `launch_aedt` 时，`AEDT_INSTALL_DIR` 必须指向包含 `ansysedt.exe` 的目录。
 
 ## MCP 配置
 
@@ -34,17 +34,18 @@ py -3.10 -m venv .venv
 
 系统没有隐式默认 AEDT 会话。
 
-1. 调用 `list_aedt_sessions` 或 `launch_aedt`。
-2. 明确选择一个 PID 或一个 gRPC port。
-3. 每个目标工具必须且只能传入 `pid` 或 `port` 之一。
+1. 调用 `check_aedt_installed` 和 `check_aedt_status`。
+2. 调用 `list_aedt_sessions`、`connect_to_aedt` 或 `launch_aedt`。
+3. 明确选择一个 PID 或一个 gRPC port。
+4. 每个目标工具必须且只能传入 `pid` 或 `port` 之一。
 
 服务器不会自动选择最近启动或前台窗口。探测成功后，返回的 PID 和 port 会登记为同一个 broker 的别名，因此后续可以继续使用任一明确标识访问同一会话。
 
 ## 生命周期
 
-- `check_aedt_connection` 在首次使用时创建 broker，并执行真实 PyAEDT 探测。
+- `connect_to_aedt` 或 `check_aedt_connection` 在首次使用时创建 broker，并执行真实 PyAEDT 探测。
 - 工程和仿真工具复用该 broker。
-- `release_connection` 断开 broker，但不请求关闭工程或 AEDT。
+- `disconnect_from_aedt` 要求明确选择是否关闭 AEDT；`release_connection` 始终保留 AEDT 窗口。
 - MCP 正常退出或 broker stdin 关闭时也会释放全部连接。
 - 直接关闭 AEDT 窗口会触发 `QuitApplication()`，并结束该目标的 broker。
 - broker 超时只会结束 broker，不会强制结束 AEDT。
@@ -53,17 +54,35 @@ py -3.10 -m venv .venv
 
 ## 工具
 
-- `list_aedt_sessions`：只读发现 AEDT PID 和本地监听端口。
-- `launch_aedt`：使用明确 gRPC port 启动可见 AEDT 2026 R1。
-- `check_aedt_connection`：探测一个明确目标。
-- `release_connection`：停止并释放该目标的 broker。
-- `get_project_info`：读取工程和活动设计信息。
-- `close_projects`：只关闭明确指定的工程，可选择先保存；不会删除磁盘工程文件。
-- `create_hfss_design`：创建或激活指定 HFSS design。
-- `save_project`：保存当前工程，可指定另存路径。
-- `start_analysis`：启动指定 HFSS setup，默认非阻塞。
-- `get_analysis_status`：查询求解状态和 setup。
-- `build_wr90_waveguide`：建立、校验、求解并导出按模态阻抗归一化的 WR-90 TE10 直波导算例。模型包含 22.86 mm x 10.16 mm x 50 mm 真空通道、PEC 壁、两个波端口、10 GHz 自适应 setup，以及 8-12 GHz 共 81 点的插值扫频。
+与官方 PyAEDT MCP 同名的工具：
+
+- 生命周期与诊断：`check_aedt_installed`、`check_aedt_status`、`launch_aedt`、`connect_to_aedt`、`disconnect_from_aedt`、`clear_aedt`、`get_pyaedt_logs`。
+- 工程与设计：`list_projects`、`list_designs`、`open_project`、`save_project`、`create_design`。
+- 自动化：`run_python_code`、`run_python_script`。
+- 仿真与证据：`validate_design`、`analyze_design`、`export_results`、`export_config`、`get_model_info`、`screenshot`、`get_guidelines_for`。
+
+`create_design` 支持 `Hfss`、`Maxwell2d`、`Maxwell3d`、`Q3d`、`Q2d`、`Icepak`、`Circuit`、`TwinBuilder`、`Mechanical`、`Emit`、`RMXprt` 和 `Hfss3dLayout`。
+
+保留的本地扩展：
+
+- `list_aedt_sessions`、`check_aedt_connection`、`release_connection`：明确目标的 broker 控制。
+- `get_project_info`、`close_projects`：结构化工程检查和限定范围的清理。
+- `create_hfss_design`、`start_analysis`、`get_analysis_status`：原有 HFSS 工作流。
+- `build_wr90_waveguide`：专用 WR-90 TE10 建模、校验、求解与导出流程。
+
+## Icepak 示例
+
+1. 用明确的 `pid` 或 `port` 连接。
+2. 调用 `create_design(app_type="Icepak", project_name="Cooling", design_name="BoardThermal")`。
+3. 使用 `run_python_code` 创建 Icepak 几何、材料、热源、开口、风扇、网格操作、监视器和 setup。
+4. 先调用 `validate_design`，再调用 `analyze_design`。
+5. 确认求解状态，并复核日志、监视量稳定性、最高温度、质量流量守恒、热平衡、网格/收敛数据和云图。
+
+设计级 `analyze_design` 是非阻塞调用。返回 `started=true` 只证明任务已提交，不能证明求解完成或工程结论有效。
+
+对于 Icepak，未提供自定义 ACF 文件时，`analyze_design` 默认启用 `icepak_safe_mode=true`。此可靠性模式使用单核、禁用 GPU 分配与自动 DSO 设置，并在返回值中同时给出 `requested_resources` 和 `effective_resources`。只有在目标 AEDT 安装上验证过并行配置后，才建议显式设置 `icepak_safe_mode=false`；调用方提供的 `acf_file` 也会优先于安全模式。
+
+对于已求解的 Icepak 设计，`export_results(export_type="convergence")` 会从原生 `.sd` 结果文件提取残差监控历史并写入 CSV；`export_results(export_type="mesh")` 会先导出 solution profile，再把节点数、面数、单元数及正常完成标记写入 CSV。返回值会记录 `export_method`、源文件和解析明细。这两条 Icepak 专用路径绕开了部分 AEDT 版本中不可用的通用 `ExportConvergence` 与 `ExportMeshStats` 调用。
 
 资源 `aedt://status` 与 `aedt://agent-instructions` 不会隐式连接 AEDT。
 

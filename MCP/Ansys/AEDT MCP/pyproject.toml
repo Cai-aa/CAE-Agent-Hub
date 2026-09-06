@@ -1,11 +1,11 @@
 [project]
 name = "ansys-aedt-mcp"
-version = "0.1.0"
+version = "0.2.0"
 description = "PyAEDT-backed MCP server for Ansys Electronics Desktop"
 requires-python = ">=3.10"
 dependencies = [
     "mcp>=1.0",
-    "pyaedt==1.1.0",
+    "pyaedt==1.5.0",
     "psutil>=5.9,<8",
 ]
 
@@ -18,9 +18,12 @@ pythonpath = ["."]
 [tool.setuptools]
 py-modules = [
     "aedt_target",
+    "aedt_installation",
+    "aedt_guidelines",
     "aedt_close_watcher",
     "worker_protocol",
     "pyaedt_backend",
+    "pyaedt_capabilities",
     "pyaedt_worker",
     "worker_client",
     "wr90_case",

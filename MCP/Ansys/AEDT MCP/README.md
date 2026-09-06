@@ -1,6 +1,6 @@
 # Ansys AEDT MCP
 
-This module lets MCP clients such as Codex control Ansys Electronics Desktop 2026 R1 through PyAEDT.
+This module lets MCP clients such as Codex control Ansys Electronics Desktop through PyAEDT. AEDT 2026 R1 is the default and live-tested target.
 
 ## Architecture
 
@@ -24,7 +24,7 @@ py -3.10 -m venv .venv
 .\.venv\Scripts\python.exe -m pip install -e .
 ```
 
-The package pins PyAEDT 1.1.0 for AEDT 2026 R1. Set `AEDT_INSTALL_DIR` to the directory containing `ansysedt.exe` when using `launch_aedt`.
+The package pins PyAEDT 1.5.0, matching the official PyAEDT MCP capability baseline used for this adapter. Set `AEDT_INSTALL_DIR` to the directory containing `ansysedt.exe` when using `launch_aedt`.
 
 ## MCP Configuration
 
@@ -34,17 +34,18 @@ Use `examples/mcp_config.example.json` and replace `<repo>` with this directory'
 
 There is no implicit AEDT session.
 
-1. Call `list_aedt_sessions` or `launch_aedt`.
-2. Choose one PID or one gRPC port.
-3. Pass exactly one of `pid` or `port` to every targeted tool.
+1. Call `check_aedt_installed` and `check_aedt_status`.
+2. Call `list_aedt_sessions`, `connect_to_aedt`, or `launch_aedt`.
+3. Choose one PID or one gRPC port.
+4. Pass exactly one of `pid` or `port` to every targeted tool.
 
 The server never chooses the newest or foreground AEDT window. A successful probe records the returned PID and port as aliases for the same broker, so either explicit identifier continues to address that same session.
 
 ## Lifecycle
 
-- `check_aedt_connection` creates the broker on first use and performs a real PyAEDT probe.
+- `connect_to_aedt` or `check_aedt_connection` creates the broker on first use and performs a real PyAEDT probe.
 - Project and analysis tools reuse that broker.
-- `release_connection` disconnects the broker without requesting project or AEDT closure.
+- `disconnect_from_aedt` explicitly chooses whether AEDT stays open; `release_connection` always keeps it open.
 - MCP shutdown and broker stdin EOF also release all connections.
 - Closing the AEDT window triggers `QuitApplication()` and terminates that target's broker.
 - A timed-out broker is terminated; the AEDT process is never force-terminated.
@@ -53,17 +54,35 @@ For an MCP-launched session, prefer the port returned by `launch_aedt`. For a us
 
 ## Tools
 
-- `list_aedt_sessions`: discover AEDT PIDs and local listener ports without attaching.
-- `launch_aedt`: launch visible AEDT 2026 R1 with an explicit gRPC port.
-- `check_aedt_connection`: probe one explicit target.
-- `release_connection`: stop and release that target's broker.
-- `get_project_info`: inspect project and active design metadata.
-- `close_projects`: close only explicitly named projects, optionally saving first; it never deletes project files.
-- `create_hfss_design`: create or activate a named HFSS design.
-- `save_project`: save the active project, optionally to an explicit path.
-- `start_analysis`: start a named HFSS setup; non-blocking by default.
-- `get_analysis_status`: query running state and setups.
-- `build_wr90_waveguide`: build, validate, solve, and export a modal-impedance WR-90 TE10 straight-waveguide case. It uses a 22.86 mm x 10.16 mm x 50 mm vacuum channel, PEC walls, two wave ports, a 10 GHz adaptive setup, and an 81-point interpolating sweep from 8 to 12 GHz.
+Official PyAEDT MCP-compatible names:
+
+- Lifecycle and diagnostics: `check_aedt_installed`, `check_aedt_status`, `launch_aedt`, `connect_to_aedt`, `disconnect_from_aedt`, `clear_aedt`, and `get_pyaedt_logs`.
+- Projects and designs: `list_projects`, `list_designs`, `open_project`, `save_project`, and `create_design`.
+- Automation: `run_python_code` and `run_python_script`.
+- Simulation and evidence: `validate_design`, `analyze_design`, `export_results`, `export_config`, `get_model_info`, `screenshot`, and `get_guidelines_for`.
+
+`create_design` supports `Hfss`, `Maxwell2d`, `Maxwell3d`, `Q3d`, `Q2d`, `Icepak`, `Circuit`, `TwinBuilder`, `Mechanical`, `Emit`, `RMXprt`, and `Hfss3dLayout`.
+
+Local extensions retained from this MCP:
+
+- `list_aedt_sessions`, `check_aedt_connection`, and `release_connection` expose explicit-target broker control.
+- `get_project_info` and `close_projects` provide structured project inspection and scoped cleanup.
+- `create_hfss_design`, `start_analysis`, and `get_analysis_status` preserve the original HFSS workflow.
+- `build_wr90_waveguide` builds, validates, solves, and exports the dedicated WR-90 TE10 case.
+
+## Icepak example
+
+1. Connect with an explicit `pid` or `port`.
+2. Call `create_design(app_type="Icepak", project_name="Cooling", design_name="BoardThermal")`.
+3. Use `run_python_code` for Icepak geometry, materials, sources, openings, fans, mesh operations, monitors, and setup creation.
+4. Call `validate_design`, then `analyze_design`.
+5. Confirm solver state and inspect logs, monitor stabilization, maximum temperature, mass-flow conservation, heat balance, mesh/convergence data, and plots.
+
+`analyze_design` is non-blocking for a design-level solve. A returned `started=true` is submission evidence, not proof of solver completion or engineering validity.
+
+For Icepak, `analyze_design` defaults to `icepak_safe_mode=true` when no custom ACF file is supplied. This reliability mode submits one core, disables GPU allocation and automatic DSO settings, and returns both `requested_resources` and `effective_resources`. Set `icepak_safe_mode=false` only after validating the intended parallel configuration on the target AEDT installation; a caller-supplied `acf_file` also takes precedence over safe mode.
+
+For solved Icepak designs, `export_results(export_type="convergence")` exports the residual monitor history from the native `.sd` result files to CSV. `export_results(export_type="mesh")` exports a solution profile and derives node, face, cell, and normal-completion evidence into CSV. The response records `export_method`, source file, and parsed details. These Icepak-specific paths avoid the generic `ExportConvergence` and `ExportMeshStats` calls that are unavailable in some AEDT releases.
 
 Resources `aedt://status` and `aedt://agent-instructions` never attach implicitly.
 

@@ -1,17 +1,27 @@
 from __future__ import annotations
 
-from collections.abc import Callable, Mapping
+import os
 import threading
+from collections.abc import Callable, Mapping
 from typing import Any
 
 from aedt_target import AedtTarget
+from pyaedt_capabilities import (
+    OFFICIAL_BACKEND_COMMANDS,
+    CapabilityError,
+    OfficialCapabilities,
+)
 
 
 class BackendCommandError(ValueError):
     pass
 
 
-_DESKTOP_COMMANDS = {"ping", "project_info", "save_project", "close_projects"}
+_DESKTOP_COMMANDS = {
+    "ping",
+    "project_info",
+    "close_projects",
+} | OFFICIAL_BACKEND_COMMANDS
 _HFSS_COMMANDS = {
     "create_hfss_design",
     "start_analysis",
@@ -105,12 +115,14 @@ class PyAedtBackend:
         desktop_factory: Callable[..., Any] | None = None,
         hfss_factory: Callable[..., Any] | None = None,
         wr90_builder: Callable[[Any, str, bool], dict[str, Any]] | None = None,
-        version: str = "2026.1",
+        official_capabilities: OfficialCapabilities | None = None,
+        version: str | None = None,
     ) -> None:
         self._desktop_factory = desktop_factory or _default_desktop_factory
         self._hfss_factory = hfss_factory or _default_hfss_factory
         self._wr90_builder = wr90_builder or _default_wr90_builder
-        self._version = version
+        self._official = official_capabilities or OfficialCapabilities()
+        self._version = version or os.environ.get("AEDT_VERSION", "2026.1")
         self._desktop: Any = None
         self._bound_target: AedtTarget | None = None
         self._apps: dict[tuple[str, str, str | None], Any] = {}
@@ -138,8 +150,30 @@ class PyAedtBackend:
         if not isinstance(arguments, Mapping):
             raise BackendCommandError("arguments must be an object")
 
+        if command in OFFICIAL_BACKEND_COMMANDS:
+            desktop = self._desktop_for(target)
+            try:
+                result = self._official.execute(
+                    command,
+                    desktop=desktop,
+                    target=target,
+                    arguments=arguments,
+                    connection_kwargs=self._connection_kwargs(
+                        self._bound_target or target
+                    ),
+                )
+            except CapabilityError as exc:
+                raise BackendCommandError(str(exc)) from exc
+            if command == "disconnect_from_aedt":
+                self._apps.clear()
+                self._desktop = None
+                self._bound_target = None
+            return result
         if command in _DESKTOP_COMMANDS:
-            return self._execute_desktop(target, command, arguments)
+            result = self._execute_desktop(target, command, arguments)
+            if command == "close_projects":
+                self._official.clear_local_state()
+            return result
         return self._execute_hfss(target, command, arguments)
 
     def release(self) -> bool:
@@ -148,6 +182,7 @@ class PyAedtBackend:
                 return False
             desktop = self._desktop
             self._apps.clear()
+            self._official.clear_local_state()
             self._desktop = None
             self._bound_target = None
             return _release(desktop)
@@ -166,6 +201,7 @@ class PyAedtBackend:
                 return False
             desktop = self._desktop
             self._apps.clear()
+            self._official.clear_local_state()
             self._desktop = None
             self._bound_target = None
             desktop.odesktop.QuitApplication()
@@ -225,7 +261,9 @@ class PyAedtBackend:
         arguments: Mapping[str, Any],
     ) -> dict[str, Any]:
         if command == "build_wr90_waveguide":
-            project_name = _optional_text(arguments, "project_name", "Classic_WR90_Waveguide")
+            project_name = _optional_text(
+                arguments, "project_name", "Classic_WR90_Waveguide"
+            )
             design_name = _optional_text(arguments, "design_name", "WR90_TE10")
             output_dir = _required_text(arguments, "output_dir")
             solve = arguments.get("solve", True)
@@ -243,7 +281,9 @@ class PyAedtBackend:
             try:
                 kwargs["solution_type"] = _SOLUTION_TYPES[requested]
             except KeyError as exc:
-                raise BackendCommandError(f"unsupported HFSS solution_type: {requested}") from exc
+                raise BackendCommandError(
+                    f"unsupported HFSS solution_type: {requested}"
+                ) from exc
         elif command == "start_analysis":
             kwargs["setup"] = _required_text(arguments, "setup_name")
 
@@ -260,7 +300,9 @@ class PyAedtBackend:
                 "target": _target_dict(target),
                 "project_name": str(getattr(app, "project_name", project_name)),
                 "design_name": str(getattr(app, "design_name", design_name)),
-                "solution_type": str(getattr(app, "solution_type", kwargs["solution_type"])),
+                "solution_type": str(
+                    getattr(app, "solution_type", kwargs["solution_type"])
+                ),
             }
         if command == "start_analysis":
             blocking = arguments.get("blocking", False)
@@ -346,7 +388,9 @@ class PyAedtBackend:
         if not isinstance(project_names, list) or not project_names:
             raise BackendCommandError("project_names must be a non-empty list")
         if any(not isinstance(name, str) or not name.strip() for name in project_names):
-            raise BackendCommandError("project_names must contain only non-empty strings")
+            raise BackendCommandError(
+                "project_names must contain only non-empty strings"
+            )
         save = arguments.get("save", False)
         if not isinstance(save, bool):
             raise BackendCommandError("save must be a boolean")
