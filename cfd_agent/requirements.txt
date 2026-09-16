@@ -1,0 +1,2 @@
+ansys-fluent-core>=0.30
+numpy>=1.26
