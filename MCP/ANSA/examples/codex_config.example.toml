@@ -1,0 +1,16 @@
+[mcp_servers.ansa]
+command = "<REPOSITORY_ROOT>\\MCP\\ANSA\\.venv\\Scripts\\python.exe"
+args = ["-m", "ansa_mcp"]
+cwd = "<REPOSITORY_ROOT>\\MCP\\ANSA"
+startup_timeout_sec = 30
+tool_timeout_sec = 180
+
+[mcp_servers.ansa.env]
+ANSA_MCP_WORKSPACE = "<WRITABLE_WORKSPACE_PATH>"
+# Optional; omit to use %LOCALAPPDATA%\ANSAMCP\bridge.json.
+# ANSA_MCP_BRIDGE_CONFIG = "<BRIDGE_CONFIG_PATH>"
+# Optional discovery hints; neither starts ANSA.
+# ANSA_HOME = "<ANSA_INSTALL_ROOT>"
+# ANSA_EXECUTABLE = "<FULL_PATH_TO_ANSA_EXECUTABLE>"
+PYTHONUTF8 = "1"
+

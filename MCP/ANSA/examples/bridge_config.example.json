@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "host": "127.0.0.1",
+  "port": 48762,
+  "token": "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef",
+  "plugin_root": "C:\\path\\to\\your\\ansa_plugin",
+  "allowed_roots": [
+    "C:\\path\\to\\your\\ansa-mcp-workspace"
+  ],
+  "request_timeout_seconds": 120
+}

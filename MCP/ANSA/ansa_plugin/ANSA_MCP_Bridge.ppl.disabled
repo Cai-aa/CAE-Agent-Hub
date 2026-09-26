@@ -1,0 +1,33 @@
+# Experimental descriptor, disabled after reproducible ANSA v25.1.2 GUI crashes
+# in Plugin Manager > Add. Do not rename to .ppl on a session with open models.
+import os
+import ansa
+
+
+class AnsaMcpPluginInfos:
+    def __init__(self):
+        self.title = "ANSA MCP Bridge"
+        self.author = "CAE-Agent-Hub"
+        self.hostApplication = "ANSA"
+        self.minHostApplicationVersion = "v25.1.2"
+        self.description = "MCP bridge controls. Keep the status window open while connected."
+        self.menuEntry = ""
+        self.category = []
+        self.wikiUrl = ""
+        self.filepath = os.path.join(
+            os.path.dirname(os.path.realpath(__file__)), "ansa_mcp_plugin.py"
+        )
+        self.Buttons = {
+            "ANSA MCP:::Start": (
+                "start_bridge", "Start the authenticated MCP bridge", "", ""
+            ),
+            "ANSA MCP:::Status": (
+                "show_bridge_status", "Print current bridge state", "", ""
+            ),
+            "ANSA MCP:::Stop": (
+                "stop_bridge", "Stop the bridge and close its panel", "", ""
+            ),
+        }
+
+
+ansa.session.setPluginInfos(AnsaMcpPluginInfos())

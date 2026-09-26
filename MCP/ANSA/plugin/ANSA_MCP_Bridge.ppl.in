@@ -1,0 +1,36 @@
+# ANSA MCP Bridge Plugin Manager descriptor.
+# Keep the descriptor limited to metadata understood by ANSA Plugin Manager.
+import os
+import ansa
+
+
+class PluginInfos:
+    def __init__(self):
+        self.title = "ANSA MCP Bridge"
+        self.author = "CAE-Agent-Hub"
+        self.version = "v0.5.0"
+        self.hostApplication = "ANSA"
+        self.minHostApplicationVersion = "v25.0.0"
+        self.description = "Authenticated MCP runtime with history, model deltas and diagnostics."
+        self.menuEntry = ""
+        self.category = []
+        self.wikiUrl = ""
+        self.filepath = __ANSA_MCP_ENTRY_PATH__
+        self.Buttons = {
+            "ANSA MCP:::Start": (
+                "start_bridge", "Start the local MCP bridge", "", ""
+            ),
+            "ANSA MCP:::Status": (
+                "show_bridge_status", "Show the bridge status", "", ""
+            ),
+            "ANSA MCP:::Stop": (
+                "stop_bridge", "Stop the local MCP bridge", "", ""
+            ),
+        }
+
+
+# ANSA 25.1.2 does not increase this object's Python reference count.
+# Keep it alive for the native Plugin Manager after script execution returns.
+# This follows the global `x` used by ANSA's built-in .ppl descriptors.
+x = PluginInfos()
+ansa.session.setPluginInfos(x)

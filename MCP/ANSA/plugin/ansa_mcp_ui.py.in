@@ -1,0 +1,93 @@
+"""ANSA-native button entry; keep this file free of future imports.
+
+ANSA compiles plugin entries with its own script loader. The bridge itself is
+loaded through Python's import machinery, which supports its modern syntax.
+"""
+
+_BRIDGE_ENTRY = __ANSA_MCP_BRIDGE_ENTRY__
+
+
+def _bridge_module():
+    import hashlib
+    import importlib.util
+    import os
+    import sys
+
+    entry = os.path.realpath(_BRIDGE_ENTRY)
+    if not os.path.isfile(entry):
+        raise RuntimeError("ANSA MCP bridge entry is missing: " + entry)
+    key = "_ansa_mcp_ui_entry_" + hashlib.sha256(entry.encode("utf-8")).hexdigest()[:16]
+    module = sys.modules.get(key)
+    if module is None:
+        spec = importlib.util.spec_from_file_location(key, entry)
+        if spec is None or spec.loader is None:
+            raise RuntimeError("Cannot load ANSA MCP bridge entry: " + entry)
+        module = importlib.util.module_from_spec(spec)
+        sys.modules[key] = module
+        try:
+            spec.loader.exec_module(module)
+        except BaseException:
+            sys.modules.pop(key, None)
+            raise
+    return module
+
+
+def start_bridge():
+    """Start the bundled dashboard using the existing authenticated config."""
+    runtime = _runtime_module()
+    if runtime.status().get("state") in ("online", "starting"):
+        print("ANSA MCP bridge is already running.")
+        return runtime.status()
+    return runtime.start(dock_to_database=True)
+
+
+def show_bridge_status():
+    """Print the existing bridge status without starting a listener."""
+    current = _runtime_module().status()
+    print("ANSA MCP bridge: " + str(current.get("state", "offline")) + " | Runtime 0.5.0")
+    return current
+
+
+def stop_bridge():
+    """Stop the bridge belonging to the current ANSA process."""
+    return _runtime_module().stop()
+
+
+def _runtime_module():
+    import importlib
+    import importlib.util
+    import os
+    import sys
+
+    # Preserve validated config and credentials; never hot-replace live code.
+    if sys.version_info < (3, 9):
+        raise RuntimeError("ANSA MCP requires embedded Python 3.9 or newer; this ANSA version is not supported.")
+    if _BRIDGE_ENTRY is not None:
+        _bridge_module()._configure_bridge()
+    else:
+        # Never auto-create a shadow configuration disconnected from the MCP client.
+        config = os.environ.get("ANSA_MCP_BRIDGE_CONFIG", "").strip()
+        if not config:
+            local = os.environ.get("LOCALAPPDATA") or os.path.join(os.path.expanduser("~"), "AppData", "Local")
+            config = os.path.join(local, "ANSAMCP", "bridge.json")
+        if not os.path.isabs(config) or not os.path.isfile(config):
+            raise RuntimeError("ANSA MCP configuration missing. Run install_ansa_bridge.ps1 and set ANSA_MCP_BRIDGE_CONFIG to the same absolute bridge.json path for ANSA and the MCP client.")
+        os.environ["ANSA_MCP_BRIDGE_CONFIG"] = config
+    old = sys.modules.get("ansa_mcp_bridge")
+    if old is not None and old.status().get("state") in ("starting", "online"):
+        raise RuntimeError("An older ANSA MCP runtime is active. Save your model and restart ANSA before using the upgraded plugin.")
+    package = globals().get("__package__")
+    if package:
+        return importlib.import_module(".ansa_mcp_bridge", package)
+    key = "_ansa_mcp_bundled_runtime_050"
+    if key not in sys.modules:
+        folder = os.path.join(os.path.dirname(os.path.abspath(__file__)), "ansa_mcp_bridge")
+        spec = importlib.util.spec_from_file_location(key, os.path.join(folder, "__init__.py"), submodule_search_locations=[folder])
+        module = importlib.util.module_from_spec(spec)
+        sys.modules[key] = module
+        try:
+            spec.loader.exec_module(module)
+        except BaseException:
+            sys.modules.pop(key, None)
+            raise
+    return sys.modules[key]
