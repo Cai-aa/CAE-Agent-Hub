@@ -2,6 +2,12 @@
 
 [中文说明](README.zh-CN.md)
 
+## Runtime UI patch 0.5.1
+
+[Download the portable plugin](dist/ANSA_MCP_Bridge-0.5.1-release/ANSA_MCP_Bridge-0.5.1.bpkg)
+for the narrower, scrollable Runtime panel. [Changes and validation limits](RELEASE_0.5.1.md).
+Save your model and restart ANSA after installation. External MCP tools are unchanged.
+
 ## Download 0.5.0
 
 - [Portable plugin for third-party Windows users](dist/ANSA_MCP_Bridge-0.5.0-release/ANSA_MCP_Bridge-0.5.0.bpkg)

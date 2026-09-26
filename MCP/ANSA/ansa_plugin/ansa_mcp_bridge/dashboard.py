@@ -24,13 +24,20 @@ class Dashboard:
         self.updating = False
         self.selected_sequence = None
         c = g.constants
-        root = g.BCBoxLayoutCreate(window, c.BCVertical)
+        # A dock inherits its children's minimum size hints. In particular the
+        # bilingual tab bar and unwrapped BCLabels used to prevent narrowing the
+        # entire ANSA sidebar. Contain those hints in a resizable scroll area;
+        # never impose a fixed width on the dock or discard diagnostic content.
+        self.scroll_area = g.BCScrollAreaCreate(window)
+        self.content = g.BCFrameCreate(self.scroll_area)
+        root = g.BCBoxLayoutCreate(self.content, c.BCVertical)
         self.connection = g.BCLabelCreate(root, "启动中 / Starting...")
         self.context = g.BCLabelCreate(root, "正在读取会话...")
         self.status_label = g.BCLabelCreate(root, "等待 MCP 操作 / Waiting for requests")
         tabs = g.BCTabWidgetCreate(root)
         records = g.BCFrameCreate(tabs)
-        g.BCTabWidgetAddTab(tabs, records, "记录 / History")
+        g.BCTabWidgetAddTab(tabs, records, "记录")
+        g.BCTabWidgetSetToolTip(tabs, 0, "记录 / History")
         layout = g.BCBoxLayoutCreate(records, c.BCVertical)
         self.timeline = g.BCListViewCreate(layout, 4, ["#", "操作 / Operation", "状态", "耗时 s"], False)
         g.BCListViewSetSelectionChangedFunction(self.timeline, self._selected, None)
@@ -38,7 +45,8 @@ class Dashboard:
         g.BCBoxLayoutSetStretchFactor(layout, self.timeline, 2)
         g.BCBoxLayoutSetStretchFactor(layout, self.details, 1)
         model = g.BCFrameCreate(tabs)
-        g.BCTabWidgetAddTab(tabs, model, "模型 / Model")
+        g.BCTabWidgetAddTab(tabs, model, "模型")
+        g.BCTabWidgetSetToolTip(tabs, 1, "模型 / Model")
         model_layout = g.BCBoxLayoutCreate(model, c.BCVertical)
         self.capture = g.BCCheckBoxCreate(model_layout, "操作前后统计数量（大模型可关闭）")
         g.BCCheckBoxSetChecked(self.capture, True)
@@ -46,7 +54,8 @@ class Dashboard:
         g.BCPushButtonCreate(model_layout, "刷新模型统计 / Refresh", self._refresh_model, None)
         self.model_text = self._text(model_layout, "尚未采样。仅手动刷新或操作前后采样，不循环扫描模型。")
         diagnostics = g.BCFrameCreate(tabs)
-        g.BCTabWidgetAddTab(tabs, diagnostics, "诊断 / Diagnostics")
+        g.BCTabWidgetAddTab(tabs, diagnostics, "诊断")
+        g.BCTabWidgetSetToolTip(tabs, 2, "诊断 / Diagnostics")
         diagnostic_layout = g.BCBoxLayoutCreate(diagnostics, c.BCVertical)
         self.diagnostic_text = self._text(diagnostic_layout, "暂无错误。")
         g.BCPushButtonCreate(diagnostic_layout, "会话自检 / Session check", self._check, None)
@@ -55,11 +64,16 @@ class Dashboard:
         self.notice = g.BCLabelCreate(root, "关闭面板会断开桥接；执行完成不代表工程验证通过。")
         g.BCTabWidgetSetCurrentTab(tabs, records)
         g.BCBoxLayoutSetStretchFactor(root, tabs, 1)
-        g.BCWindowSetSize(window, 540, 740)
+        # SetWidget must follow construction of the content layout (GUITK API).
+        g.BCScrollAreaSetWidget(self.scroll_area, self.content)
+        g.BCScrollAreaSetWidgetResizable(self.scroll_area, True)
+        g.BCWindowSetSize(window, 320, 740)
 
     def _text(self, parent, text):
         widget = self.g.BCTextEditCreate(parent, "")
         self.g.BCTextEditSetReadOnly(widget, True)
+        self.g.BCTextEditSetWordWrap(widget, self.g.constants.BCWidgetWidth)
+        self.g.BCTextEditSetWrapPolicy(widget, self.g.constants.BCWrapAtWordBoundaryOrAnywhere)
         self._set_text(widget, text)
         return widget
 

@@ -6,7 +6,7 @@ import re
 import time
 from collections import deque
 
-VERSION = "0.5.0"
+VERSION = "0.5.1"
 HISTORY_LIMIT = 100
 SENSITIVE = re.compile(r"token|secret|password|authorization|proof|nonce", re.I)
 ASSIGNMENT = re.compile(r"(?i)(token|secret|password|authorization|api[_-]?key)([\"']?\s*[:=]\s*[\"']?)([^\s,\"'}]+)")

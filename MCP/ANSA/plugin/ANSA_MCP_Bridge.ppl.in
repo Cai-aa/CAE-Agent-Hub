@@ -8,7 +8,7 @@ class PluginInfos:
     def __init__(self):
         self.title = "ANSA MCP Bridge"
         self.author = "CAE-Agent-Hub"
-        self.version = "v0.5.0"
+        self.version = "v0.5.1"
         self.hostApplication = "ANSA"
         self.minHostApplicationVersion = "v25.0.0"
         self.description = "Authenticated MCP runtime with history, model deltas and diagnostics."

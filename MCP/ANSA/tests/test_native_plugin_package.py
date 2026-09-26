@@ -46,7 +46,7 @@ def test_package_relocates_and_dispatches_future_enabled_bridge(tmp_path, monkey
     manifest = json.loads((relocated / "manifest.json").read_text())
     assert manifest["credentials_included"] is False
     assert manifest["runtime_bundled"] is True
-    assert manifest["version"] == "0.5.0"
+    assert manifest["version"] == "0.5.1"
 
 
 def test_package_refuses_overwrite(tmp_path):
@@ -90,7 +90,7 @@ def test_bundled_runtime_is_loaded_and_live_legacy_runtime_is_rejected(tmp_path,
     ui = Path(result["directory"]) / "ANSA_MCP_Bridge/src/ansa_mcp_ui.py"
     namespace = {"__file__": str(ui)}
     exec(compile(ui.read_text(encoding="utf-8"), str(ui), "exec"), namespace)
-    monkeypatch.delitem(sys.modules, "_ansa_mcp_bundled_runtime_050", raising=False)
+    monkeypatch.delitem(sys.modules, "_ansa_mcp_bundled_runtime_051", raising=False)
     monkeypatch.setitem(sys.modules, "ansa_mcp_bridge", SimpleNamespace(status=lambda: {"state": "offline"}))
     bundled = namespace["_runtime_module"]()
     assert bundled.__file__.startswith(str(ui.parent))

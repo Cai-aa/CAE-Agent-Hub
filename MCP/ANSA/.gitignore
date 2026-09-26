@@ -6,6 +6,9 @@ __pycache__/
 htmlcov/
 build/
 dist/*
+!dist/ANSA_MCP_Bridge-0.5.1-release/
+dist/ANSA_MCP_Bridge-0.5.1-release/*
+!dist/ANSA_MCP_Bridge-0.5.1-release/ANSA_MCP_Bridge-0.5.1.bpkg
 !dist/ANSA_MCP_Bridge-0.5.0-upgrade/
 !dist/ANSA_MCP_Bridge-0.5.0-release/
 dist/ANSA_MCP_Bridge-0.5.0-upgrade/*

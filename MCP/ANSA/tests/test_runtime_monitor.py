@@ -100,7 +100,8 @@ def test_export_preserves_prior_files_and_excludes_token(tmp_path, monkeypatch):
 
 
 class FakeGui:
-    constants = SimpleNamespace(BCVertical=1, BCRenameType_None=0)
+    constants = SimpleNamespace(BCVertical=1, BCRenameType_None=0,
+                                BCWidgetWidth=1, BCWrapAtWordBoundaryOrAnywhere=4)
 
     def __init__(self):
         self.calls = []
@@ -140,3 +141,21 @@ def test_dashboard_renders_and_selection_does_not_execute_or_delete(tmp_path, mo
     panel._copy(None, None)
     assert any(c[0] == "BCApplicationClipboardSetText" for c in gui.calls)
     assert len(runtime.monitor.events) == 1
+
+
+def test_dashboard_contains_minimum_width_and_wraps_diagnostics(tmp_path, monkeypatch):
+    gui = FakeGui()
+    monkeypatch.setitem(sys.modules, "ansa", SimpleNamespace(guitk=gui))
+    runtime = make_runtime(tmp_path, monkeypatch)
+    panel = Dashboard(runtime, "window")
+    calls = gui.calls
+    assert ("BCScrollAreaSetWidget", (panel.scroll_area, panel.content)) in calls
+    assert ("BCScrollAreaSetWidgetResizable", (panel.scroll_area, True)) in calls
+    attach = next(i for i, (name, _) in enumerate(calls) if name == "BCScrollAreaSetWidget")
+    assert any(name == "BCBoxLayoutCreate" and args[0] == panel.content
+               for name, args in calls[:attach])
+    assert ("BCWindowSetSize", ("window", 320, 740)) in calls
+    assert [args[2] for name, args in calls if name == "BCTabWidgetAddTab"] == ["记录", "模型", "诊断"]
+    for widget in (panel.details, panel.model_text, panel.diagnostic_text):
+        assert ("BCTextEditSetWordWrap", (widget, gui.constants.BCWidgetWidth)) in calls
+        assert ("BCTextEditSetWrapPolicy", (widget, gui.constants.BCWrapAtWordBoundaryOrAnywhere)) in calls

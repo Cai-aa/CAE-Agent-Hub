@@ -2,6 +2,12 @@
 
 [English](README.md)
 
+## Runtime 界面补丁 0.5.1
+
+[下载便携插件包](dist/ANSA_MCP_Bridge-0.5.1-release/ANSA_MCP_Bridge-0.5.1.bpkg)：
+支持更窄的可滚动 Runtime 面板。[改动与验证边界](RELEASE_0.5.1.md)。
+安装后保存模型并重启 ANSA；外部 MCP 工具接口不变。
+
 ## 下载 0.5.0
 
 - [第三方 Windows 用户使用的便携插件包](dist/ANSA_MCP_Bridge-0.5.0-release/ANSA_MCP_Bridge-0.5.0.bpkg)

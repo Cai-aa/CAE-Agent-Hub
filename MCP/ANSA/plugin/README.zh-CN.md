@@ -1,4 +1,9 @@
-# ANSA MCP Bridge 0.5.0 — Windows 通用运行时
+# ANSA MCP Bridge 0.5.1 — Windows 通用运行时
+
+0.5.1 修复侧栏无法进一步收窄的问题：内容放入可伸缩滚动区域，窄宽度下
+可水平滚动查看完整内容；记录/模型/诊断采用短标签（悬停显示双语名称），
+详情文本按可用宽度换行。320 像素为初始窗口尺寸，不是固定最小宽度；
+实际停靠下限仍受 ANSA 和同组其他面板影响。安装此界面补丁后重启 ANSA。
 
 新版安装、操作和兼容边界见 [通用指南](GENERAL_OPERATIONS.md) 和 [工程操作](ENGINEERING_OPERATIONS.md)。
 第三方分发包不写个人 bridge_entry，ANSA 与 MCP 通过 ANSA_MCP_BRIDGE_CONFIG 指向同一配置。
@@ -29,7 +34,7 @@
 ## 推荐：官方 BETA Package 安装
 
 1. 在 ANSA 中打开 **Development > BETA Packager Installer > Installer**。
-2. 选择本次发布的 `ANSA_MCP_Bridge-0.5.0.bpkg`。
+2. 选择本次发布的 `ANSA_MCP_Bridge-0.5.1.bpkg`。
 3. 安装位置选择 **Your .BETA plugins directory**，完成安装。
 4. 保存模型并重启 ANSA，在 **Plugins > ANSA MCP** 中使用 Start / Status / Stop。
    升级时不能只点击 Stop/Start，Python 可能缓存旧模块。安装器若提示替换同名

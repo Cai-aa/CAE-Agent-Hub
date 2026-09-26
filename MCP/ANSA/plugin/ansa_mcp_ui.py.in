@@ -44,7 +44,7 @@ def start_bridge():
 def show_bridge_status():
     """Print the existing bridge status without starting a listener."""
     current = _runtime_module().status()
-    print("ANSA MCP bridge: " + str(current.get("state", "offline")) + " | Runtime 0.5.0")
+    print("ANSA MCP bridge: " + str(current.get("state", "offline")) + " | Runtime 0.5.1")
     return current
 
 
@@ -79,7 +79,7 @@ def _runtime_module():
     package = globals().get("__package__")
     if package:
         return importlib.import_module(".ansa_mcp_bridge", package)
-    key = "_ansa_mcp_bundled_runtime_050"
+    key = "_ansa_mcp_bundled_runtime_051"
     if key not in sys.modules:
         folder = os.path.join(os.path.dirname(os.path.abspath(__file__)), "ansa_mcp_bridge")
         spec = importlib.util.spec_from_file_location(key, os.path.join(folder, "__init__.py"), submodule_search_locations=[folder])

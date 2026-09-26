@@ -1,4 +1,16 @@
-# ANSA MCP Bridge 0.5.0 下载 / Downloads
+# ANSA MCP Bridge 下载 / Downloads
+
+## 最新界面补丁 / Latest UI patch: 0.5.1
+
+[便携安装包 / Portable package](ANSA_MCP_Bridge-0.5.1-release/ANSA_MCP_Bridge-0.5.1.bpkg)
+修复 Runtime 内容撑大侧栏宽度的问题；安装后重启 ANSA。实际停靠拖动效果尚待确认。
+详见 [0.5.1 改动与验证边界 / validation limits](../RELEASE_0.5.1.md)。
+
+This Runtime-only update adds scroll containment, compact tabs and wrapped details.
+Restart ANSA after installation. Displayed dock resizing remains unverified.
+The package is portable and contains no credentials. Hash: [SHA256SUMS](SHA256SUMS).
+
+## 历史版本 / Previous release: 0.5.0
 
 ## 中文
 

@@ -1,4 +1,10 @@
-# ANSA MCP Bridge 0.5.0 — general-purpose Windows runtime
+# ANSA MCP Bridge 0.5.1 — general-purpose Windows runtime
+
+0.5.1 removes content-driven sidebar width restrictions using a resizable scroll
+area. Narrow panels can scroll horizontally without losing information. Tabs use
+compact labels with bilingual tooltips; detail text wraps to its available width.
+320 pixels is an initial size, not a fixed minimum. ANSA and other tabs in the
+same dock group can still impose their own minimum. Restart ANSA after installing.
 
 See [setup and compatibility](GENERAL_OPERATIONS.md) and [engineering operations](ENGINEERING_OPERATIONS.md). Public
 packages have no bridge_entry path; set ANSA_MCP_BRIDGE_CONFIG for both processes.
@@ -41,7 +47,7 @@ named by a non-null `bridge_entry` in `manifest.json`.
 ## Recommended: official BETA Package installation
 
 1. Open **Development > BETA Packager Installer > Installer** in ANSA.
-2. Select the released `ANSA_MCP_Bridge-0.5.0.bpkg`.
+2. Select the released `ANSA_MCP_Bridge-0.5.1.bpkg`.
 3. Choose **Your .BETA plugins directory** and finish installation.
 4. Restart ANSA and use **Plugins > ANSA MCP > Start / Status / Stop**.
 
@@ -64,7 +70,7 @@ Stop stops it. Start does not modify the model. Closing the panel also stops the
 bridge. Do not reuse the old descriptor under `output/plugin_candidate`.
 
 See the release validation report for test scope. Desktop installation is
-identified by Plugins buttons and Runtime 0.5.0 in the panel; verify connectivity
+identified by Plugins buttons and Runtime 0.5.1 in the panel; verify connectivity
 with an authenticated request, not the label alone. History is in-memory
 and resets on restart; export when needed. Count snapshots are not continuous
 model synchronization: refresh after manual edits.

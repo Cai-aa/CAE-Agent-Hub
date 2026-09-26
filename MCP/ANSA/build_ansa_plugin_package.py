@@ -19,7 +19,7 @@ from build_ansa_plugin import MARKER, TEMPLATE
 
 HERE = Path(__file__).resolve().parent
 PLUGIN_NAME = "ANSA_MCP_Bridge"
-VERSION = "0.5.0"
+VERSION = "0.5.1"
 
 
 def build_package(bridge_entry: Path | None, output: Path, ansa_launcher: Path | None = None,
