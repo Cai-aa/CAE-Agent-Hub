@@ -1,6 +1,6 @@
 ---
 name: cst-simulation-workflow
-description: Use this skill when driving CST Studio Suite through the CST MCP for electromagnetic simulation workflows: creating or opening CST projects, resolving missing inputs, selecting templates, setting up geometry/materials/ports/boundaries/mesh/solvers/monitors, running or planning simulations, extracting S-parameters/far-field/near-field/eigenmode results, validating outputs, parameter sweeps, optimization handoff, and report generation.
+description: "Use this skill when driving CST Studio Suite through the CST MCP for electromagnetic simulation workflows: creating or opening CST projects, resolving missing inputs, selecting templates, setting up geometry/materials/ports/boundaries/mesh/solvers/monitors, running or planning simulations, extracting S-parameters/far-field/near-field/eigenmode results, validating outputs, parameter sweeps, optimization handoff, and report generation."
 ---
 
 # CST Simulation Workflow
