@@ -1,3 +1,8 @@
+---
+name: "csv-export"
+description: "Export curing simulation results to CSV with node coordinates and displacements. Invoke when user needs CSV output, data export, or result comparison."
+---
+
 # CSV Export
 
 ## Description

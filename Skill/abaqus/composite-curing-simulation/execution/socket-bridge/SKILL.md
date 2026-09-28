@@ -1,3 +1,8 @@
+---
+name: "socket-bridge"
+description: "Connect to Abaqus CAE via socket bridge for curing simulation. Invoke when user needs to use socket bridge, connect to Abaqus, or execute Python in Abaqus kernel."
+---
+
 # Socket Bridge Connection
 
 ## Description

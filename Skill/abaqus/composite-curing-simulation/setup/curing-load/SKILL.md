@@ -1,3 +1,8 @@
+---
+name: "curing-load"
+description: "Define pressure loads for composite curing simulation. Invoke when user needs to apply pressure on composite surface during curing."
+---
+
 # Curing Load Setup
 
 ## Description

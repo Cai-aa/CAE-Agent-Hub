@@ -1,3 +1,8 @@
+---
+name: "curing-parameters"
+description: "Reference parameter tables for composite curing simulation. Invoke when user needs curing temperatures, friction coefficients, pressure values, or material constants."
+---
+
 # Curing Parameters Reference
 
 ## Description

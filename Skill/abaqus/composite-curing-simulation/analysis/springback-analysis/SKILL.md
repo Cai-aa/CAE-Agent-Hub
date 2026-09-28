@@ -1,3 +1,8 @@
+---
+name: "springback-analysis"
+description: "Configure springback analysis with Model Change for mold removal. Invoke when user needs mold removal, springback step, or Model Change setup."
+---
+
 # Springback Analysis
 
 ## Description

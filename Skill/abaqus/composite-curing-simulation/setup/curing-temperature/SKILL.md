@@ -1,3 +1,8 @@
+---
+name: "curing-temperature"
+description: "Define temperature fields for composite curing simulation. Invoke when user needs temperature initialization, temperature changes, or thermal fields for curing steps."
+---
+
 # Curing Temperature Setup
 
 ## Description
