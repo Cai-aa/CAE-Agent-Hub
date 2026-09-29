@@ -1,3 +1,8 @@
+---
+name: "curing-material"
+description: "Define UMAT material for composite curing and elastic material for mold. Invoke when user needs COM material with UMAT subroutine, TOOL material, or material constants for curing simulation."
+---
+
 # Curing Material Setup
 
 ## Description

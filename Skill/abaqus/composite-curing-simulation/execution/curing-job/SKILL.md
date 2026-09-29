@@ -1,3 +1,8 @@
+---
+name: "curing-job"
+description: "Submit Abaqus curing simulation jobs with UMAT subroutine via socket bridge. Invoke when user needs to create, submit, or monitor curing simulation jobs."
+---
+
 # Curing Job Execution
 
 ## Description

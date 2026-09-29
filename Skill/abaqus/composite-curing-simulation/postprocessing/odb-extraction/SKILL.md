@@ -1,3 +1,8 @@
+---
+name: "odb-extraction"
+description: "Extract field outputs from ODB files for curing simulation. Invoke when user needs to read ODB results, get displacement data, or inspect field outputs."
+---
+
 # ODB Extraction
 
 ## Description

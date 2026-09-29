@@ -1,3 +1,8 @@
+---
+name: "curing-steps"
+description: "Configure 4-step curing analysis (vis, rub, glassy, sp) in Abaqus. Invoke when user needs curing step sequence, static step settings, or step-by-step curing process setup."
+---
+
 # Curing Steps Analysis
 
 ## Description
