@@ -1,0 +1,157 @@
+{
+  "verification_date": "2026-09-30",
+  "timezone": "Asia/Shanghai",
+  "aedt_version": "2026 R1",
+  "pyaedt_version": "1.5.0",
+  "transport": "actual MCP stdio client and external PyAEDT broker",
+  "registered_tool_count": 45,
+  "successful_maxwell_tools": [
+    "maxwell_add_winding_coils",
+    "maxwell_assign_coil",
+    "maxwell_assign_current",
+    "maxwell_assign_force",
+    "maxwell_assign_length_mesh",
+    "maxwell_assign_rotate_motion",
+    "maxwell_assign_torque",
+    "maxwell_assign_translate_motion",
+    "maxwell_assign_winding",
+    "maxwell_create_field_plot",
+    "maxwell_create_setup",
+    "maxwell_get_analysis_status",
+    "maxwell_get_design_info",
+    "maxwell_get_solution_data",
+    "maxwell_set_eddy_effects"
+  ],
+  "offline_tests": {
+    "total": 141,
+    "passed": 140,
+    "skipped": 1,
+    "new_maxwell_tests": 20
+  },
+  "winding_membership": {
+    "requested_coils": [
+      "CoilA",
+      "CoilB"
+    ],
+    "native_winding_children": [
+      "CoilA",
+      "CoilB"
+    ],
+    "association_confirmed": true
+  },
+  "rotation": {
+    "name": "MotionSetup1",
+    "type": "Band",
+    "api_properties": {
+      "Move Type": "Rotate",
+      "Coordinate System": "Global",
+      "Axis": "Z",
+      "Is Positive": true,
+      "InitPos": "0deg",
+      "HasRotateLimit": false,
+      "NegativePos": "0deg",
+      "PositivePos": "360deg",
+      "NonCylindrical": false,
+      "Consider Mechanical Transient": false,
+      "Angular Velocity": "100rpm",
+      "Moment of Inertia": "1.0",
+      "Damping": "0.0",
+      "Load Torque": "0NewtonMeter",
+      "Objects": [
+        "Band"
+      ]
+    },
+    "native_properties": {
+      "Name": "MotionSetup1",
+      "Type": "Band",
+      "Assignment": "Band",
+      "Moving Type": "Rotation",
+      "Coordinate System": "Global",
+      "Coordinate System/Choices": [
+        "Global"
+      ],
+      "Axis": "Z",
+      "Axis/Choices": [
+        "Z"
+      ],
+      "Direction": "Positive",
+      "Direction/Choices": [
+        "Positive",
+        "Negative"
+      ],
+      "Initial Position": "0deg",
+      "Has Rotate Limit": false,
+      "Non Cylindrical": false
+    },
+    "readback_confirmed": true
+  },
+  "translation": {
+    "name": "Travel",
+    "type": "Band",
+    "api_properties": {
+      "Move Type": "Translate",
+      "Coordinate System": "Global",
+      "PostProcessing Coordinate System": "Global",
+      "Axis": "X",
+      "Is Positive": true,
+      "InitPos": "0mm",
+      "TranslatePeriodic": false,
+      "NegativePos": "-1mm",
+      "PositivePos": "1mm",
+      "Consider Mechanical Transient": false,
+      "Velocity": "0.1m_per_sec",
+      "Mass": "1kg",
+      "Damping": "0.0",
+      "Load Force": "0newton",
+      "Objects": [
+        "TravelBand"
+      ]
+    },
+    "native_properties": {},
+    "readback_confirmed": false,
+    "readback_error": "Native property object is unavailable"
+  },
+  "static_result": {
+    "setup_sweep_name": "StaticSetup : LastAdaptive",
+    "primary_sweep": "X",
+    "sweep_unit": "mm",
+    "active_variation": {},
+    "curves": {
+      "ConductorForce.Force_mag": {
+        "x": [
+          0.0
+        ],
+        "real": [
+          2.278710142662784e-08
+        ],
+        "imag": [
+          0.0
+        ],
+        "unit": "newton",
+        "total_points": 1,
+        "truncated": false
+      }
+    }
+  },
+  "static_convergence": {
+    "status": "Normal Completion",
+    "adaptive_passes_converged": true,
+    "completed_passes": 2,
+    "triangles": 240,
+    "energy_error_percent": 0.1724,
+    "delta_energy_percent": 0.39796,
+    "target_percent": 2
+  },
+  "limits": {
+    "motion_models_solved": false,
+    "live_3d_tested": false,
+    "geometry_enclosure_verified": false,
+    "engineering_validated": false
+  },
+  "raw_local_evidence_sha256": {
+    "report.json": "07a45cea3893ad14da7a8f3920ab04520738dbfee21bd435393bdae929455882",
+    "static_profile.prof": "8fb485f61efcd2d32d11f8266819bb255c6fa8edf86ef5c68ef7bd53937f393f",
+    "static_convergence.conv": "de900442c0e04eb6a1d134cd54d133539f4432eb55a8599f3e0989a9c3d6d7d2"
+  },
+  "evidence_note": "Portable summary of the recorded local run. Raw logs, user paths, process identifiers, saved AEDT projects and solver result directories are not published. Reproduce using scripts/verify_maxwell_tools.py."
+}

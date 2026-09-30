@@ -24,6 +24,8 @@ py-modules = [
     "worker_protocol",
     "pyaedt_backend",
     "pyaedt_capabilities",
+    "maxwell_capabilities",
+    "maxwell_tools",
     "pyaedt_worker",
     "worker_client",
     "wr90_case",

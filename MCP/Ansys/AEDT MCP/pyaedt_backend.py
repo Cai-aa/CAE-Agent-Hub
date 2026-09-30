@@ -6,6 +6,7 @@ from collections.abc import Callable, Mapping
 from typing import Any
 
 from aedt_target import AedtTarget
+from maxwell_capabilities import MAXWELL_COMMANDS, MaxwellCapabilities
 from pyaedt_capabilities import (
     OFFICIAL_BACKEND_COMMANDS,
     CapabilityError,
@@ -21,7 +22,7 @@ _DESKTOP_COMMANDS = {
     "ping",
     "project_info",
     "close_projects",
-} | OFFICIAL_BACKEND_COMMANDS
+} | OFFICIAL_BACKEND_COMMANDS | MAXWELL_COMMANDS
 _HFSS_COMMANDS = {
     "create_hfss_design",
     "start_analysis",
@@ -122,6 +123,7 @@ class PyAedtBackend:
         self._hfss_factory = hfss_factory or _default_hfss_factory
         self._wr90_builder = wr90_builder or _default_wr90_builder
         self._official = official_capabilities or OfficialCapabilities()
+        self._maxwell = MaxwellCapabilities(app_resolver=self._official._resolve_app)
         self._version = version or os.environ.get("AEDT_VERSION", "2026.1")
         self._desktop: Any = None
         self._bound_target: AedtTarget | None = None
@@ -150,6 +152,14 @@ class PyAedtBackend:
         if not isinstance(arguments, Mapping):
             raise BackendCommandError("arguments must be an object")
 
+        if command in MAXWELL_COMMANDS:
+            desktop = self._desktop_for(target)
+            try:
+                return self._maxwell.execute(
+                    command, desktop=desktop, target=target, arguments=arguments,
+                )
+            except CapabilityError as exc:
+                raise BackendCommandError(str(exc)) from exc
         if command in OFFICIAL_BACKEND_COMMANDS:
             desktop = self._desktop_for(target)
             try:

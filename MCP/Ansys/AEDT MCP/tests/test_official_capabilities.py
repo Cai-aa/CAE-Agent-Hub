@@ -334,6 +334,15 @@ class OfficialCapabilityTests(unittest.TestCase):
             ),
             encoding="utf-8",
         )
+        other_results = results / "OtherIcepakDesign.results"
+        other_results.mkdir()
+        (other_results / "DV2_S1_MON0_V1.sd").write_text(
+            "\n".join(
+                f"{iteration}.0 Continuity(1.0e-4)Energy(1.0e-6)"
+                for iteration in range(1, 5)
+            ),
+            encoding="utf-8",
+        )
         self.active_app.results_directory = str(results)
         output = self.root / "icepak-convergence.csv"
 
@@ -350,6 +359,7 @@ class OfficialCapabilityTests(unittest.TestCase):
         self.assertTrue(result["file_exists"])
         self.assertEqual(result["export_method"], "icepak_monitor_history")
         self.assertEqual(result["details"]["row_count"], 2)
+        self.assertEqual(Path(result["details"]["source_file"]), monitor)
         self.assertIn("Continuity", output.read_text(encoding="utf-8"))
 
     def test_icepak_mesh_stats_export_from_solution_profile(self):

@@ -15,6 +15,7 @@ from aedt_launcher import AedtLauncher
 from aedt_target import AedtTarget
 from session_discovery import SessionDiscovery
 from worker_client import WorkerClient
+from maxwell_tools import register_maxwell_tools
 
 AEDTAppType = Literal[
     "Hfss",
@@ -53,6 +54,11 @@ MCP-launched sessions. The official PyAEDT-style tools support HFSS, Maxwell,
 Icepak, Q2D/Q3D, Circuit, Twin Builder, Mechanical, Emit, RMxprt, and HFSS 3D
 Layout. Each target reuses one external broker. Call disconnect_from_aedt or
 release_connection when finished; MCP shutdown also releases PyAEDT.
+For Maxwell, use the maxwell_* tools with explicit project_name/design_name.
+Create geometry first, assign coils, create a winding, then link named coils.
+Motion tools assign an existing enclosing band in a magnetic Transient design.
+Validate before analyze_design. API acceptance, cached properties, existing
+results, and desktop idle state are not proof of latest-solve completion.
 """
 
 mcp = FastMCP("ansys-aedt-mcp-server", instructions=INSTRUCTIONS)
@@ -716,6 +722,9 @@ async def build_wr90_waveguide(
         },
         timeout=timeout if timeout is not None else 1800.0,
     )
+
+
+register_maxwell_tools(mcp, _worker_call)
 
 
 @mcp.resource("aedt://status")

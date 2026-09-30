@@ -70,6 +70,12 @@ Local extensions retained from this MCP:
 - `create_hfss_design`, `start_analysis`, and `get_analysis_status` preserve the original HFSS workflow.
 - `build_wr90_waveguide` builds, validates, solves, and exports the dedicated WR-90 TE10 case.
 
+## Dedicated Maxwell tools
+
+The server adds 15 `maxwell_*` tools, bringing the total to 45. They cover coil terminals, windings and links, current excitations, rotational/translational motion bands, force/torque, eddy effects, setup creation, local mesh operations, design readback, activity, numerical results and field plots. Each requires explicit `project_name`, `design_name` and one `pid`/`port`.
+
+See [Maxwell tools, parameters, examples and verification limits](MAXWELL_TOOLS.md) and the [offline/live verification record](MAXWELL_VALIDATION.md). Restart the MCP server and refresh the client's tool list after updating; the existing AEDT window can remain open. Motion tools assign an existing band and do not construct or validate enclosing geometry. Motor transient behavior, mesh/time-step convergence and engineering conclusions require separate validation.
+
 ## Icepak example
 
 1. Connect with an explicit `pid` or `port`.

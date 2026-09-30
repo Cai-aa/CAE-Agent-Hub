@@ -70,6 +70,12 @@ py -3.10 -m venv .venv
 - `create_hfss_design`、`start_analysis`、`get_analysis_status`：原有 HFSS 工作流。
 - `build_wr90_waveguide`：专用 WR-90 TE10 建模、校验、求解与导出流程。
 
+## Maxwell 专用工具
+
+新增 15 个 `maxwell_*` 工具，总工具数为 45。覆盖线圈端子、绕组、端子关联、电流激励、旋转/平移运动带、力/转矩、涡流、求解设置、局部网格、设置读回、状态、数值结果及场图。每个工具要求明确 `project_name`、`design_name` 和 `pid`/`port`。
+
+详见 [Maxwell 工具、参数、示例及验证边界](MAXWELL_TOOLS.md) 和 [离线及实机验证记录](MAXWELL_VALIDATION.md)。更新后重启 MCP 服务并刷新客户端工具清单，已有 AEDT 窗口可以保持打开。运动工具分配已有 band，不自动创建或验证包围几何；真实电机瞬态、网格/时间步收敛及工程结论仍需专门验证。
+
 ## Icepak 示例
 
 1. 用明确的 `pid` 或 `port` 连接。

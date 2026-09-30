@@ -5,6 +5,23 @@ import os
 import sys
 from typing import Any, Callable
 
+
+def _bridge_configured_aedt_install() -> None:
+    """Expose the configured AEDT install using PyAEDT's expected env name."""
+    install_dir = os.environ.get("AEDT_INSTALL_DIR")
+    version = os.environ.get("AEDT_VERSION")
+    if not install_dir or not version:
+        return
+    try:
+        year, release = version.split(".", 1)
+        version_code = f"{year[-2:]}{int(release)}"
+    except (TypeError, ValueError):
+        return
+    os.environ.setdefault(f"ANSYSEM_ROOT{version_code}", install_dir)
+
+
+_bridge_configured_aedt_install()
+
 from aedt_close_watcher import AedtCloseWatcher
 from pyaedt_backend import BackendCommandError, PyAedtBackend
 from worker_protocol import WorkerProtocolError, WorkerRequest, WorkerResponse

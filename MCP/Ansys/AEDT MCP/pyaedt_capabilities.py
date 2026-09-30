@@ -122,8 +122,11 @@ def _icepak_result_directories(app: Any) -> list[Path]:
         return []
     root = Path(str(raw_results)).expanduser()
     design_name = str(getattr(app, "design_name", "")).strip()
-    candidates = [root / f"{design_name}.results", root] if design_name else [root]
-    return [candidate for candidate in candidates if candidate.is_dir()]
+    if design_name:
+        design_results = root / f"{design_name}.results"
+        if design_results.is_dir():
+            return [design_results]
+    return [root] if root.is_dir() else []
 
 
 def _parse_icepak_residual_history(path: Path) -> list[dict[str, float | int]]:
