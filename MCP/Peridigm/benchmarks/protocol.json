@@ -1,0 +1,9 @@
+{
+  "status": "Protocol and instrumentation only; no comparative study has been run",
+  "arms": ["same_model_base_tools", "same_model_static_pd_skill", "same_model_progressive_context", "same_model_context_and_bounded_repair"],
+  "controls": ["same model version and provider", "same case facts and access to answer bank", "same tool permissions", "same reference templates", "same compute and token budgets", "separate run directories and cross-task memory isolation"],
+  "metrics": ["task completion over all eligible attempts", "process completion", "confirmed physical specification alignment", "independent verification pass", "unconfirmed physical changes", "question and answer counts", "repair attempts", "human interventions", "elapsed time", "model token usage and cost if available"],
+  "current_scope": "One elastic verification profile, one- and two-process integration qualification, input/intent fault checks; no model ranking or gain claim",
+  "missing_model_usage_policy": "Unknown external-client model version, tokens or cost are null/unmeasured, never zero or guessed",
+  "evaluation": "Use deterministic rule/analytic/reference checks. A generating model's self-rating is insufficient. Unsupported/refused cases are diagnosis outcomes, not completed simulations."
+}

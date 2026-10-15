@@ -1,0 +1,15 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+[project]
+name = "peridigm-evidence-mcp"
+version = "0.2.0"
+description = "Evidence-based Peridigm CLI and MCP workflow for CAE-Agent-Hub"
+requires-python = ">=3.10"
+dependencies = ["PyYAML>=6,<7", "numpy>=2,<3", "netCDF4>=1.7,<2", "mcp>=1.20,<2", "scipy>=1.14,<2"]
+[project.optional-dependencies]
+dev = ["pytest>=8,<10"]
+[tool.setuptools]
+py-modules = ["core", "pd", "postprocess", "server", "fracture"]
+[tool.pytest.ini_options]
+pythonpath = ["."]

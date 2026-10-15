@@ -1,0 +1,62 @@
+Peridigm:
+  Discretization:
+    Type: PdQuickGrid
+    TensorProduct3DMeshGenerator:
+      Type: PdQuickGrid
+      X Origin: -2.0
+      X Length: 4.0
+      Number Points X: 2
+      Y Origin: -0.5
+      Y Length: 1.0
+      Number Points Y: 1
+      Z Origin: -0.5
+      Z Length: 1.0
+      Number Points Z: 1
+  Materials:
+    My Elastic Material:
+      Material Model: Elastic
+      Apply Shear Correction Factor: false
+      Density: 7800.0
+      Bulk Modulus: 130000000000.0
+      Shear Modulus: 78000000000.0
+  Blocks:
+    My Group of Blocks:
+      Block Names: block_1
+      Material: My Elastic Material
+      Horizon: 2.0
+  Boundary Conditions:
+    Min X Node Set: '1'
+    Max X Node Set: '2'
+    Initial Velocity Min X Face:
+      Type: Initial Velocity
+      Node Set: Min X Node Set
+      Coordinate: x
+      Value: '1.0'
+    Initial Velocity Max X Face:
+      Type: Initial Velocity
+      Node Set: Max X Node Set
+      Coordinate: x
+      Value: '-1.0'
+  Solver:
+    Verbose: false
+    Initial Time: 0.0
+    Final Time: 5.0e-05
+    Verlet:
+      Fixed dt: 1.0e-05
+  Output:
+    Output File Type: ExodusII
+    Output Format: BINARY
+    Output Filename: result
+    Output Frequency: 1
+    Parallel Write: true
+    Output Variables:
+      Displacement: true
+      Velocity: true
+      Force: true
+      Force_Density: true
+      Acceleration: true
+      Element_Id: true
+      Proc_Num: true
+      Dilatation: true
+      Weighted_Volume: true
+      Stored_Elastic_Energy: true

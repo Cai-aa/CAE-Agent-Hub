@@ -1,0 +1,13 @@
+{
+  "mcpServers": {
+    "peridigm": {
+      "command": "/path/to/agentic-pd/runtime/venv/bin/python",
+      "args": [
+        "/path/to/CAE-Agent-Hub/MCP/Peridigm/server.py"
+      ],
+      "env": {
+        "PERIDIGM_CONFIG": "/path/to/agentic-pd/config/local.json"
+      }
+    }
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "name": "peridigm-evidence-fracture",
+  "version": "0.2.0",
+  "status": "prototype-qualified-profiles",
+  "mcp": "MCP/Peridigm/server.py",
+  "workflow": [
+    "clarify",
+    "confirm_spec",
+    "validate",
+    "submit",
+    "verify",
+    "export"
+  ],
+  "profiles": {
+    "compression-two-point-v1": {
+      "mpi_processes": [
+        1,
+        2
+      ],
+      "demo": "models/peridigm-elastic"
+    },
+    "notched-tension-damage-v1": {
+      "mpi_processes": [
+        1
+      ],
+      "demo": "models/peridigm-notched-tension"
+    }
+  },
+  "notes": [
+    "Synthetic fracture demonstration; no experimental accuracy or exact crack-surface claim",
+    "Demo viewer replays recorded results; new solves require configured solver"
+  ]
+}

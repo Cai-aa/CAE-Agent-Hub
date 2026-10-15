@@ -1,0 +1,71 @@
+{
+  "privacy": "Curated trace; raw request, times, private paths and job details omitted. Operator roles retained honestly.",
+  "events": [
+    {
+      "kind": "request",
+      "actor": "codex_operator",
+      "note": "Private request omitted from public replay; see case.json for the reviewed physical problem."
+    },
+    {
+      "kind": "question",
+      "actor": "tool",
+      "fields": [
+        "template_id"
+      ],
+      "question": "Select an elastic verification or synthetic precracked tensile damage template; review its limits before confirmation.",
+      "missing": [
+        "geometry",
+        "material",
+        "initial_conditions",
+        "solver",
+        "validation"
+      ]
+    },
+    {
+      "kind": "answer",
+      "actor": "codex_operator",
+      "answers": {
+        "template_id": "notched-tension-damage-v1"
+      }
+    },
+    {
+      "kind": "template_selected",
+      "actor": "codex_operator",
+      "template_id": "notched-tension-damage-v1"
+    },
+    {
+      "kind": "question",
+      "actor": "tool",
+      "fields": [
+        "confirm_spec_sha256"
+      ],
+      "question": "Confirm the displayed synthetic verification parameters and scope?",
+      "spec_sha256": "c65d589ebd58f748f7d4fa2fc0621ed16d5bc77a9140bd5bdd8590e49d7e529e"
+    },
+    {
+      "kind": "answer",
+      "actor": "codex_operator",
+      "answers": {
+        "confirm_spec_sha256": "c65d589ebd58f748f7d4fa2fc0621ed16d5bc77a9140bd5bdd8590e49d7e529e"
+      }
+    },
+    {
+      "kind": "spec_frozen",
+      "actor": "codex_operator"
+    },
+    {
+      "kind": "submitted",
+      "actor": "tool"
+    },
+    {
+      "kind": "solver_terminal",
+      "actor": "tool",
+      "state": "completed"
+    },
+    {
+      "kind": "results_verified",
+      "actor": "tool",
+      "passed": true
+    }
+  ]
+}

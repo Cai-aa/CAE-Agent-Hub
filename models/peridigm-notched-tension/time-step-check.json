@@ -1,0 +1,18 @@
+{
+  "base_run": "544063c262d84fee",
+  "half_dt_run": "8988e23a83c441f9",
+  "only_changed_physics": "dt: 50 ns -> 25 ns; geometry, material, damage, boundaries and physical duration identical",
+  "both_independently_reconstructed": true,
+  "common_frames": 601,
+  "max_mean_damage_absolute_difference": 0.0025500894802364255,
+  "max_front_indicator_difference_m": 0.0005000000000000004,
+  "final_broken_bond_relative_difference": 0.0058208955223880594,
+  "final_front_indicator_difference_m": 0.0,
+  "interpretation": "Descriptive time-step sensitivity check, not a formal temporal/spatial convergence study and no post-hoc pass threshold. No experimental validation.",
+  "evidence": {
+    "base_response_sha256": "4c1b4117d4fad145285228f6cbc4421a59415e80b3f88ffbb70237b8e878311b",
+    "half_response_sha256": "2f10ac6cae7bda23d53d87b6bbad22f1a10bee8bfc18e554f6d5705fb4b44df4",
+    "base_validation_sha256": "ad271f18327024630e95b655da697ffde9a3f331ab30ccb65eec1dae02d2d46c",
+    "half_validation_sha256": "442125d9c8091549f4cff6f01746eb217915ea5f03c72431238596fb058fb62d"
+  }
+}

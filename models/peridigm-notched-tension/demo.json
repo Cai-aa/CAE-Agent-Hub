@@ -1,0 +1,28 @@
+{
+  "id": "fracture",
+  "title": "损伤与裂纹推进 / Damage and crack advance",
+  "mode": "recorded-result-replay",
+  "source_run_id": "544063c262d84fee",
+  "template_id": "notched-tension-damage-v1",
+  "displayed_frames": 31,
+  "points": 3200,
+  "interpolated": false,
+  "parameters": "case.json",
+  "validation": "validation.json",
+  "response": "response.csv",
+  "mesh": "result_mesh.json",
+  "scope": "Synthetic thin-layer dynamic fracture demonstration with 3D Elastic constitutive law, not plane-stress calibration, a converged 3D specimen or an experimental prediction. No contact. Only the exact reviewed profile is supported.",
+  "provenance": {
+    "source_spec_sha256": "f7060034a40a44abf397b688a0e3c88a7618ff1666b1519a48235da6fb761930",
+    "solver_sha256": "50632913c8e3b05fa78ffbca2d453056c3906462e75d16757b7bd63d7d3a433c",
+    "source_input_sha256": "9b98ed2616da320886bbc7f8f95edb4953aca85dbe146be41d60eb9279787e24",
+    "native_results": [
+      {
+        "name": "result.e",
+        "bytes": 215541288,
+        "sha256": "fc36fe2637aedd5e7303fdd8ea1947095a1d754c55b28e501c33135e01af524a"
+      }
+    ],
+    "note": "Hashes identify the actual source run. The full native results remain outside this curated replay fixture; no new computation is performed by the browser."
+  }
+}

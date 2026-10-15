@@ -1,0 +1,26 @@
+{
+  "id": "compression-two-point-v1",
+  "description": "Two free elastic material points with opposite initial velocities; Peridigm Compression_2x1x1 verification profile",
+  "source": "Peridigm 1.5.1 test/verification/Compression_2x1x1/Compression_2x1x1.peridigm and its _gold.e",
+  "scope": "Synthetic elastic dynamics verification, not a resolved 3D specimen, fracture, calibrated material or engineering strength prediction. No contact, damage or arbitrary geometry is supported in v0.1.",
+  "physics": {
+    "units": "SI",
+    "geometry": {"origin_m": [-2.0, -0.5, -0.5], "lengths_m": [4.0, 1.0, 1.0], "points": [2, 1, 1]},
+    "material": {"model": "Elastic", "density_kg_m3": 7800.0, "bulk_modulus_pa": 130000000000.0, "shear_modulus_pa": 78000000000.0},
+    "horizon_m": 2.0,
+    "initial_velocity_x_m_s": [1.0, -1.0],
+    "boundary": "free; initial velocity on point sets 1 and 2, no prescribed displacement",
+    "damage": "none", "contact": "none",
+    "solver": {"method": "Verlet", "dt_s": 0.00001, "final_time_s": 0.00005, "output_frequency": 1, "mpi_processes": 1},
+    "output_variables": ["Displacement", "Velocity", "Force", "Force_Density", "Acceleration", "Element_Id", "Proc_Num", "Dilatation", "Weighted_Volume", "Stored_Elastic_Energy"]
+  },
+  "validation": {
+    "expected_frames": 6, "expected_points": 2,
+    "gold_displacement_atol_m": 1e-9, "gold_velocity_atol_m_s": 1e-9,
+    "gold_force_atol_N": 0.001, "gold_dilatation_atol": 1e-12,
+    "time_atol_s": 1e-14, "analytic_displacement_relative_tolerance": 0.005,
+    "analytic_velocity_absolute_tolerance_m_s": 0.001,
+    "symmetry_atol_m": 1e-12,
+    "basis": "Source exodiff .comp tolerances for gold fields; dt*omega=0.12247 gives expected O(dt^2) Verlet error, bounded by 0.5% displacement before final pipeline comparison. See references/validation.md for the independent oscillator derivation."
+  }
+}

@@ -1,0 +1,100 @@
+{
+  "passed": true,
+  "checks": {
+    "normal_solver_exit": {
+      "passed": true
+    },
+    "expected_size": {
+      "passed": true,
+      "points": 3200,
+      "frames": 601,
+      "expected_frames": 601
+    },
+    "complete_fields": {
+      "passed": true
+    },
+    "finite_fields": {
+      "passed": true
+    },
+    "time_sequence": {
+      "passed": true
+    },
+    "geometry": {
+      "passed": true
+    },
+    "element_alignment": {
+      "passed": true
+    },
+    "positive_volumes": {
+      "passed": true
+    },
+    "damage_bounds": {
+      "passed": true,
+      "minimum": 0.0,
+      "maximum": 1.0
+    },
+    "irreversible_damage": {
+      "passed": true
+    },
+    "initial_damage_zero": {
+      "passed": true,
+      "note": "Starter crack bonds omitted from neighborhood; initial Damage is zero, not the precrack length."
+    },
+    "confirmed_loading": {
+      "passed": true,
+      "max_error_m": 6.098637220230962e-20
+    },
+    "initial_neighbors": {
+      "passed": true,
+      "omitted_undirected_bonds": 354
+    },
+    "independent_bond_history": {
+      "passed": true,
+      "max_point_damage_error": 0.0,
+      "tolerance": 1e-10,
+      "retained_undirected_bonds": 42304
+    },
+    "new_bond_failure": {
+      "passed": true,
+      "initial_broken": 0,
+      "final_broken": 6661
+    },
+    "crack_extension_indicator": {
+      "passed": true,
+      "extension_m": 0.0125,
+      "advancing_saved_frames": 25,
+      "criterion": "contiguous midplane bins with >= 50% broken crossing bonds; indicator, not a crack surface"
+    },
+    "time_step_screen": {
+      "passed": true,
+      "wave_speed_m_s": 3491.548236944335,
+      "dt_wave_over_dx": 0.34915482369443346,
+      "note": "Conservative screening; not a universal nonlocal stability proof. A separate dt/2 run checks sensitivity."
+    }
+  },
+  "metrics": {
+    "new_broken_undirected_bonds": 6661,
+    "omitted_precrack_bonds": 354,
+    "crack_extension_indicator_m": 0.0125,
+    "advancing_saved_frames": 25,
+    "max_point_damage_reconstruction_error": 0.0,
+    "final_mean_damage": 0.15039640617756428,
+    "final_damaged_points": 1330
+  },
+  "scope": "Synthetic thin-layer dynamic fracture demonstration with 3D Elastic constitutive law, not plane-stress calibration, a converged 3D specimen or an experimental prediction. No contact. Only the exact reviewed profile is supported.",
+  "not_verified": {
+    "experimental_accuracy": "Synthetic inputs without calibration, experiment or spatial convergence.",
+    "crack_surface": "No exact crack surface exported; front is a thresholded connected bond-failure indicator.",
+    "energy_balance": "No full energy/reaction-work accounting; not verified.",
+    "mpi": "This fracture profile is qualified for one process only."
+  },
+  "evidence": {
+    "solver_sha256": "50632913c8e3b05fa78ffbca2d453056c3906462e75d16757b7bd63d7d3a433c",
+    "spec_sha256": "f7060034a40a44abf397b688a0e3c88a7618ff1666b1519a48235da6fb761930",
+    "input_sha256": "9b98ed2616da320886bbc7f8f95edb4953aca85dbe146be41d60eb9279787e24",
+    "result_sha256": {
+      "result.e": "fc36fe2637aedd5e7303fdd8ea1947095a1d754c55b28e501c33135e01af524a"
+    },
+    "mesh_sha256": "6282ee82e8adab76153cb90e784851c0bee392c95a4ee788659006513515d309"
+  }
+}

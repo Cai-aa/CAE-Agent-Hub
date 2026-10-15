@@ -7,6 +7,7 @@ CAE Agent Hub 是一个面向主流工程仿真软件的 MCP server、Agent Skil
 当前仓库包含：
 
 - Abaqus/CAE、ANSYS Fluent、ANSYS Workbench Mechanical、Ansys Electronics Desktop / HFSS 的 MCP server。
+- Peridigm 近场动力学的共享 CLI/MCP、完整 Skill、弹性与合成损伤裂纹结果回放 Demo。
 - 按工作流阶段组织的 Abaqus 有限元 skill。
 - 原 Text to CAE 浏览器 viewer，用于查看导出的 `result_mesh.json` 仿真结果。
 - 示例工作流和模板；求解器二进制文件、许可证、私有路径和生成结果不进入源码仓库。
@@ -49,6 +50,7 @@ AI client
 | [LAMMPS MCP](MCP/LAMMPS) | Active | 检测本地 LAMMPS、运行明确输入文件并保存作业证据。 | `server.py`, `tools/atomistic_bridge.py` | LAMMPS, 分子动力学, trajectory |
 | [OVITO MCP](MCP/OVITO) | Active | 检测 OVITO 脚本能力、运行明确后处理脚本并保存证据日志。 | `server.py`, `tools/atomistic_bridge.py` | OVITO, 原子尺度, visualization |
 | [CalculiX MCP](MCP/CalculiX) | Active | 包装开源有限元求解器 CalculiX（`ccx`，GPLv2，无需 license）：解析 `.inp`、原位修改设计变量、fire-and-forget 运行 ccx、读取 `.dat` 文本结果，并把 `.dat` 结果导出为 viewer 的 `result_mesh.json`，提取固有频率（`*FREQUENCY`）与可在 viewer 渲染的振型，并跑两阶段尺寸优化（LHS + 坐标下降），在应力/位移或频率约束（避共振）下最小化质量。 | `mcp_server.py`, `tools/inp_parser.py`, `tools/solver.py`, `tools/result_exporter.py`, `tools/optimizer.py` | CalculiX, FEM, ccx, .inp, .dat, .frd, von Mises, 设计变量, 尺寸优化, 模态分析, 共振 |
+| [Peridigm MCP](MCP/Peridigm) | 原型 · 限定模板已验证 | 渐进需求补全、CaseSpec确认、PD规则检查、受限修复、真实求解与独立验证；包含弹性与合成裂纹回放Demo。 | `server.py`, `pd.py`, `core.py`, `fracture.py` | Peridigm, 近场动力学, Agentic PD, 损伤, 裂纹扩展 |
 | [FEP Agent Hub](MCP/FEP-Agent-Hub) | Active | 通过三个独立、工作区隔离的 STDIO MCP 协同 FreeCAD 建模、Elmer FEM 网格/求解与 ParaView 后处理；包含 6 个经门禁验证的热、电磁、结构和层流 profile。 | `mcp/*/src/*_mcp/server.py`, `scripts/protocol_smoke.py`, `scripts/mcp_full_validation.py` | FreeCAD, Elmer FEM, ParaView, FEP, 热传导, 变压器, 简支梁, 层流, 楞次定律 |
 
 > 新增 MCP 时，建议保留可复用源码、示例、测试和中英文 README；不要提交虚拟环境、求解结果、私有路径、许可证或生成的工程数据。
@@ -92,6 +94,7 @@ AI client
 | [calculix-fem](Skill/calculix/calculix-fem) | Active | 驱动 CalculiX MCP 的工作流：检视 `.inp`、原位修改设计变量、运行 ccx、读取 `.dat` 结果、导出 `result_mesh.json`。 | CalculiX, FEM, ccx, .inp, 线性静力 |
 | [calculix-sizing-optimization](Skill/calculix/calculix-sizing-optimization) | Active | 在 CalculiX 壳/梁 deck 上跑两阶段尺寸优化（LHS 粗扫 + 坐标下降），在应力/位移约束下最小化质量；模态 deck 上可用固有频率下限约束（避共振）。 | CalculiX, 尺寸优化, 减重, LHS, 坐标下降, 共振, 固有频率 |
 | [calculix-modal-analysis](Skill/calculix/calculix-modal-analysis) | Active | 从 CalculiX `*FREQUENCY` 步提取固有频率与振型；第 N 阶可导出为 viewer 的无应力振型。 | CalculiX, 模态, 固有频率, 振型, 共振, 振动 |
+| [peridigm-evidence-fracture](Skill/peridigm/peridigm-evidence-fracture) | 原型 · 限定模板已验证 | 渐进问答、物理规格冻结、受限修复、求解证据与损伤/裂纹解释。 | Peridigm, 近场动力学, Damage, 裂纹 |
 | [fep-agent-hub](Skill/fep-agent-hub) | Active | FreeCAD → Elmer FEM → ParaView 证据优先总控 Skill，覆盖已验证 profile、物理门禁、敏感性检查与真实动画口径。 | FEP Agent Hub, FreeCAD, Elmer FEM, ParaView, CAE 验证 |
 
 > 新增 skill 时，请保留完整 skill 目录，包括 `SKILL.md`、可用的 `metadata.json`、上游来源、references、assets 和工作流脚本。
@@ -169,6 +172,16 @@ http://127.0.0.1:4178/?case=gear-mesh
 http://127.0.0.1:4178/?case=bullet-plate
 ```
 
+
+### Agentic PD 真实结果回放
+
+按上文启动Viewer后，打开 `/peridigm.html`，选择：
+
+- `/peridigm.html?demo=elastic`：[弹性基准](models/peridigm-elastic)，6个真实时刻，含gold与独立解析解对照。
+- `/peridigm.html?demo=fracture`：[预裂纹拉伸损伤演示](models/peridigm-notched-tension)，3,200材料点、31个真实展示帧、逐步断键独立重建。
+
+回放不需要Peridigm或SSH；构建会携带两份数据，可用于静态展示。它们是已计算结果，不代表浏览器正在求解或已连接AI服务。重新求解使用 [CLI/MCP](MCP/Peridigm) 与 [Skill](Skill/peridigm/peridigm-evidence-fracture)。来源及能力边界见 [DEMO.md](MCP/Peridigm/DEMO.md)。
+
 ## 仓库结构
 
 ```text
@@ -176,6 +189,7 @@ CAE-Agent-Hub/
   MCP/
     Abaqus/
     CalculiX/
+    Peridigm/
     Ansys/
       AEDT MCP/
       Fluent MCP/
@@ -197,7 +211,7 @@ CAE-Agent-Hub/
 
 ## 源码管理规则
 
-仓库应该包含可复用源码、文档、测试、示例、模板和 skill instruction。
+仓库应该包含可复用源码、文档、测试、示例、模板和 skill instruction。`models/peridigm-*` 是经过明确整理的公开回放样本，仅保留精选结果字段、验证摘要、规范输入及文件摘要，并标明来源和边界；完整原生作业及私人运行状态仍保存在仓库外。
 
 仓库不应该包含：
 
@@ -224,3 +238,7 @@ npm.cmd run build
 - 更多产品化 skill pack，用于可复用建模和验证工作流。
 - 面向 viewer 和报告生成的共享结果导出格式。
 - 每个 CAE 应用的安装提示词和验证脚本。
+
+## Peridigm 开发模块
+
+[Peridigm 模块](MCP/Peridigm/README.zh-CN.md)提供共享 CLI/MCP 核心、规格确认、受限修复及材料点展示。已验证范围包括两材料点弹性代码基准和合成预裂纹拉伸损伤演示；工程强度与实验精度仍未验证。参见[架构映射](MCP/Peridigm/ARCHITECTURE.md)与 [Skill](Skill/peridigm/peridigm-evidence-fracture/SKILL.md)。
