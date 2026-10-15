@@ -1,0 +1,28 @@
+{
+  "id": "elastic",
+  "title": "弹性代码验证 / Elastic verification",
+  "mode": "recorded-result-replay",
+  "source_run_id": "a24c5dcea9304f09",
+  "template_id": "compression-two-point-v1",
+  "displayed_frames": 6,
+  "points": 2,
+  "interpolated": false,
+  "parameters": "case.json",
+  "validation": "validation.json",
+  "response": "response.csv",
+  "mesh": "result_mesh.json",
+  "scope": "Synthetic elastic dynamics verification, not a resolved 3D specimen, fracture, calibrated material or engineering strength prediction. No contact, damage or arbitrary geometry is supported in v0.1.",
+  "provenance": {
+    "source_spec_sha256": "af6e387c5418518b797c8d84b7bccf03b2247af5c08375753e6335a1149b603d",
+    "solver_sha256": "50632913c8e3b05fa78ffbca2d453056c3906462e75d16757b7bd63d7d3a433c",
+    "source_input_sha256": "324a62b726e423191453e72c44d5150337a6616fe4e264077d133b636a9fe328",
+    "native_results": [
+      {
+        "name": "result.e",
+        "bytes": 11752,
+        "sha256": "baffe3c2c2784d9363c888f26e9c6acbc2c539baf3bb6c579999cf67df2b0aa2"
+      }
+    ],
+    "note": "Hashes identify the actual source run. The full native results remain outside this curated replay fixture; no new computation is performed by the browser."
+  }
+}

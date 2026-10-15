@@ -1,0 +1,30 @@
+{
+  "id": "notched-tension-damage-v1",
+  "description": "Small precracked thin-layer tensile fracture demonstration using this build's two-threshold Critical Stretch model",
+  "source": "Locally inspected Peridigm 1.5.1 src/damage/Peridigm_CriticalStretchDamageModel.cpp; TextFileDiscretization; PrecrackedPlate plane-filter example. New synthetic geometry/material/loading, not an upstream gold benchmark.",
+  "scope": "Synthetic thin-layer dynamic fracture demonstration with 3D Elastic constitutive law, not plane-stress calibration, a converged 3D specimen or an experimental prediction. No contact. Only the exact reviewed profile is supported.",
+  "physics": {
+    "units": "SI",
+    "geometry": {"origin_m": [-0.02, -0.01, -0.00025], "lengths_m": [0.04, 0.02, 0.0005], "points": [80, 40, 1], "discretization": "Text File"},
+    "material": {"model": "Elastic", "density_kg_m3": 2200.0, "bulk_modulus_pa": 14900000000.0, "shear_modulus_pa": 8940000000.0},
+    "horizon_m": 0.0015075,
+    "damage": {"model": "Critical Stretch", "critical_stretch_tension": 0.001, "critical_stretch_compression": -1.0, "parameter_basis": "Synthetic demonstration inputs, no fracture-energy or experimental calibration. Compression failure effectively disabled for this tensile example."},
+    "precrack": {"plane_y_m": 0.0, "left_x_m": -0.02, "tip_x_m": -0.01, "method": "Rectangular_Plane bond filter; omitted bonds are not counted in subsequent Damage"},
+    "boundary": {"direction": "y", "grip_rows": 3, "grip_speed_m_s": 1.0, "ramp_time_s": 0.000005, "z_displacement_m": 0.0, "x": "free", "initial_velocity": "zero"},
+    "contact": "none",
+    "solver": {"method": "Verlet", "dt_s": 0.00000005, "final_time_s": 0.00003, "output_frequency": 1, "mpi_processes": 1},
+    "output_variables": ["Displacement", "Velocity", "Force", "Damage", "Volume", "Element_Id", "Proc_Num", "Number_Of_Neighbors"]
+  },
+  "validation": {
+    "expected_points": 3200,
+    "time_atol_s": 1e-13,
+    "damage_atol": 1e-10,
+    "bond_reconstruction_atol": 1e-10,
+    "boundary_displacement_atol_m": 1e-10,
+    "minimum_crack_extension_m": 0.001,
+    "crack_indicator_broken_fraction": 0.5,
+    "minimum_advancing_frames": 2,
+    "max_dt_wave_ratio": 0.5,
+    "basis": "Predeclared: bounded irreversible Damage, independent per-step bond-stretch history reconstruction, connectivity/boundary checks and advancing broken-bond indicator; no analytic fracture-path or experimental accuracy claim."
+  }
+}

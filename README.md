@@ -8,9 +8,10 @@ CAE Agent Hub is a collection of **MCP servers, reusable agent skills, solver au
 
 The current repository provides:
 
-- **MCP servers** for Abaqus/CAE, ANSYS Fluent, ANSYS Workbench/Mechanical, Ansys Electronics Desktop/HFSS, Altair HyperWorks, LAMMPS, OVITO, CalculiX, and the FreeCAD → Elmer FEM → ParaView FEP Agent Hub workflow.
+- **MCP servers** for Abaqus/CAE, ANSYS Fluent, ANSYS Workbench/Mechanical, Ansys Electronics Desktop/HFSS, Altair HyperWorks, LAMMPS, OVITO, CalculiX, Peridigm, and the FreeCAD → Elmer FEM → ParaView FEP Agent Hub workflow.
 - **Reusable Skills** for Abaqus modeling, setup, analysis, execution, postprocessing, optimization, and reference workflows, together with evidence-oriented workflows for several CAE ecosystems.
 - **Subagent resources** stored under `Subagent/`.
+- **Agentic PD** with a shared Peridigm CLI/MCP workflow, complete Skill and two curated recorded-result demos.
 - **Solver automation and supporting assets/models** stored under `assets/` and `models/`.
 - The original **Text to CAE browser viewer** for inspecting lightweight `result_mesh.json` simulation results.
 - Examples, tests, templates, and documentation intended to keep solver binaries, licenses, private paths, and generated results out of source control.
@@ -66,6 +67,7 @@ The repository separates responsibilities:
 | [LAMMPS MCP](MCP/LAMMPS) | Active | Detect a local LAMMPS executable, run explicit input decks, and retain job evidence. | `server.py`, `tools/atomistic_bridge.py` | LAMMPS, molecular dynamics, trajectory |
 | [OVITO MCP](MCP/OVITO) | Active | Detect OVITO scripting support and run explicit postprocessing scripts with evidence logs. | `server.py`, `tools/atomistic_bridge.py` | OVITO, atomistic, visualization |
 | [CalculiX MCP](MCP/CalculiX) | Active | Wrap the open-source CalculiX FEM solver (`ccx`): parse `.inp` decks, edit design variables, run `ccx`, read `.dat` results, export `result_mesh.json`, extract natural frequencies and viewer-renderable mode shapes, and run two-stage sizing optimization. | `mcp_server.py`, `tools/inp_parser.py`, `tools/solver.py`, `tools/result_exporter.py`, `tools/optimizer.py` | CalculiX, FEM, ccx, `.inp`, `.dat`, `.frd`, von Mises, design variables, sizing optimization, modal analysis, resonance |
+| [Peridigm MCP](MCP/Peridigm) | Prototype · verified profiles | Confirm a structured CaseSpec, enforce build-specific PD rules, run bounded real jobs and independently verify elastic or synthetic damage results. Includes offline replay demos. | `server.py`, `pd.py`, `core.py`, `fracture.py` | Peridigm, peridynamics, Agentic PD, damage, crack advance |
 | [FEP Agent Hub](MCP/FEP-Agent-Hub) | Active | Coordinate independent FreeCAD CAD, Elmer FEM, and ParaView postprocessing MCP servers. Includes verified thermal, electromagnetic, structural, and laminar-flow profiles with evidence gates. | `mcp/*/src/*_mcp/server.py`, `scripts/protocol_smoke.py`, `scripts/mcp_full_validation.py` | FreeCAD, Elmer FEM, ParaView, FEP, heat, transformer, beam, laminar flow, Lenz law |
 
 > Adding a new MCP should follow the repository pattern: keep reusable source, examples, tests, and bilingual README files together, while excluding virtual environments, solver results, private paths, licenses, and generated project data.
@@ -118,6 +120,7 @@ The repository contains an Abaqus master router and specialized workflow skills,
 | `calculix-fem` | Active | Workflow for driving the CalculiX MCP, including `.inp` inspection, variable editing, solving, result extraction, and viewer export. |
 | `calculix-sizing-optimization` | Active | Two-stage sizing optimization using LHS sweep and coordinate descent under stress/displacement or natural-frequency constraints. |
 | `calculix-modal-analysis` | Active | Natural frequencies and mode shapes from a CalculiX `*FREQUENCY` step, with viewer export. |
+| [`peridigm-evidence-fracture`](Skill/peridigm/peridigm-evidence-fracture) | Prototype · verified profiles | Progressive clarification, frozen physics, bounded repair, real solver evidence and honest material-point/fracture interpretation. |
 | `fep-agent-hub` | Active | Evidence-first router for FreeCAD → Elmer FEM → ParaView workflows, verified profiles, physics gates, sensitivity checks, and scientifically honest animation semantics. |
 
 > Adding a new Skill should keep the complete skill directory together with `SKILL.md`, `metadata.json` when available, upstream attribution, references, assets, and workflow scripts.
@@ -199,6 +202,16 @@ http://127.0.0.1:4178/?case=gear-mesh
 http://127.0.0.1:4178/?case=bullet-plate
 ```
 
+
+### Agentic PD recorded demos
+
+Run the viewer as above, then open [the Peridigm entry](viewer/peridigm.html) at `/peridigm.html`. Choose either demo:
+
+- `/peridigm.html?demo=elastic` — [two-point elastic verification](models/peridigm-elastic): 6 actual frames, source gold and an independent oscillator comparison.
+- `/peridigm.html?demo=fracture` — [precracked tensile damage demonstration](models/peridigm-notched-tension): 3,200 material points, 31 actual display frames and independently reconstructed bond failure.
+
+Replay requires neither Peridigm nor SSH. `npm run build` bundles both datasets for static hosting. These are recorded verified results, not a browser solver or a connected AI service. New solves use the [Peridigm CLI/MCP](MCP/Peridigm) and its [Skill](Skill/peridigm/peridigm-evidence-fracture). See [demo provenance and limits](MCP/Peridigm/DEMO.md).
+
 ## Repository Layout
 
 ```text
@@ -211,6 +224,7 @@ CAE-Agent-Hub/
 │   ├── HyperWorks/
 │   ├── LAMMPS/
 │   ├── OVITO/
+│   ├── Peridigm/
 │   ├── FEP-Agent-Hub/
 │   └── Ansys/
 │       ├── AEDT MCP/
@@ -231,7 +245,7 @@ The repository root currently contains the MCP, Skill, Subagent, assets, models,
 
 ## Source Control Policy
 
-The repository should include reusable source, documentation, tests, examples, templates, and skill instructions.
+The repository should include reusable source, documentation, tests, examples, templates, and skill instructions. Curated public replay fixtures under `models/peridigm-*` are an explicit exception to excluding generated run data: they include only selected fields, verified summaries, canonical inputs and hashes, with attribution and capability limits. Full native jobs and private runtime state stay outside the repository.
 
 It should not include:
 
@@ -273,3 +287,7 @@ When extending the hub:
 ## License
 
 This repository is released under the **MIT License**. See [LICENSE](LICENSE) for details.
+
+## Peridigm development module
+
+The [Peridigm module](MCP/Peridigm/README.md) adds a shared CLI/MCP workflow, confirmed specifications, bounded repair and material-point viewer export. Qualified profiles cover two-point elastic code verification and a synthetic precracked tensile damage demonstration. Engineering strength and experimental accuracy remain unverified. See its [architecture map](MCP/Peridigm/ARCHITECTURE.md) and [Skill](Skill/peridigm/peridigm-evidence-fracture/SKILL.md).

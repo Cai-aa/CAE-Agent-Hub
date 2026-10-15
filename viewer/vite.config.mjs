@@ -371,6 +371,7 @@ export default defineConfig({
   build: {
     chunkSizeWarningLimit: 800,
     rollupOptions: {
+      input: { main: path.resolve(viewerRoot, "index.html"), peridigm: path.resolve(viewerRoot, "peridigm.html") },
       output: {
         manualChunks(id) {
           if (!id.includes("node_modules")) {

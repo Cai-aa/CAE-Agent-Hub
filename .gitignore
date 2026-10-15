@@ -59,3 +59,7 @@ MCP/**/status.json
 MCP/**/status.json.tmp
 MCP/**/stop.flag
 MCP/**/mcp.log
+
+# Peridigm reusable verification/export scripts are source, not runtime artifacts.
+!MCP/Peridigm/scripts/
+!MCP/Peridigm/scripts/**

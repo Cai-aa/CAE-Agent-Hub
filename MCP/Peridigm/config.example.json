@@ -1,0 +1,7 @@
+{
+  "root": "/path/to/agentic-pd",
+  "solver": "/path/to/Peridigm",
+  "mpirun": "/path/to/compatible/mpirun",
+  "library_dirs": ["/path/to/hdf5/lib", "/path/to/netcdf/lib", "/path/to/openmpi/lib"],
+  "reference": "/path/to/agentic-pd/runtime/reference_gold.e"
+}

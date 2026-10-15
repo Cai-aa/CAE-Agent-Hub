@@ -1,0 +1,14 @@
+{
+  "build_scope": "Peridigm 1.5.1 Dev; record actual binary SHA256 per run",
+  "rules": [
+    {"id":"intent_lock","source":"Confirmed CaseSpec","check":"Canonical spec hash unchanged; compiled input semantically equal","failure":"block, require new confirmed case for physical changes"},
+    {"id":"units","source":"Template SI interpretation","check":"SI units and dimensional named fields","failure":"ask for units; no ambiguous conversion"},
+    {"id":"material","source":"src/materials/Peridigm_ElasticMaterial.cpp and Compression_2x1x1.peridigm","check":"Positive density and moduli; Elastic only; no damage/contact","failure":"unsupported profile"},
+    {"id":"volume_nodes","source":"PdQuickGrid, reference Compression_2x1x1","check":"2x1x1 point grid; positive cell volume 2 m^3; node sets 1,2 exist","failure":"block"},
+    {"id":"horizon","source":"Compression_2x1x1 profile","check":"Horizon 2 m includes the 2 m neighbor; exact qualified stencil only","failure":"new stencil needs qualification, not auto repair"},
+    {"id":"initial_contact","source":"Reference boundary/initial conditions","check":"Free points, velocities +1/-1 m/s along x; no contact and no prescribed displacement","failure":"physical-semantic block"},
+    {"id":"time","source":"Velocity-Verlet stability applied to two-point oscillator and source time settings","check":"omega*dt<2; dt=1e-5s; end=5e-5s; output every step","failure":"block without shortening physical horizon"},
+    {"id":"reference","source":"Source gold.e and .comp","check":"Reference SHA256 frozen; displacement/velocity/force/dilatation comparison","failure":"fail validation"},
+    {"id":"mpi","source":"Single/two-process profile qualification","check":"1 or 2 ranks; require every rank file, synchronized times and unique owned global IDs; compare merged fields to original reference","failure":"BLOCKED for other counts or incomplete shards"}
+  ]
+}

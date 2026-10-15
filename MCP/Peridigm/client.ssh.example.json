@@ -1,0 +1,15 @@
+{
+  "mcpServers": {
+    "peridigm": {
+      "command": "ssh",
+      "args": [
+        "-T",
+        "YOUR_USER@YOUR_HOST",
+        "env",
+        "PERIDIGM_CONFIG=/path/to/agentic-pd/config/local.json",
+        "/path/to/agentic-pd/runtime/venv/bin/python",
+        "/path/to/CAE-Agent-Hub/MCP/Peridigm/server.py"
+      ]
+    }
+  }
+}

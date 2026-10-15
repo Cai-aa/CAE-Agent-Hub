@@ -186,6 +186,24 @@ function appendInteriorGridLines(facePoints, subdivisions, linePositions) {
 }
 
 function buildResultSurface(mesh) {
+  if (mesh?.representation === "material-points") {
+    const positions = [], colors = [];
+    const bounds = new THREE.Box3();
+    const nodes = Array.isArray(mesh.nodes) ? mesh.nodes : [];
+    const min = Number(mesh.fieldRanges?.valueMin ?? 0);
+    const max = Number(mesh.fieldRanges?.valueMax ?? mesh.fieldRanges?.maxDisplacement ?? 1);
+    for (const node of nodes) {
+      const point = node.deformed || node.coordinates;
+      positions.push(...point);
+      bounds.expandByPoint(new THREE.Vector3(...point));
+      const color = colorForRatio((Number(node.value || 0) - min) / Math.max(max - min, 1e-30));
+      colors.push(color.r, color.g, color.b);
+    }
+    const geometry = new THREE.BufferGeometry();
+    geometry.setAttribute("position", new THREE.Float32BufferAttribute(positions, 3));
+    geometry.setAttribute("color", new THREE.Float32BufferAttribute(colors, 3));
+    return { bounds, surfaceGeometry: geometry, lineGeometry: new THREE.BufferGeometry(), minMises: min, maxMises: max, materialPoints: true };
+  }
   const nodes = Array.isArray(mesh?.nodes) ? mesh.nodes : [];
   const elements = Array.isArray(mesh?.elements) ? mesh.elements : [];
   const nodeByLabel = new Map(nodes.map((node) => [Number(node.label), node]));
@@ -405,6 +423,7 @@ function formatLegendValue(value) {
 
 export default function CaeResultViewer({
   project,
+  resultMesh = null,
   locale = "zh",
   caeDirectory,
   leftPanel = null,
@@ -459,7 +478,7 @@ export default function CaeResultViewer({
     setSelectedDynamicFrameIndex(0);
     setDynamicPlaying(false);
     orbitStateRef.current = null;
-  }, [caeDirectory, project?.outputs?.status]);
+  }, [caeDirectory, project?.outputs?.status, resultMesh]);
 
   useEffect(() => {
     if (selectedModeIndex >= modalFrames.length && modalFrames.length > 0) {
@@ -477,7 +496,7 @@ export default function CaeResultViewer({
     if (!dynamicPlaying || dynamicFrames.length <= 1) {
       return undefined;
     }
-    const frameDurationMs = Math.max(16, 16 / Math.max(dynamicPlaybackSpeed, 0.25));
+    const frameDurationMs = Math.max(16, (mesh?.representation === "material-points" ? 180 : 16) / Math.max(dynamicPlaybackSpeed, 0.25));
     const intervalId = window.setInterval(() => {
       setSelectedDynamicFrameIndex((current) => (current + 1) % dynamicFrames.length);
     }, frameDurationMs);
@@ -488,6 +507,11 @@ export default function CaeResultViewer({
 
   useEffect(() => {
     let cancelled = false;
+    if (resultMesh) {
+      setMesh(resultMesh);
+      setMeshError("");
+      return undefined;
+    }
     setMesh(null);
     setMeshError("");
     fetchCaeResultMesh(caeDirectory)
@@ -505,7 +529,7 @@ export default function CaeResultViewer({
     return () => {
       cancelled = true;
     };
-  }, [caeDirectory, project?.outputs?.status]);
+  }, [caeDirectory, project?.outputs?.status, resultMesh]);
 
   const surface = useMemo(() => (displayMesh ? buildResultSurface(displayMesh) : null), [displayMesh]);
   const toolSurface = useMemo(() => (
@@ -545,10 +569,13 @@ export default function CaeResultViewer({
     scene.add(keyLight);
 
     const resultGroup = new THREE.Group();
-    resultGroup.rotation.set(-0.04, -0.34, 0.01);
+    resultGroup.rotation.set(...(surface.materialPoints ? [0, 0, 0] : [-0.04, -0.34, 0.01]));
     scene.add(resultGroup);
 
-    const meshObject = new THREE.Mesh(
+    const meshObject = surface.materialPoints ? new THREE.Points(
+      surface.surfaceGeometry,
+      new THREE.PointsMaterial({ size: mesh?.pointSize ?? 12, sizeAttenuation: false, vertexColors: true }),
+    ) : new THREE.Mesh(
       surface.surfaceGeometry,
       new THREE.MeshStandardMaterial({
         metalness: 0.02,
@@ -599,7 +626,9 @@ export default function CaeResultViewer({
     const viewBounds = framingBounds && !framingBounds.isEmpty() ? framingBounds : surface.bounds;
     viewBounds.getCenter(center);
     viewBounds.getSize(size);
-    const modelRadius = Math.max(size.x, size.y, size.z, 1);
+    const modelRadius = Math.max(size.x, size.y, size.z, surface.materialPoints ? 1e-12 : 1);
+    const initialDistanceFactor = surface.materialPoints ? 1.75 : 3.15;
+    if (surface.materialPoints) { camera.near = modelRadius * 0.001; camera.far = modelRadius * 100; }
     axisGroup.position.set(center.x - modelRadius * 0.65, center.y - modelRadius * 0.34, center.z - modelRadius * 0.62);
     const axisLength = modelRadius * 0.12;
     axisLine([[0, 0, 0], [axisLength, 0, 0]], 0xef4444);
@@ -608,17 +637,17 @@ export default function CaeResultViewer({
 
     const savedOrbit = orbitStateRef.current;
     const orbit = savedOrbit ? {
-      yaw: toFiniteNumber(savedOrbit.yaw, -0.62),
-      pitch: toFiniteNumber(savedOrbit.pitch, 0.34),
-      radius: Math.max(toFiniteNumber(savedOrbit.radius, modelRadius * 3.15), modelRadius * 0.2),
+      yaw: toFiniteNumber(savedOrbit.yaw, surface.materialPoints ? 0 : -0.62),
+      pitch: toFiniteNumber(savedOrbit.pitch, surface.materialPoints ? 0 : 0.34),
+      radius: Math.max(toFiniteNumber(savedOrbit.radius, modelRadius * initialDistanceFactor), modelRadius * 0.2),
       mode: "",
       target: savedOrbit.target instanceof THREE.Vector3 ? savedOrbit.target.clone() : center.clone(),
       x: 0,
       y: 0,
     } : {
-      yaw: -0.62,
-      pitch: 0.34,
-      radius: modelRadius * 3.15,
+      yaw: surface.materialPoints ? 0 : -0.62,
+      pitch: surface.materialPoints ? 0 : 0.34,
+      radius: modelRadius * initialDistanceFactor,
       mode: "",
       target: center.clone(),
       x: 0,
@@ -696,7 +725,7 @@ export default function CaeResultViewer({
     };
     const onWheel = (event) => {
       event.preventDefault();
-      orbit.radius = Math.min(Math.max(orbit.radius + event.deltaY * 0.18, modelRadius * 1.35), modelRadius * 5.8);
+      orbit.radius = Math.min(Math.max(orbit.radius + event.deltaY * (surface.materialPoints ? modelRadius * 0.0018 : 0.18), modelRadius * 1.35), modelRadius * 5.8);
       saveOrbitState();
     };
     const preventDefaultInteraction = (event) => {
@@ -780,7 +809,7 @@ export default function CaeResultViewer({
         className="pointer-events-none absolute inset-x-0 top-0 border-b px-4 py-1 text-center text-sm font-semibold"
         style={{ backgroundColor: viewportTheme.header, borderColor: viewportTheme.border, color: viewportTheme.text }}
       >
-        {text.titlePrefix} {project?.outputs?.odb?.split("/").pop() || mesh?.source || ""}
+        {mesh?.representation === "material-points" ? "Peridigm material points — " : text.titlePrefix} {project?.outputs?.odb?.split("/").pop() || mesh?.source || ""}
       </div>
 
       <div className="pointer-events-auto absolute right-3 top-9 z-10 inline-flex overflow-hidden rounded-md border border-white/25 bg-black/35 text-xs font-semibold text-white shadow-sm">
@@ -868,7 +897,7 @@ export default function CaeResultViewer({
                   setSelectedDynamicFrameIndex(index);
                 }}
               >
-                {toFiniteNumber(frame.timeMs, 0).toFixed(2)}
+                {mesh?.representation === "material-points" ? `${(toFiniteNumber(frame.timeMs, 0) * 1000).toFixed(1)} μs` : toFiniteNumber(frame.timeMs, 0).toFixed(2)}
               </button>
             ))}
           </div>
@@ -973,13 +1002,15 @@ export default function CaeResultViewer({
         }}
       >
         <p>
-          {isModalResult
+          {displayMesh?.representation === "material-points"
+            ? `Time: ${toFiniteNumber(displayMesh?.timeMs, 0).toFixed(5)} ms | ${fieldLabel} | displacement scale ${displayMesh?.deformationScale ?? 1} | ${displayMesh?.semantics?.damage || "damage not specified"}`
+            : isModalResult
             ? `${text.modalFooterStep} ${displayMesh?.mode || 1} | ${text.modalFooterFrequency} ${toFiniteNumber(displayMesh?.frequencyHz, 0).toFixed(4)} Hz | ${text.modalFooterPrimary} ${toFiniteNumber(displayMesh?.deformationScale, 0).toFixed(1)}`
             : isDynamicResult
               ? `${text.dynamicFooterStep} ${displayMesh?.step || "Dynamic"} | ${text.dynamicFooterTime} ${toFiniteNumber(displayMesh?.timeMs, 0).toFixed(3)} ms | ${text.dynamicFooterPrimary} ${toFiniteNumber(displayMesh?.deformationScale, 0).toFixed(1)}`
             : `${text.footerStep} ${toFiniteNumber(displayMesh?.deformationScale, 0).toFixed(1)}`}
         </p>
-        <p>{displayMesh?.nodes?.length || 0} {text.footerMesh} {displayMesh?.elements?.length || 0} {elementType} {text.footerElements}</p>
+        <p>{displayMesh?.representation === "material-points" ? `${displayMesh.nodes.length} material points | no invented FE connectivity | drag to rotate; scroll to zoom` : <>{displayMesh?.nodes?.length || 0} {text.footerMesh} {displayMesh?.elements?.length || 0} {elementType} {text.footerElements}</>}</p>
       </div>
     </div>
   );

@@ -1,0 +1,15 @@
+{
+  "profile": "notched-tension-damage-v1",
+  "build": "Peridigm 1.5.1 (Dev), solver identity recorded per run; CriticalStretchDamageModel uses tension and compression keys",
+  "source_files": ["src/damage/Peridigm_CriticalStretchDamageModel.cpp", "src/io/discretization/Peridigm_TextFileDiscretization.cpp", "src/io/discretization/Peridigm_Discretization.cpp", "src/core/Peridigm_BoundaryCondition.cpp", "test/regression/PrecrackedPlate/PrecrackedPlate.xml"],
+  "checks": [
+    {"id": "intent_lock", "method": "Full frozen specification hash + exact reviewed profile; no hidden overrides", "failure": "Block and return to confirmation"},
+    {"id": "damage_model", "method": "Separate positive tension and negative compression threshold; explicitly synthetic, no automatic Gc mapping", "failure": "Block; no parameter tuning as repair"},
+    {"id": "mesh_alignment", "method": "Canonical 80x40x1 text mesh, positive volume (0.5mm)^3, horizon 3.015 spacings; nonempty 3-row upper/lower grips", "failure": "Retain diff; canonical regeneration only"},
+    {"id": "precrack", "method": "Text File supports Rectangular_Plane filter; PdQuickGrid does not in this build; independent original-neighbor check", "failure": "Reject unsupported discretization"},
+    {"id": "loading", "method": "Symmetric y displacement, quadratic 5us ramp then constant speed, z=0, x free, no contact; verify actual grip displacement", "failure": "Block; cannot change physical loading to obtain success"},
+    {"id": "time", "method": "dt50ns or reviewed dt25ns, final30us, every-step output for exact bond-history reconstruction; compare dt/2 sensitivity separately", "failure": "No truncating physical time or omitting raw steps"},
+    {"id": "fracture_validation", "method": "Finite fields, original neighbor degrees, damage[0,1], irreversibility, reconstruct every step's failed bond history and point damage; connected 50%-failed crossing-bond bins advance >=1mm on >=2 saved frames", "failure": "Retain evidence and report failed check"},
+    {"id": "scope", "method": "MPI1 only; thin-layer demonstration, no experiment or spatial convergence claim; thresholded front is not an exported crack surface", "failure": "Reject broader claims"}
+  ]
+}
