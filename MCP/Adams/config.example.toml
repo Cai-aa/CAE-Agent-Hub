@@ -1,0 +1,11 @@
+# Copy outside the checkout and replace these placeholders before use.
+adams_root = 'C:/YOUR_ADAMS_INSTALLATION'
+launcher = 'C:/YOUR_ADAMS_INSTALLATION/bin/adams2024_1.bat'
+release = "2024.1"
+workspace = 'C:/YOUR_ADAMS_WORKSPACE'
+live_host = "127.0.0.1"
+live_port = 5002
+connect_timeout_sec = 5.0
+command_timeout_sec = 30.0
+batch_timeout_sec = 300.0
+raw_commands_enabled = false

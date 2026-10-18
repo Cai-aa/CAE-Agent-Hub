@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "adams": {
+      "command": "C:/YOUR_ADAMS_MCP_VENV/Scripts/python.exe",
+      "args": ["-m", "adams_mcp.server"],
+      "env": {
+        "ADAMS_MCP_CONFIG": "C:/YOUR_PRIVATE_CONFIG/adams-config.toml"
+      }
+    }
+  }
+}

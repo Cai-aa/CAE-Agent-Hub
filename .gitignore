@@ -50,6 +50,8 @@ MCP/**/*.out
 MCP/**/commands/
 MCP/**/results/
 MCP/**/scripts/
+!MCP/Adams/scripts/
+!MCP/Adams/scripts/**
 !MCP/Ansys/AEDT MCP/scripts/
 !MCP/Ansys/AEDT MCP/scripts/**
 !MCP/FEP-Agent-Hub/scripts/

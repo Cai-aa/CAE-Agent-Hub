@@ -1,0 +1,18 @@
+[build-system]
+requires = ["setuptools>=69"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "adams-mcp"
+version = "0.1.0"
+description = "Safe local MCP bridge for Hexagon Adams/View"
+readme = "README.md"
+license = {file = "LICENSE"}
+requires-python = ">=3.11"
+dependencies = ["mcp>=1.27,<1.29", "pydantic>=2.10,<3", "pydantic-settings>=2.14,<2.15"]
+
+[project.scripts]
+adams-mcp = "adams_mcp.server:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]

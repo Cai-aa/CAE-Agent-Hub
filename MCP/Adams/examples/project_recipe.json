@@ -1,0 +1,12 @@
+{
+  "purpose": "Create a driven box link; run only after environment and native smoke checks.",
+  "calls": [
+    {"tool": "adams_project_create", "arguments": {"project_id": "box_link_demo", "model_name": "BOX_LINK", "length_unit": "mm", "mass_unit": "kg", "force_unit": "newton", "time_unit": "sec", "angle_unit": "deg"}},
+    {"tool": "adams_rigid_body_create", "arguments": {"project_id": "box_link_demo", "semantic_id": "link", "corner": [0, -5, -5], "size": [100, 10, 10], "mass": 1.0, "inertia": [16.6666667, 841.6666667, 841.6666667]}},
+    {"tool": "adams_revolute_joint_create", "arguments": {"project_id": "box_link_demo", "semantic_id": "pivot", "i_part": "link", "j_part": "ground", "location": [0, 0, 0], "orientation": [0, 0, 0]}},
+    {"tool": "adams_gravity_set", "arguments": {"project_id": "box_link_demo", "vector": [0, -9806.65, 0]}},
+    {"tool": "adams_rotational_motion_create", "arguments": {"project_id": "box_link_demo", "semantic_id": "drive", "joint_id": "pivot", "function": "90d*time"}},
+    {"tool": "adams_simulation_run", "arguments": {"project_id": "box_link_demo", "analysis_name": "transient", "end_time": 1.0, "steps": 100, "timeout_sec": 180.0}},
+    {"tool": "adams_evidence_latest", "arguments": {}}
+  ]
+}

@@ -40,6 +40,10 @@ AI client
 
 ## MCP Index
 
+[Adams MCP](MCP/Adams/README.zh-CN.md) 提供独立的 Windows Adams/View 2024.1
+桥接服务，含 16 个工具、私有配置模板和有界批处理。原生 smoke 与箱形连杆数值验证
+已通过，live 连接尚未验证，详见[验证记录](MCP/Adams/VALIDATION.md)。
+
 | MCP | 状态 | 用途 | 主要入口 | 触发关键词 |
 | --- | --- | --- | --- | --- |
 | [Abaqus MCP](MCP/Abaqus) | Active | 通过本地 TCP bridge 连接 live Abaqus/CAE；可在 Abaqus kernel 中运行 Python、检查模型、提交 job、监控状态、读取 ODB、截图 viewport。 | `mcp_server.py`, `abaqus_mcp_plugin.py`, `abaqus_plugins/mcp_control/` | Abaqus MCP, Abaqus/CAE, ODB, viewport, submit job |
@@ -56,6 +60,9 @@ AI client
 > 新增 MCP 时，建议保留可复用源码、示例、测试和中英文 README；不要提交虚拟环境、求解结果、私有路径、许可证或生成的工程数据。
 
 ## Skill Index
+
+- [adams-evidence-mbd](Skill/Adams/adams-evidence-mbd/SKILL.md)：刚体机构建模、
+  View 瞬态批处理和数值反力证据检查。
 
 | Skill | 状态 | 用途 | 触发关键词 |
 | --- | --- | --- | --- |
