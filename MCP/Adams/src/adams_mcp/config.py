@@ -24,6 +24,10 @@ class Settings:
     batch_timeout_sec: float = 300.0
     raw_commands_enabled: bool = False
 
+    def __post_init__(self) -> None:
+        # Windows temporary directories may use an 8.3 alias; compare canonical paths.
+        object.__setattr__(self, "workspace", self.workspace.expanduser().resolve())
+
     @classmethod
     def load(cls, config_path: Path | None = None) -> "Settings":
         config_path = config_path or Path(os.getenv("ADAMS_MCP_CONFIG", DEFAULT_CONFIG))

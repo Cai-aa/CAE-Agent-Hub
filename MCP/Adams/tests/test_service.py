@@ -42,6 +42,15 @@ class ServiceTests(unittest.TestCase):
         self.assertFalse(result["ok"])
         self.assertEqual(result["error"]["code"], "ADM-MCP-004")
 
+    def test_noncanonical_workspace_accepts_its_own_files(self) -> None:
+        workspace = Path(self.temp.name) / "projects" / ".."
+        service = AdamsService(Settings(workspace, workspace / "missing.bat", "test", workspace))
+        path = Path(self.temp.name) / "runs" / "canonical.txt"
+        path.write_text("1\n2\n", encoding="utf-8")
+        result = service.result_summary(str(path))
+        self.assertTrue(result["ok"], result)
+        self.assertEqual(result["data"]["points"], 2)
+
     def test_invalid_names_rejected(self) -> None:
         result = self.service.project_create("../escape", "bad")
         self.assertFalse(result["ok"])

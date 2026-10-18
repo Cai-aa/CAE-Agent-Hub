@@ -5,7 +5,7 @@ on 2026-10-18. These are bounded bridge checks, not general mechanism validation
 
 | Check | Observed result |
 | --- | --- |
-| Unit and Windows subprocess regressions | 7 passed |
+| Unit and Windows subprocess regressions | 8 passed |
 | MCP stdio initialize, list tools/resources, probe, create project | PASS; 16 tools, 3 resources |
 | Installed native four-bar fixture | `VERIFIED`; process exit 0, model verified, no fatal signals, 51 numeric FY points |
 | Public driven-box recipe | `VERIFIED`; process exit 0, model verified, no fatal signals, 101 numeric FY points |
