@@ -57,6 +57,11 @@ The repository separates responsibilities:
 
 ## MCP Index
 
+[Adams MCP](MCP/Adams/README.md) adds a standalone Windows Adams/View 2024.1
+bridge with 16 tools, private configuration templates and bounded batch jobs.
+Native smoke and driven-box numerical checks passed; live integration remains
+unverified. See its [validation record](MCP/Adams/VALIDATION.md).
+
 | MCP | Status | Purpose | Main entry points | Trigger keywords |
 | --- | --- | --- | --- | --- |
 | [Abaqus MCP](MCP/Abaqus) | Active | Connect MCP clients to a live Abaqus/CAE session through a local TCP bridge; run Python in the Abaqus kernel, inspect models, submit jobs, monitor status, inspect ODB files, and capture viewport images. | `mcp_server.py`, `abaqus_mcp_plugin.py`, `abaqus_plugins/mcp_control/` | Abaqus MCP, Abaqus/CAE, ODB, viewport, submit job, live Abaqus |
@@ -73,6 +78,9 @@ The repository separates responsibilities:
 > Adding a new MCP should follow the repository pattern: keep reusable source, examples, tests, and bilingual README files together, while excluding virtual environments, solver results, private paths, licenses, and generated project data.
 
 ## Skill Index
+
+- [adams-evidence-mbd](Skill/Adams/adams-evidence-mbd/SKILL.md): rigid-body
+  mechanism modeling, transient View batch execution and numeric reaction evidence.
 
 The repository contains an Abaqus master router and specialized workflow skills, plus evidence-oriented workflows for other CAE ecosystems.
 

@@ -1,0 +1,10 @@
+# Merge only this named server into your existing Codex configuration.
+# Install the package into this Python environment first.
+[mcp_servers.adams]
+command = 'C:/YOUR_ADAMS_MCP_VENV/Scripts/python.exe'
+args = ["-m", "adams_mcp.server"]
+startup_timeout_sec = 30.0
+tool_timeout_sec = 3600.0
+
+[mcp_servers.adams.env]
+ADAMS_MCP_CONFIG = 'C:/YOUR_PRIVATE_CONFIG/adams-config.toml'
