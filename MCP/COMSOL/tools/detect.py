@@ -165,12 +165,12 @@ def find_mphserver_exe() -> Path | None:
     explicit = _path_from_env("COMSOL_MPHSERVER_EXE", "MPHSERVER_EXE")
     if explicit:
         return explicit
-    on_path = _which("mphserver.exe") or _which("mphserver")
+    on_path = _which("comsolmphserver.exe") or _which("mphserver.exe") or _which("mphserver")
     if on_path:
         return on_path
 
     root = find_comsol_root()
-    direct = _first_existing(_executable_candidates(root, "mphserver.exe") + _executable_candidates(root, "mphserver"))
+    direct = _first_existing(_executable_candidates(root, "comsolmphserver.exe") + _executable_candidates(root, "mphserver.exe") + _executable_candidates(root, "mphserver"))
     if direct:
         return direct
     return None

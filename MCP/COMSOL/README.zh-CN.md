@@ -1,5 +1,11 @@
 # COMSOL MCP
 
+需要实时观察桌面模型树和求解过程，请使用[共享服务器模式](SHARED_DESKTOP.md)。
+独立 MPh 会话不会自动同步到桌面；共享模式按准确模型标签附着并保留服务器模型。
+
+For live Desktop visibility, use the [shared-server workflow](SHARED_DESKTOP.md).
+Standalone MPh is independent; shared mode attaches the exact tag and preserves models.
+
 本目录提供一个用于控制 COMSOL Multiphysics 的 MCP server。目标不是先做完整
 “自然语言从零建模 DSL”，而是优先支持真实工程里最常用的实时自动化：
 打开已有 `.mph` 模型、修改参数、求解、导出图和表格、保存副本。
@@ -79,13 +85,13 @@ java -jar bridge\target\comsol-bridge-0.1.0.jar
 
 ```toml
 [mcp_servers.comsol]
-command = "E:\\Code\\CAE-Agent-Hub\\MCP\\COMSOL\\.venv\\Scripts\\python.exe"
-args = ["E:\\Code\\CAE-Agent-Hub\\MCP\\COMSOL\\mcp_server.py"]
-cwd = "E:\\Code\\CAE-Agent-Hub\\MCP\\COMSOL"
+command = "C:\\path\\to\\CAE-Agent-Hub\\MCP\\COMSOL\\.venv\\Scripts\\python.exe"
+args = ["C:\\path\\to\\CAE-Agent-Hub\\MCP\\COMSOL\\mcp_server.py"]
+cwd = "C:\\path\\to\\CAE-Agent-Hub\\MCP\\COMSOL"
 env = {
   COMSOL_ROOT = "C:\\Program Files\\COMSOL\\COMSOL62\\Multiphysics",
-  COMSOL_MCP_RUNS_DIR = "E:\\Code\\CAE-Agent-Hub\\MCP\\COMSOL\\comsol_runs",
-  COMSOL_MCP_BRIDGE_JAR = "E:\\Code\\CAE-Agent-Hub\\MCP\\COMSOL\\bridge\\target\\comsol-bridge-0.1.0.jar"
+  COMSOL_MCP_RUNS_DIR = "C:\\path\\to\\CAE-Agent-Hub\\MCP\\COMSOL\\comsol_runs",
+  COMSOL_MCP_BRIDGE_JAR = "C:\\path\\to\\CAE-Agent-Hub\\MCP\\COMSOL\\bridge\\target\\comsol-bridge-0.1.0.jar"
 }
 ```
 

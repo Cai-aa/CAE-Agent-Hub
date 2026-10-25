@@ -239,7 +239,10 @@ class ComsolMphSessionManager:
         if self.client is None:
             return {"success": True, "was_connected": False}
         try:
-            self.client.clear()
+            if getattr(self.client, "standalone", True):
+                self.client.clear()
+            else:
+                self.client.disconnect()
         except Exception:
             pass
         self.client = None
@@ -261,6 +264,7 @@ class ComsolMphSessionManager:
             "version": getattr(self.client, "version", None),
             "cores": getattr(self.client, "cores", None),
             "standalone": getattr(self.client, "standalone", None),
+            "session_mode": "stand-alone" if getattr(self.client, "standalone", True) else "shared-server",
             "models": model_names,
             "tracked_models": list(self.models),
             "current_model": self.current_model,

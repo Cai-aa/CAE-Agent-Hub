@@ -4,6 +4,8 @@ import os
 import shlex
 import subprocess
 import time
+import queue
+import threading
 from pathlib import Path
 from typing import Any
 
@@ -37,6 +39,7 @@ class ComsolBridgeClient:
         self.process: subprocess.Popen[str] | None = None
         self.command: list[str] | None = None
         self.started_at: float | None = None
+        self._request_lock = threading.Lock()
 
     def is_running(self) -> bool:
         return self.process is not None and self.process.poll() is None
@@ -109,7 +112,29 @@ class ComsolBridgeClient:
         if not self.is_running() or not self.process or not self.process.stdin or not self.process.stdout:
             raise BridgeNotRunning("COMSOL bridge is not running. Call comsol_start_bridge_tool first.")
 
-        payload = make_request(method, params)
-        write_message(self.process.stdin, payload)
-        response = read_message(self.process.stdout)
-        return unwrap_response(response, payload["id"])
+        with self._request_lock:
+            payload = make_request(method, params)
+            write_message(self.process.stdin, payload)
+            replies: queue.Queue = queue.Queue(maxsize=1)
+            stream = self.process.stdout
+            def read_reply() -> None:
+                try:
+                    replies.put((True, read_message(stream)))
+                except Exception as exc:
+                    replies.put((False, exc))
+            reader = threading.Thread(target=read_reply, daemon=True)
+            reader.start()
+            limit = float(timeout if timeout is not None else os.environ.get("COMSOL_MCP_BRIDGE_TIMEOUT", "120"))
+            try:
+                ok, response = replies.get(timeout=max(0.01, limit))
+            except queue.Empty:
+                # Invalidate this IPC process: its late reply must never be used
+                # as the response to a later command. Shared server models are
+                # not cleared or killed by terminating this owned API worker.
+                self.process.terminate()
+                self.process.wait(timeout=10)
+                reader.join(timeout=2)
+                raise TimeoutError(f"COMSOL bridge request {method!r} timed out after {limit:g}s; API worker terminated. Server models were not cleared.") from None
+            if not ok:
+                raise response
+            return unwrap_response(response, payload["id"])

@@ -27,6 +27,12 @@ solver state. Prefer opening a saved .mph model, changing named parameters,
 solving, and exporting tables or plots before attempting broad from-scratch
 model construction. Do not claim a license is usable until a MPh session,
 bridge command, or COMSOL operation has actually succeeded.
+
+When the user wants to see modeling or solving in COMSOL Desktop, use the
+shared-server bridge (tools.shared_bridge), not the independent stand-alone
+session. Connect Desktop to that server and import the exact model tag.
+Verify a visible model-tree change before claiming Desktop synchronization.
+Disconnect shared clients without clearing or removing server models.
 """
 
 mcp = FastMCP("COMSOL MCP", instructions=INSTRUCTIONS)
@@ -95,7 +101,7 @@ def comsol_session_status_tool() -> dict:
 
 @mcp.tool()
 def comsol_disconnect_session_tool() -> dict:
-    """Clear models and disconnect the MPh-managed COMSOL session."""
+    """Disconnect MPh; preserve server models in remote mode (standalone clears locally)."""
     return mph_sessions.disconnect()
 
 
@@ -249,6 +255,24 @@ def comsol_save_model_tool(path: str | None = None) -> dict:
 def comsol_model_info_tool() -> dict:
     """Return active model metadata, studies, parameters, datasets, plots, and tables."""
     return models.model_info()
+
+
+@mcp.tool()
+def comsol_list_shared_models_tool() -> dict:
+    """List model tags on the shared-server bridge without loading a file copy."""
+    return bridge.request("listModels")
+
+
+@mcp.tool()
+def comsol_attach_shared_model_tool(model_tag: str) -> dict:
+    """Attach to the exact existing server model shown by COMSOL Desktop."""
+    return bridge.request("attachModel", {"tag": model_tag})
+
+
+@mcp.tool()
+def comsol_run_shared_script_tool(path: str) -> dict:
+    """Run a reviewed local run(context) API script inside the shared script root."""
+    return bridge.request("runScript", {"path": path})
 
 
 @mcp.tool()

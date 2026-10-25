@@ -8,7 +8,7 @@ import time
 from pathlib import Path
 from typing import Any
 
-from .detect import find_comsol_exe, runs_dir
+from .detect import find_comsol_exe, find_mphserver_exe, runs_dir
 
 
 STATE_PATH = runs_dir() / "mphserver.json"
@@ -60,10 +60,11 @@ def build_mphserver_command(
     port: int = 2036,
     extra_args: list[str] | None = None,
 ) -> list[str]:
-    exe = Path(comsol_exe).expanduser().resolve() if comsol_exe else find_comsol_exe()
+    exe = Path(comsol_exe).expanduser().resolve() if comsol_exe else (find_mphserver_exe() or find_comsol_exe())
     if not exe or not exe.exists():
         raise FileNotFoundError("comsol.exe not found. Set COMSOL_EXE or COMSOL_ROOT.")
-    command = [str(exe), "mphserver", "-port", str(int(port))]
+    target = [] if exe.name.lower() in {"comsolmphserver.exe", "mphserver.exe", "mphserver"} else ["mphserver"]
+    command = [str(exe), *target, "-port", str(int(port))]
     if extra_args:
         command.extend(str(arg) for arg in extra_args)
     return command

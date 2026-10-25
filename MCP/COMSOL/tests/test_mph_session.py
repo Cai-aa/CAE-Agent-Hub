@@ -105,6 +105,12 @@ class FakeClient:
 
 
 class MphSessionTests(unittest.TestCase):
+    def test_remote_disconnect_preserves_server_models(self):
+        from unittest.mock import Mock
+        manager=ComsolMphSessionManager(); client=Mock(standalone=False); manager.client=client
+        self.assertTrue(manager.disconnect()['success'])
+        client.disconnect.assert_called_once(); client.clear.assert_not_called()
+
     def fake_mph_module(self):
         FakeClient.created_count = 0
         FakeClient.delay_seconds = 0.0

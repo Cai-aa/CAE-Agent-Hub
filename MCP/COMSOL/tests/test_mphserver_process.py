@@ -23,6 +23,12 @@ class MphServerProcessTests(unittest.TestCase):
         self.assertFalse(status["listening"])
         self.assertEqual(status["port"], 9)
 
+    def test_native_windows_server_has_no_extra_mphserver_target(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            exe=Path(tmp)/'comsolmphserver.exe'; exe.touch()
+            command=build_mphserver_command(str(exe),2038,['-multi','on'])
+            self.assertEqual(command,[str(exe.resolve()),'-port','2038','-multi','on'])
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -1,5 +1,12 @@
 # COMSOL MCP
 
+For visible, live Desktop modeling, use the [shared-server workflow](SHARED_DESKTOP.md).
+Standalone MPh runs independently of the Desktop. Shared mode attaches the exact
+server model tag and preserves models when disconnecting.
+
+需要在桌面实时观察建模与求解时，请使用[共享服务器模式](SHARED_DESKTOP.md)。
+standalone 会话与桌面独立；共享模式按准确标签附着模型，断开时保留模型。
+
 This directory contains an MCP server for controlling COMSOL Multiphysics. The
 preferred local backend is Python MPh (`mph.Client`), which can start and
 manage a local COMSOL session without asking the user to manually run
@@ -115,13 +122,13 @@ Add a server like this to `C:\Users\<you>\.codex\config.toml`:
 
 ```toml
 [mcp_servers.comsol]
-command = "E:\\Code\\CAE-Agent-Hub\\MCP\\COMSOL\\.venv\\Scripts\\python.exe"
-args = ["E:\\Code\\CAE-Agent-Hub\\MCP\\COMSOL\\mcp_server.py"]
-cwd = "E:\\Code\\CAE-Agent-Hub\\MCP\\COMSOL"
+command = "C:\\path\\to\\CAE-Agent-Hub\\MCP\\COMSOL\\.venv\\Scripts\\python.exe"
+args = ["C:\\path\\to\\CAE-Agent-Hub\\MCP\\COMSOL\\mcp_server.py"]
+cwd = "C:\\path\\to\\CAE-Agent-Hub\\MCP\\COMSOL"
 env = {
   COMSOL_ROOT = "C:\\Program Files\\COMSOL\\COMSOL62\\Multiphysics",
-  COMSOL_MCP_RUNS_DIR = "E:\\Code\\CAE-Agent-Hub\\MCP\\COMSOL\\comsol_runs",
-  COMSOL_MCP_BRIDGE_JAR = "E:\\Code\\CAE-Agent-Hub\\MCP\\COMSOL\\bridge\\target\\comsol-bridge-0.1.0.jar"
+  COMSOL_MCP_RUNS_DIR = "C:\\path\\to\\CAE-Agent-Hub\\MCP\\COMSOL\\comsol_runs",
+  COMSOL_MCP_BRIDGE_JAR = "C:\\path\\to\\CAE-Agent-Hub\\MCP\\COMSOL\\bridge\\target\\comsol-bridge-0.1.0.jar"
 }
 ```
 
