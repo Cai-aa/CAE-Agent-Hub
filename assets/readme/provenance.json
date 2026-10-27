@@ -1,0 +1,1192 @@
+{
+  "assembled_on": "2026-10-27",
+  "description": "Copied original figures and explicitly identified plots from saved solver data. Archive-relative paths do not imply full source archives are bundled.",
+  "result_views": 37,
+  "image_count": 149,
+  "files": [
+    {
+      "asset": "assets/readme/heatsink-result.png",
+      "source_archive_path": "COMSOL_Heatsink_Analysis/rerun_20261025_1545/07_figures/fine_30W_temperature.png",
+      "sha256": "2260c259298635196bec7853a7e45ac9a5d4f12e1b059474610359ad4377b0f8",
+      "source_record_path": "COMSOL_Heatsink_Analysis/rerun_20261025_1545/06_validation/validation_summary.json",
+      "source_record_sha256": "87a665b83f9e31e439199ee5c0dac890df160ecbe482c1405a781a437d8df10c"
+    },
+    {
+      "asset": "assets/readme/heatsink-check.png",
+      "source_archive_path": "COMSOL_Heatsink_Analysis/rerun_20261025_1545/07_figures/power_temperature_comparison.png",
+      "sha256": "ed12e18951befdad3333ed13185bf1f9a0d6b5bfc6220aeccd80d2136b577ee6",
+      "source_record_path": "COMSOL_Heatsink_Analysis/rerun_20261025_1545/06_validation/validation_summary.json",
+      "source_record_sha256": "87a665b83f9e31e439199ee5c0dac890df160ecbe482c1405a781a437d8df10c"
+    },
+    {
+      "asset": "assets/readme/cantilever-result.png",
+      "source_archive_path": "workspace/cantilever_visible_20261018_1133/deformation_fine.png",
+      "sha256": "ce99ef33a3058da2e435034f0e4f7f0940d694dbf346555d85c50b8ca9661bf4",
+      "source_record_path": "workspace/cantilever_visible_20261018_1133/review_20261018/audit_results.json",
+      "source_record_sha256": "8b447a89348d548418d3f974202ab999096b2d76b350d6238fb9ec8888a29e18"
+    },
+    {
+      "asset": "assets/readme/cantilever-check.png",
+      "source_archive_path": "workspace/cantilever_visible_20261018_1133/review_20261018/mesh_sensitivity.png",
+      "sha256": "63b1443f7cd854b7a2f5a52d7d296eced78f04757bc504f79a0f585445f5951c",
+      "source_record_path": "workspace/cantilever_visible_20261018_1133/review_20261018/audit_results.json",
+      "source_record_sha256": "8b447a89348d548418d3f974202ab999096b2d76b350d6238fb9ec8888a29e18"
+    },
+    {
+      "asset": "assets/readme/frame-result.png",
+      "source_archive_path": "Abaqus_ThreeStory_Dynamics/rerun_20261025/07_figures/A_U_top_peak.png",
+      "sha256": "6ca01209e2c48141f7a8c64137651c18daf071e220d999b86e2964ec2e08c585",
+      "source_record_path": "Abaqus_ThreeStory_Dynamics/rerun_20261025/06_validation/KPI_comparison.json",
+      "source_record_sha256": "05ed04b61138f85b13dbd8052dd550aad7aba6f12214cb1c2de6d76319134bf4"
+    },
+    {
+      "asset": "assets/readme/frame-check.png",
+      "source_archive_path": "Abaqus_ThreeStory_Dynamics/rerun_20261025/07_figures/AB_top_comparison.png",
+      "sha256": "128e49c501389214ba285b9e7a5b565a84215bdd42750c429d567f95f7ad7604",
+      "source_record_path": "Abaqus_ThreeStory_Dynamics/rerun_20261025/06_validation/KPI_comparison.json",
+      "source_record_sha256": "05ed04b61138f85b13dbd8052dd550aad7aba6f12214cb1c2de6d76319134bf4"
+    },
+    {
+      "asset": "assets/readme/elbow-result.png",
+      "source_archive_path": "runs/elbow90_water_20261017/figures/velocity_pressure.png",
+      "sha256": "1219faff50147830403289c1588d45d49df6f51aee4b647a0179e1f88a11f5da",
+      "source_record_path": "runs/elbow90_water_20261017/comparison.json",
+      "source_record_sha256": "e600b5cd6cb8eb8fd8189aca9f400ef5206b74581af6b13807670b347385c31d"
+    },
+    {
+      "asset": "assets/readme/elbow-check.png",
+      "source_archive_path": "runs/elbow90_water_20261017/figures/convergence.png",
+      "sha256": "80b4aa4b025dc69f360f6f68b777d5a4c17446f2c2e14d68130af015b8d86868",
+      "source_record_path": "runs/elbow90_water_20261017/comparison.json",
+      "source_record_sha256": "e600b5cd6cb8eb8fd8189aca9f400ef5206b74581af6b13807670b347385c31d"
+    },
+    {
+      "asset": "assets/readme/heatsink--fine_20W_base_temperature.png",
+      "source_archive_path": "COMSOL_Heatsink_Analysis/rerun_20261025_1545/07_figures/fine_20W_base_temperature.png",
+      "kind": "original_image",
+      "sha256": "93cffeefa22bfb366e7a7c270ef0abfe8daae02bdc4b2b8dd5665cb5982418bb",
+      "source_sha256": "93cffeefa22bfb366e7a7c270ef0abfe8daae02bdc4b2b8dd5665cb5982418bb",
+      "transformation": "Byte-for-byte copy; original legend and units retained."
+    },
+    {
+      "asset": "assets/readme/heatsink--fine_20W_convection_flux.png",
+      "source_archive_path": "COMSOL_Heatsink_Analysis/rerun_20261025_1545/07_figures/fine_20W_convection_flux.png",
+      "kind": "original_image",
+      "sha256": "af7bd981e9e538fe9964105978fc470b7317c899a5274fdb6e6808d0a936a7fa",
+      "source_sha256": "af7bd981e9e538fe9964105978fc470b7317c899a5274fdb6e6808d0a936a7fa",
+      "transformation": "Byte-for-byte copy; original legend and units retained."
+    },
+    {
+      "asset": "assets/readme/heatsink--fine_20W_fin_temperature.png",
+      "source_archive_path": "COMSOL_Heatsink_Analysis/rerun_20261025_1545/07_figures/fine_20W_fin_temperature.png",
+      "kind": "original_image",
+      "sha256": "aa60a7abd634ffd7719ffd8d0f3cbaad4ab3ecdf5d036b59d79a786f7c528f5c",
+      "source_sha256": "aa60a7abd634ffd7719ffd8d0f3cbaad4ab3ecdf5d036b59d79a786f7c528f5c",
+      "transformation": "Byte-for-byte copy; original legend and units retained."
+    },
+    {
+      "asset": "assets/readme/heatsink--fine_20W_heat_flux.png",
+      "source_archive_path": "COMSOL_Heatsink_Analysis/rerun_20261025_1545/07_figures/fine_20W_heat_flux.png",
+      "kind": "original_image",
+      "sha256": "9d92b90839e94913fd9c54122431e8e621f55df1a9331790ffb0777049d0445c",
+      "source_sha256": "9d92b90839e94913fd9c54122431e8e621f55df1a9331790ffb0777049d0445c",
+      "transformation": "Byte-for-byte copy; original legend and units retained."
+    },
+    {
+      "asset": "assets/readme/heatsink--fine_20W_heat_flux_vectors.png",
+      "source_archive_path": "COMSOL_Heatsink_Analysis/rerun_20261025_1545/07_figures/fine_20W_heat_flux_vectors.png",
+      "kind": "original_image",
+      "sha256": "85b85883dfa9ec70b43653e15b999b71c223b6cbc6a46808b3650c9750a8e95e",
+      "source_sha256": "85b85883dfa9ec70b43653e15b999b71c223b6cbc6a46808b3650c9750a8e95e",
+      "transformation": "Byte-for-byte copy; original legend and units retained."
+    },
+    {
+      "asset": "assets/readme/heatsink--fine_20W_temperature.png",
+      "source_archive_path": "COMSOL_Heatsink_Analysis/rerun_20261025_1545/07_figures/fine_20W_temperature.png",
+      "kind": "original_image",
+      "sha256": "7d466659ebb21e2de34908ecde4f2a4905d0682f853b6c9fee56da8f2ab2f5bc",
+      "source_sha256": "7d466659ebb21e2de34908ecde4f2a4905d0682f853b6c9fee56da8f2ab2f5bc",
+      "transformation": "Byte-for-byte copy; original legend and units retained."
+    },
+    {
+      "asset": "assets/readme/heatsink--fine_30W_base_temperature.png",
+      "source_archive_path": "COMSOL_Heatsink_Analysis/rerun_20261025_1545/07_figures/fine_30W_base_temperature.png",
+      "kind": "original_image",
+      "sha256": "614c5ec7713917e7a3255dcb8b1678d1bc6f4df963a5102ff3946324913a9d3e",
+      "source_sha256": "614c5ec7713917e7a3255dcb8b1678d1bc6f4df963a5102ff3946324913a9d3e",
+      "transformation": "Byte-for-byte copy; original legend and units retained."
+    },
+    {
+      "asset": "assets/readme/heatsink--fine_30W_convection_flux.png",
+      "source_archive_path": "COMSOL_Heatsink_Analysis/rerun_20261025_1545/07_figures/fine_30W_convection_flux.png",
+      "kind": "original_image",
+      "sha256": "46a5d0b7790a138d7a70908451d52728e5a80b10cc5a6c2f3add051e2baab1eb",
+      "source_sha256": "46a5d0b7790a138d7a70908451d52728e5a80b10cc5a6c2f3add051e2baab1eb",
+      "transformation": "Byte-for-byte copy; original legend and units retained."
+    },
+    {
+      "asset": "assets/readme/heatsink--fine_30W_fin_temperature.png",
+      "source_archive_path": "COMSOL_Heatsink_Analysis/rerun_20261025_1545/07_figures/fine_30W_fin_temperature.png",
+      "kind": "original_image",
+      "sha256": "3c45de930ec07b4452b3454e30d36895d9e2bf7d84f196251bb02db697e9f0a9",
+      "source_sha256": "3c45de930ec07b4452b3454e30d36895d9e2bf7d84f196251bb02db697e9f0a9",
+      "transformation": "Byte-for-byte copy; original legend and units retained."
+    },
+    {
+      "asset": "assets/readme/heatsink--fine_30W_heat_flux.png",
+      "source_archive_path": "COMSOL_Heatsink_Analysis/rerun_20261025_1545/07_figures/fine_30W_heat_flux.png",
+      "kind": "original_image",
+      "sha256": "236438e405e83bc0172621e88814da4e5c7b1fc7d72f840d14ef51cc46305ad8",
+      "source_sha256": "236438e405e83bc0172621e88814da4e5c7b1fc7d72f840d14ef51cc46305ad8",
+      "transformation": "Byte-for-byte copy; original legend and units retained."
+    },
+    {
+      "asset": "assets/readme/heatsink--fine_30W_heat_flux_vectors.png",
+      "source_archive_path": "COMSOL_Heatsink_Analysis/rerun_20261025_1545/07_figures/fine_30W_heat_flux_vectors.png",
+      "kind": "original_image",
+      "sha256": "25c0b7b982a148f0592ac6775e1ede8fd571dd8a17cf765d7fb4be72b6ebe6f6",
+      "source_sha256": "25c0b7b982a148f0592ac6775e1ede8fd571dd8a17cf765d7fb4be72b6ebe6f6",
+      "transformation": "Byte-for-byte copy; original legend and units retained."
+    },
+    {
+      "asset": "assets/readme/heatsink--fine_30W_temperature.png",
+      "source_archive_path": "COMSOL_Heatsink_Analysis/rerun_20261025_1545/07_figures/fine_30W_temperature.png",
+      "kind": "original_image",
+      "sha256": "2260c259298635196bec7853a7e45ac9a5d4f12e1b059474610359ad4377b0f8",
+      "source_sha256": "2260c259298635196bec7853a7e45ac9a5d4f12e1b059474610359ad4377b0f8",
+      "transformation": "Byte-for-byte copy; original legend and units retained."
+    },
+    {
+      "asset": "assets/readme/heatsink--fine_mesh.png",
+      "source_archive_path": "COMSOL_Heatsink_Analysis/rerun_20261025_1545/07_figures/fine_mesh.png",
+      "kind": "original_image",
+      "sha256": "7078c3409ec3aadcb78737aaba0f18e44cb0f31803f4fd99d3ef5c66903173a0",
+      "source_sha256": "7078c3409ec3aadcb78737aaba0f18e44cb0f31803f4fd99d3ef5c66903173a0",
+      "transformation": "Byte-for-byte copy; original legend and units retained."
+    },
+    {
+      "asset": "assets/readme/heatsink--coarse_20W_base_temperature.png",
+      "source_archive_path": "COMSOL_Heatsink_Analysis/rerun_20261025_1545/07_figures/coarse_20W_base_temperature.png",
+      "kind": "original_image",
+      "sha256": "dd176b0ea56061bb4752c9be062fcf53b3a283da467733d652272c06228f13db",
+      "source_sha256": "dd176b0ea56061bb4752c9be062fcf53b3a283da467733d652272c06228f13db",
+      "transformation": "Byte-for-byte copy; original legend and units retained."
+    },
+    {
+      "asset": "assets/readme/heatsink--coarse_20W_fin_temperature.png",
+      "source_archive_path": "COMSOL_Heatsink_Analysis/rerun_20261025_1545/07_figures/coarse_20W_fin_temperature.png",
+      "kind": "original_image",
+      "sha256": "9fcd448562ec0d615a3aae459e53445a8f7cc0dbc482e403b0f4ef473ab1602e",
+      "source_sha256": "9fcd448562ec0d615a3aae459e53445a8f7cc0dbc482e403b0f4ef473ab1602e",
+      "transformation": "Byte-for-byte copy; original legend and units retained."
+    },
+    {
+      "asset": "assets/readme/heatsink--coarse_20W_temperature.png",
+      "source_archive_path": "COMSOL_Heatsink_Analysis/rerun_20261025_1545/07_figures/coarse_20W_temperature.png",
+      "kind": "original_image",
+      "sha256": "019dce3ba33a2ec0a3a42cc2821caa14b5d00d5587ba4fef55e00008f5ac5221",
+      "source_sha256": "019dce3ba33a2ec0a3a42cc2821caa14b5d00d5587ba4fef55e00008f5ac5221",
+      "transformation": "Byte-for-byte copy; original legend and units retained."
+    },
+    {
+      "asset": "assets/readme/heatsink--coarse_30W_base_temperature.png",
+      "source_archive_path": "COMSOL_Heatsink_Analysis/rerun_20261025_1545/07_figures/coarse_30W_base_temperature.png",
+      "kind": "original_image",
+      "sha256": "eea1b67bf9da81d51f258d916c061a8f2567cac479e6e615658ed760a3764561",
+      "source_sha256": "eea1b67bf9da81d51f258d916c061a8f2567cac479e6e615658ed760a3764561",
+      "transformation": "Byte-for-byte copy; original legend and units retained."
+    },
+    {
+      "asset": "assets/readme/heatsink--coarse_30W_fin_temperature.png",
+      "source_archive_path": "COMSOL_Heatsink_Analysis/rerun_20261025_1545/07_figures/coarse_30W_fin_temperature.png",
+      "kind": "original_image",
+      "sha256": "64a39bcb90003de8e7e372ca94d6f6b88885fa71796761716c45d6149b242191",
+      "source_sha256": "64a39bcb90003de8e7e372ca94d6f6b88885fa71796761716c45d6149b242191",
+      "transformation": "Byte-for-byte copy; original legend and units retained."
+    },
+    {
+      "asset": "assets/readme/heatsink--coarse_30W_temperature.png",
+      "source_archive_path": "COMSOL_Heatsink_Analysis/rerun_20261025_1545/07_figures/coarse_30W_temperature.png",
+      "kind": "original_image",
+      "sha256": "23a1f17d871f338698d22810e8f119add98d99f1f376fadb75a5b736bf821c10",
+      "source_sha256": "23a1f17d871f338698d22810e8f119add98d99f1f376fadb75a5b736bf821c10",
+      "transformation": "Byte-for-byte copy; original legend and units retained."
+    },
+    {
+      "asset": "assets/readme/heatsink--coarse_mesh.png",
+      "source_archive_path": "COMSOL_Heatsink_Analysis/rerun_20261025_1545/07_figures/coarse_mesh.png",
+      "kind": "original_image",
+      "sha256": "5e2cc8630d792101cd1f3e1cbdbfbbc6a12f1eac5e89d93feaf39aab4cfa7768",
+      "source_sha256": "5e2cc8630d792101cd1f3e1cbdbfbbc6a12f1eac5e89d93feaf39aab4cfa7768",
+      "transformation": "Byte-for-byte copy; original legend and units retained."
+    },
+    {
+      "asset": "assets/readme/heatsink--fin_centerline_comparison.png",
+      "source_archive_path": "COMSOL_Heatsink_Analysis/rerun_20261025_1545/07_figures/fin_centerline_comparison.png",
+      "kind": "original_image",
+      "sha256": "d550d3ebf3a8e7a44c7ae95f943bbbbfd7b15fc51a50313c78d5c9e6f356be76",
+      "source_sha256": "d550d3ebf3a8e7a44c7ae95f943bbbbfd7b15fc51a50313c78d5c9e6f356be76",
+      "transformation": "Byte-for-byte copy; original legend and units retained."
+    },
+    {
+      "asset": "assets/readme/heatsink--fin_root_heat_flux_comparison.png",
+      "source_archive_path": "COMSOL_Heatsink_Analysis/rerun_20261025_1545/07_figures/fin_root_heat_flux_comparison.png",
+      "kind": "original_image",
+      "sha256": "910a1488b273ac12f532998e050b546335f9bd0c8b421dd46c196cb9ff6079ba",
+      "source_sha256": "910a1488b273ac12f532998e050b546335f9bd0c8b421dd46c196cb9ff6079ba",
+      "transformation": "Byte-for-byte copy; original legend and units retained."
+    },
+    {
+      "asset": "assets/readme/heatsink--power_temperature_comparison.png",
+      "source_archive_path": "COMSOL_Heatsink_Analysis/rerun_20261025_1545/07_figures/power_temperature_comparison.png",
+      "kind": "original_image",
+      "sha256": "ed12e18951befdad3333ed13185bf1f9a0d6b5bfc6220aeccd80d2136b577ee6",
+      "source_sha256": "ed12e18951befdad3333ed13185bf1f9a0d6b5bfc6220aeccd80d2136b577ee6",
+      "transformation": "Byte-for-byte copy; original legend and units retained."
+    },
+    {
+      "asset": "assets/readme/heatsink--base_bottom_hotspots.png",
+      "source_archive_path": "COMSOL_Heatsink_Analysis/rerun_20261025_1545/07_figures/base_bottom_hotspots.png",
+      "kind": "original_image",
+      "sha256": "6f7059be84557658d22aca15e94639f78ac5697008d6a413438785f2dffe3fcb",
+      "source_sha256": "6f7059be84557658d22aca15e94639f78ac5697008d6a413438785f2dffe3fcb",
+      "transformation": "Byte-for-byte copy; original legend and units retained."
+    },
+    {
+      "asset": "assets/readme/cpu--50cfm_temperature_cpu_ihs_tim.jpg",
+      "source_archive_path": "simulations/icepak_cpu_air_cooling/evidence/50cfm_temperature_cpu_ihs_tim.jpg",
+      "kind": "original_image",
+      "sha256": "4e3c5fe43251cdc8aa1d781c69f5b48429e0c2a293a866b8ada46096768e9752",
+      "source_sha256": "4e3c5fe43251cdc8aa1d781c69f5b48429e0c2a293a866b8ada46096768e9752",
+      "transformation": "Byte-for-byte copy; original legend and units retained."
+    },
+    {
+      "asset": "assets/readme/cpu--50cfm_pressure_xz.jpg",
+      "source_archive_path": "simulations/icepak_cpu_air_cooling/evidence/50cfm_pressure_xz.jpg",
+      "kind": "original_image",
+      "sha256": "a25cead5e8e6e87e30947a96c6f4465bba23c5050474ce142ac72ac91f0f68da",
+      "source_sha256": "a25cead5e8e6e87e30947a96c6f4465bba23c5050474ce142ac72ac91f0f68da",
+      "transformation": "Byte-for-byte copy; original legend and units retained."
+    },
+    {
+      "asset": "assets/readme/cpu--50cfm_speed_fin_channel.jpg",
+      "source_archive_path": "simulations/icepak_cpu_air_cooling/evidence/50cfm_speed_fin_channel.jpg",
+      "kind": "original_image",
+      "sha256": "22d6c8c6da002fa6b96c860fde0e4754b0bc386813886e77e3d18a9b79b45f3a",
+      "source_sha256": "22d6c8c6da002fa6b96c860fde0e4754b0bc386813886e77e3d18a9b79b45f3a",
+      "transformation": "Byte-for-byte copy; original legend and units retained."
+    },
+    {
+      "asset": "assets/readme/cpu--50cfm_speed_xz.jpg",
+      "source_archive_path": "simulations/icepak_cpu_air_cooling/evidence/50cfm_speed_xz.jpg",
+      "kind": "original_image",
+      "sha256": "20435a7c0139c9446dc6911fb0434b856a530cae65e2762d7927d43656f1750b",
+      "source_sha256": "20435a7c0139c9446dc6911fb0434b856a530cae65e2762d7927d43656f1750b",
+      "transformation": "Byte-for-byte copy; original legend and units retained."
+    },
+    {
+      "asset": "assets/readme/cpu--50cfm_temperature_heatsink.jpg",
+      "source_archive_path": "simulations/icepak_cpu_air_cooling/evidence/50cfm_temperature_heatsink.jpg",
+      "kind": "original_image",
+      "sha256": "d4d1b12cfbc4ae23f2e6d4e689072013ee4c2a08fa8410feef3de92b776ff4d5",
+      "source_sha256": "d4d1b12cfbc4ae23f2e6d4e689072013ee4c2a08fa8410feef3de92b776ff4d5",
+      "transformation": "Byte-for-byte copy; original legend and units retained."
+    },
+    {
+      "asset": "assets/readme/cpu--50cfm_temperature_xz.jpg",
+      "source_archive_path": "simulations/icepak_cpu_air_cooling/evidence/50cfm_temperature_xz.jpg",
+      "kind": "original_image",
+      "sha256": "9dd21832d19a28fa0ce6b7f5cf6bbf2fd488c7281564513e2018a77959e42fff",
+      "source_sha256": "9dd21832d19a28fa0ce6b7f5cf6bbf2fd488c7281564513e2018a77959e42fff",
+      "transformation": "Byte-for-byte copy; original legend and units retained."
+    },
+    {
+      "asset": "assets/readme/cpu--50cfm_velocity_vector_fin_channel.jpg",
+      "source_archive_path": "simulations/icepak_cpu_air_cooling/evidence/50cfm_velocity_vector_fin_channel.jpg",
+      "kind": "original_image",
+      "sha256": "fed466ab299f94b5326797f157b0da5e744937b9a65569084c0f6dc44aade491",
+      "source_sha256": "fed466ab299f94b5326797f157b0da5e744937b9a65569084c0f6dc44aade491",
+      "transformation": "Byte-for-byte copy; original legend and units retained."
+    },
+    {
+      "asset": "assets/readme/comsol2d--temperature.png",
+      "source_archive_path": "MCP/COMSOL/comsol_runs/shared_desktop/pde2d_live_20261025/temperature.png",
+      "kind": "original_image",
+      "sha256": "3551f61144ae55fbec46f42cc22e73d996150d6f01945c3c5a2de461b53f8a47",
+      "source_sha256": "3551f61144ae55fbec46f42cc22e73d996150d6f01945c3c5a2de461b53f8a47",
+      "transformation": "Byte-for-byte copy; original legend and units retained."
+    },
+    {
+      "asset": "assets/readme/fep-steady.png",
+      "source_archive_path": "MCP/FEP-Agent-Hub/examples/heat-conduction-cube/result_manifest.json",
+      "kind": "plot_from_saved_results",
+      "sha256": "27e6dd8a8a29f5765c6143570f50d1cc845bc699561b445123835749a5cf7d20",
+      "source_sha256": "bbee80d25e93f6fa798887b83831b9dbde1a5a6f4d668bf341983eddd8763cee",
+      "transformation": "Bars show the recorded numerical values; no additional solve."
+    },
+    {
+      "asset": "assets/readme/fep-transient.png",
+      "source_archive_path": "MCP/FEP-Agent-Hub/examples/transient-heat-cube/transient_heat_metrics.json",
+      "kind": "plot_from_saved_results",
+      "sha256": "cff6837d0feaa14c6f76f7a51a6c67ef953ba9d9e8058d4041dbe4dd92184b8e",
+      "source_sha256": "2c3ce209edf777c1c3b1ea9447ee47cbfd3ebc34688997e94f1fec84effbcfbe",
+      "transformation": "Plot of recorded history and final reference only."
+    },
+    {
+      "asset": "assets/readme/cantilever--stress_fine.png",
+      "source_archive_path": "workspace/cantilever_visible_20261018_1133/stress_fine.png",
+      "kind": "original_image",
+      "sha256": "9221903940bf790e4b9da823f3c6bc0b8e8d1acee6348dd1814206edfc8967af",
+      "source_sha256": "9221903940bf790e4b9da823f3c6bc0b8e8d1acee6348dd1814206edfc8967af",
+      "transformation": "Byte-for-byte copy; original legend and units retained."
+    },
+    {
+      "asset": "assets/readme/cantilever--z_deformation_fine.png",
+      "source_archive_path": "workspace/cantilever_visible_20261018_1133/z_deformation_fine.png",
+      "kind": "original_image",
+      "sha256": "1ca1abe3f303382ee9e643be78572b19f41f760647f1fdface82222145644db5",
+      "source_sha256": "1ca1abe3f303382ee9e643be78572b19f41f760647f1fdface82222145644db5",
+      "transformation": "Byte-for-byte copy; original legend and units retained."
+    },
+    {
+      "asset": "assets/readme/cantilever--reaction_force.png",
+      "source_archive_path": "workspace/cantilever_visible_20261018_1133/reaction_force.png",
+      "kind": "original_image",
+      "sha256": "ac59b0ec6c25ce34a438b7333fbad801c26e0951ce933ff28e3abb7ca8d0871f",
+      "source_sha256": "ac59b0ec6c25ce34a438b7333fbad801c26e0951ce933ff28e3abb7ca8d0871f",
+      "transformation": "Byte-for-byte copy; original legend and units retained."
+    },
+    {
+      "asset": "assets/readme/cantilever--reaction_moment.png",
+      "source_archive_path": "workspace/cantilever_visible_20261018_1133/reaction_moment.png",
+      "kind": "original_image",
+      "sha256": "908e5e5bb5b59648a8972cc1b6e98cbf6d5115e94106f3533cfc275cb6bfc6a2",
+      "source_sha256": "908e5e5bb5b59648a8972cc1b6e98cbf6d5115e94106f3533cfc275cb6bfc6a2",
+      "transformation": "Byte-for-byte copy; original legend and units retained."
+    },
+    {
+      "asset": "assets/readme/cantilever--mesh_coarse.png",
+      "source_archive_path": "workspace/cantilever_visible_20261018_1133/mesh_coarse.png",
+      "kind": "original_image",
+      "sha256": "ca9b23ef9ac7e8f51387bf6e7669d82994fcd2fb9494f7f23a1eeda1c912b676",
+      "source_sha256": "ca9b23ef9ac7e8f51387bf6e7669d82994fcd2fb9494f7f23a1eeda1c912b676",
+      "transformation": "Byte-for-byte copy; original legend and units retained."
+    },
+    {
+      "asset": "assets/readme/cantilever--mesh_fine.png",
+      "source_archive_path": "workspace/cantilever_visible_20261018_1133/mesh_fine.png",
+      "kind": "original_image",
+      "sha256": "24e65b33ce116e32ab36613804a04a91c2e2bba6dff7279e6d699a7e0f0bb77d",
+      "source_sha256": "24e65b33ce116e32ab36613804a04a91c2e2bba6dff7279e6d699a7e0f0bb77d",
+      "transformation": "Byte-for-byte copy; original legend and units retained."
+    },
+    {
+      "asset": "assets/readme/cantilever--mesh_medium.png",
+      "source_archive_path": "workspace/cantilever_visible_20261018_1133/mesh_medium.png",
+      "kind": "original_image",
+      "sha256": "5ece7227d9c7c82a1c3ded6c8a55be2e5a239fc44412a14285e587e74f1cf270",
+      "source_sha256": "5ece7227d9c7c82a1c3ded6c8a55be2e5a239fc44412a14285e587e74f1cf270",
+      "transformation": "Byte-for-byte copy; original legend and units retained."
+    },
+    {
+      "asset": "assets/readme/cantilever--mesh_sensitivity.png",
+      "source_archive_path": "workspace/cantilever_visible_20261018_1133/review_20261018/mesh_sensitivity.png",
+      "kind": "original_image",
+      "sha256": "63b1443f7cd854b7a2f5a52d7d296eced78f04757bc504f79a0f585445f5951c",
+      "source_sha256": "63b1443f7cd854b7a2f5a52d7d296eced78f04757bc504f79a0f585445f5951c",
+      "transformation": "Byte-for-byte copy; original legend and units retained."
+    },
+    {
+      "asset": "assets/readme/bracket-hex--235_fine_mises_average75.png",
+      "source_archive_path": "ansa_runs/bracket_native_hex_20260927/screenshots/235_fine_mises_average75.png",
+      "kind": "original_image",
+      "sha256": "af74eb4784dca83480c273aa4cee6f9bad6e53f4529597ea7979caeba06c3d3a",
+      "source_sha256": "af74eb4784dca83480c273aa4cee6f9bad6e53f4529597ea7979caeba06c3d3a",
+      "transformation": "Byte-for-byte copy; original legend and units retained."
+    },
+    {
+      "asset": "assets/readme/bracket-hex--232_fine_U3_scale1.png",
+      "source_archive_path": "ansa_runs/bracket_native_hex_20260927/screenshots/232_fine_U3_scale1.png",
+      "kind": "original_image",
+      "sha256": "7e61cf57ad0b21da8d632fe7d834b53f76f94f4ed12a12d81714eafa1e1c29f2",
+      "source_sha256": "7e61cf57ad0b21da8d632fe7d834b53f76f94f4ed12a12d81714eafa1e1c29f2",
+      "transformation": "Byte-for-byte copy; original legend and units retained."
+    },
+    {
+      "asset": "assets/readme/bracket-hex--233_fine_U3_scale100.png",
+      "source_archive_path": "ansa_runs/bracket_native_hex_20260927/screenshots/233_fine_U3_scale100.png",
+      "kind": "original_image",
+      "sha256": "11aca3b543c3b5b30bad9feddfdca2390bc2ab2a74ce4dbaa537e06775169da5",
+      "source_sha256": "11aca3b543c3b5b30bad9feddfdca2390bc2ab2a74ce4dbaa537e06775169da5",
+      "transformation": "Byte-for-byte copy; original legend and units retained."
+    },
+    {
+      "asset": "assets/readme/bracket-hex--234_fine_mises_no_node_average.png",
+      "source_archive_path": "ansa_runs/bracket_native_hex_20260927/screenshots/234_fine_mises_no_node_average.png",
+      "kind": "original_image",
+      "sha256": "db23d006fc9f11fe4615057b6899ed5c8dae57f66efffe38bd0b59e408ab0bbb",
+      "source_sha256": "db23d006fc9f11fe4615057b6899ed5c8dae57f66efffe38bd0b59e408ab0bbb",
+      "transformation": "Byte-for-byte copy; original legend and units retained."
+    },
+    {
+      "asset": "assets/readme/bracket-hex--204_internal_hex_cut.png",
+      "source_archive_path": "ansa_runs/bracket_native_hex_20260927/screenshots/204_internal_hex_cut.png",
+      "kind": "original_image",
+      "sha256": "14d7a5c85bb5663660cab670fa2bbd64cebfe9e8f7ffe6eb8c6a105c811a94b1",
+      "source_sha256": "14d7a5c85bb5663660cab670fa2bbd64cebfe9e8f7ffe6eb8c6a105c811a94b1",
+      "transformation": "Byte-for-byte copy; original legend and units retained."
+    },
+    {
+      "asset": "assets/readme/bracket-hex--288_final_fine_mesh.png",
+      "source_archive_path": "ansa_runs/bracket_native_hex_20260927/screenshots/288_final_fine_mesh.png",
+      "kind": "original_image",
+      "sha256": "6bf6695e3908f9a3db0aac46f8c916a342d4eae77281b6ff80d66981dd431635",
+      "source_sha256": "6bf6695e3908f9a3db0aac46f8c916a342d4eae77281b6ff80d66981dd431635",
+      "transformation": "Byte-for-byte copy; original legend and units retained."
+    },
+    {
+      "asset": "assets/readme/bracket-tet--refined_mises_nodal_average_75_30x.png",
+      "source_archive_path": "ansa_runs/bracket_dual_rib_20260927_0029/refined_mises_nodal_average_75_30x.png",
+      "kind": "original_image",
+      "sha256": "0b7163cb5a692b7de56374ac3237eedf17e194e9a735d468079202c4051168de",
+      "source_sha256": "0b7163cb5a692b7de56374ac3237eedf17e194e9a735d468079202c4051168de",
+      "transformation": "Byte-for-byte copy; original legend and units retained."
+    },
+    {
+      "asset": "assets/readme/bracket-tet--refined_mises_unaveraged_element_nodal_30x.png",
+      "source_archive_path": "ansa_runs/bracket_dual_rib_20260927_0029/refined_mises_unaveraged_element_nodal_30x.png",
+      "kind": "original_image",
+      "sha256": "2446ee44ecc3718e5343b01cf3dc05e4954e629f49eec53064ea1c4f80b0cd8e",
+      "source_sha256": "2446ee44ecc3718e5343b01cf3dc05e4954e629f49eec53064ea1c4f80b0cd8e",
+      "transformation": "Byte-for-byte copy; original legend and units retained."
+    },
+    {
+      "asset": "assets/readme/bracket-tet--refined_U3_30x.png",
+      "source_archive_path": "ansa_runs/bracket_dual_rib_20260927_0029/refined_U3_30x.png",
+      "kind": "original_image",
+      "sha256": "dd39a0755cad04823601f829ba4e67ecee75b59ad6a256e7ed11b921881cd4a7",
+      "source_sha256": "dd39a0755cad04823601f829ba4e67ecee75b59ad6a256e7ed11b921881cd4a7",
+      "transformation": "Byte-for-byte copy; original legend and units retained."
+    },
+    {
+      "asset": "assets/readme/bracket-tet--refined_U_magnitude_true_scale.png",
+      "source_archive_path": "ansa_runs/bracket_dual_rib_20260927_0029/refined_U_magnitude_true_scale.png",
+      "kind": "original_image",
+      "sha256": "acde3c11554c7fb45eab84ddcc7a876a301270f57779cedb427dfb3f24d40958",
+      "source_sha256": "acde3c11554c7fb45eab84ddcc7a876a301270f57779cedb427dfb3f24d40958",
+      "transformation": "Byte-for-byte copy; original legend and units retained."
+    },
+    {
+      "asset": "assets/readme/bracket-tet--fine_mises_nodal_average_75_30x.png",
+      "source_archive_path": "ansa_runs/bracket_dual_rib_20260927_0029/fine_mises_nodal_average_75_30x.png",
+      "kind": "original_image",
+      "sha256": "0946f6a1d088a6c345eca326dec23e72885bfa99a588c03bfccf134d4c42d4f0",
+      "source_sha256": "0946f6a1d088a6c345eca326dec23e72885bfa99a588c03bfccf134d4c42d4f0",
+      "transformation": "Byte-for-byte copy; original legend and units retained."
+    },
+    {
+      "asset": "assets/readme/bracket-tet--fine_mises_unaveraged_element_nodal_30x.png",
+      "source_archive_path": "ansa_runs/bracket_dual_rib_20260927_0029/fine_mises_unaveraged_element_nodal_30x.png",
+      "kind": "original_image",
+      "sha256": "0946f6a1d088a6c345eca326dec23e72885bfa99a588c03bfccf134d4c42d4f0",
+      "source_sha256": "0946f6a1d088a6c345eca326dec23e72885bfa99a588c03bfccf134d4c42d4f0",
+      "transformation": "Byte-for-byte copy; original legend and units retained."
+    },
+    {
+      "asset": "assets/readme/bracket-tet--coarse_v2_U3_30x_full.png",
+      "source_archive_path": "ansa_runs/bracket_dual_rib_20260927_0029/coarse_v2_U3_30x_full.png",
+      "kind": "original_image",
+      "sha256": "455593591fffd83bea3a54b38820696eca847a4b2059ff754416102f3a8dde03",
+      "source_sha256": "455593591fffd83bea3a54b38820696eca847a4b2059ff754416102f3a8dde03",
+      "transformation": "Byte-for-byte copy; original legend and units retained."
+    },
+    {
+      "asset": "assets/readme/optistruct-beam--P05_Stress_VonMises.png",
+      "source_archive_path": "MCP/HyperWorks/workspace/projects/project_20260917_204357_4b552e/output/P05_Stress_VonMises.png",
+      "kind": "original_image",
+      "sha256": "67f53170c371125c9a8d61b87c02022ad8bf2286aa33cd5991eb007479bd2cd6",
+      "source_sha256": "67f53170c371125c9a8d61b87c02022ad8bf2286aa33cd5991eb007479bd2cd6",
+      "transformation": "Byte-for-byte copy; original legend and units retained."
+    },
+    {
+      "asset": "assets/readme/optistruct-beam--P05_Displacement_Magnitude.png",
+      "source_archive_path": "MCP/HyperWorks/workspace/projects/project_20260917_204357_4b552e/output/P05_Displacement_Magnitude.png",
+      "kind": "original_image",
+      "sha256": "0327074cf646d32716708c5149d943fcbdfc7e12c5d70ec63b0cc50e1386174e",
+      "source_sha256": "0327074cf646d32716708c5149d943fcbdfc7e12c5d70ec63b0cc50e1386174e",
+      "transformation": "Byte-for-byte copy; original legend and units retained."
+    },
+    {
+      "asset": "assets/readme/optistruct-beam--P05_Displacement_Z.png",
+      "source_archive_path": "MCP/HyperWorks/workspace/projects/project_20260917_204357_4b552e/output/P05_Displacement_Z.png",
+      "kind": "original_image",
+      "sha256": "5673fad381aea965eec487abdce938d8d240b34495e0bccb8531bf9fa2fb021f",
+      "source_sha256": "5673fad381aea965eec487abdce938d8d240b34495e0bccb8531bf9fa2fb021f",
+      "transformation": "Byte-for-byte copy; original legend and units retained."
+    },
+    {
+      "asset": "assets/readme/optistruct-beam--P05_SPCF_Z.png",
+      "source_archive_path": "MCP/HyperWorks/workspace/projects/project_20260917_204357_4b552e/output/P05_SPCF_Z.png",
+      "kind": "original_image",
+      "sha256": "08fbe8f887679d2784c586ff4c576c6fb5d17efe037a1e7e26a84d1ebddf4804",
+      "source_sha256": "08fbe8f887679d2784c586ff4c576c6fb5d17efe037a1e7e26a84d1ebddf4804",
+      "transformation": "Byte-for-byte copy; original legend and units retained."
+    },
+    {
+      "asset": "assets/readme/abaqus-beam-result.png",
+      "source_archive_path": "models/text-to-cae/TextToCAE_Cantilever.odb",
+      "kind": "plot_from_saved_results",
+      "sha256": "93194abc858da9b78cc4f9d7fececd5cc1283be4ae7a9982711ba3c57d086f5f",
+      "source_sha256": "7b75362c10870b084bfd02b001068b7029993c6d433cf00c29f5425b24c06b28",
+      "transformation": "Read-only ODB extraction; active-element external corner faces, element-mean Mises; Selected stored time: 1; deformation scale: 8x"
+    },
+    {
+      "asset": "assets/readme/beam500-reference.png",
+      "source_archive_path": "abaqus_runs/cantilever_500N_20261025/results.json",
+      "kind": "plot_from_saved_results",
+      "sha256": "1b3e6f66643e5b61216bcc1accc34e98fe3aebe4ca01e78c6323c6eb4f755c58",
+      "source_sha256": "b263b37fb1536aac0f8de36283714dca636878d76b58f6ee48fefb5bfc9766b2",
+      "transformation": "Separate frequency and displacement comparisons from the saved results.json comparison object; no additional solve."
+    },
+    {
+      "asset": "assets/readme/hole-static-result.png",
+      "source_archive_path": "models/text-to-cae-hole-plate/TextToCAE_HolePlate.odb",
+      "kind": "plot_from_saved_results",
+      "sha256": "2be210187d1c0f187fe088e42ea361dda64133654b8f5392e0ad7d6fcb547647",
+      "source_sha256": "6e262a44a338b317291020a55f1c5283bfed871d50515fbf4934584661506d6a",
+      "transformation": "Read-only ODB extraction; active-element external corner faces, element-mean Mises; Selected stored time: 1; deformation scale: 8x"
+    },
+    {
+      "asset": "assets/readme/hole-modal-result.png",
+      "source_archive_path": "models/text-to-cae-hole-plate-modal/TextToCAE_HolePlate_Modal.odb",
+      "kind": "plot_from_saved_results",
+      "sha256": "7a7454d74c52a2b9d124d95af6219e16977c2b22445a58a3956414087b09e80e",
+      "source_sha256": "0b14fda687cf61f98f8b44417e883bc6204bd9cba7ed943fb25c315b6a67f19b",
+      "transformation": "Read-only ODB extraction; active-element external corner faces, element-mean Mises; Mode frequency: 170.72 Hz; normalized display"
+    },
+    {
+      "asset": "assets/readme/frame--A_20kN_acceleration.png",
+      "source_archive_path": "Abaqus_ThreeStory_Dynamics/rerun_20261025/07_figures/A_20kN_acceleration.png",
+      "kind": "original_image",
+      "sha256": "40e66fcbaccc516b29c5b5e401aeb1a7a62fe77d3f8062548c6b25ab76e3ef91",
+      "source_sha256": "40e66fcbaccc516b29c5b5e401aeb1a7a62fe77d3f8062548c6b25ab76e3ef91",
+      "transformation": "Byte-for-byte copy; original legend and units retained."
+    },
+    {
+      "asset": "assets/readme/frame--A_20kN_balance.png",
+      "source_archive_path": "Abaqus_ThreeStory_Dynamics/rerun_20261025/07_figures/A_20kN_balance.png",
+      "kind": "original_image",
+      "sha256": "5304acfea1a1226eb06724b73bcc0c49699050023fd13f9c18fedc76f7a2c268",
+      "source_sha256": "5304acfea1a1226eb06724b73bcc0c49699050023fd13f9c18fedc76f7a2c268",
+      "transformation": "Byte-for-byte copy; original legend and units retained."
+    },
+    {
+      "asset": "assets/readme/frame--A_20kN_displacement.png",
+      "source_archive_path": "Abaqus_ThreeStory_Dynamics/rerun_20261025/07_figures/A_20kN_displacement.png",
+      "kind": "original_image",
+      "sha256": "0ba540913d3fe4742eaddd8c68c57655719ad13911687025f6d43ff5fcebb4b1",
+      "source_sha256": "0ba540913d3fe4742eaddd8c68c57655719ad13911687025f6d43ff5fcebb4b1",
+      "transformation": "Byte-for-byte copy; original legend and units retained."
+    },
+    {
+      "asset": "assets/readme/frame--A_20kN_energy.png",
+      "source_archive_path": "Abaqus_ThreeStory_Dynamics/rerun_20261025/07_figures/A_20kN_energy.png",
+      "kind": "original_image",
+      "sha256": "6de9b0adb9714ed7cdeb00b212089c96abe09c0fb54668464a9c742f0a90dd0a",
+      "source_sha256": "6de9b0adb9714ed7cdeb00b212089c96abe09c0fb54668464a9c742f0a90dd0a",
+      "transformation": "Byte-for-byte copy; original legend and units retained."
+    },
+    {
+      "asset": "assets/readme/frame--A_20kN_interstory.png",
+      "source_archive_path": "Abaqus_ThreeStory_Dynamics/rerun_20261025/07_figures/A_20kN_interstory.png",
+      "kind": "original_image",
+      "sha256": "748a5138f6a29cfaa020f75ac59ee2ce0377d15aa6482b65c838dd2d03591278",
+      "source_sha256": "748a5138f6a29cfaa020f75ac59ee2ce0377d15aa6482b65c838dd2d03591278",
+      "transformation": "Byte-for-byte copy; original legend and units retained."
+    },
+    {
+      "asset": "assets/readme/frame--A_20kN_stress.png",
+      "source_archive_path": "Abaqus_ThreeStory_Dynamics/rerun_20261025/07_figures/A_20kN_stress.png",
+      "kind": "original_image",
+      "sha256": "1ee5d3ece89bb1bc6f523809c04e06df5fa61f16292a12651f5860616edcec88",
+      "source_sha256": "1ee5d3ece89bb1bc6f523809c04e06df5fa61f16292a12651f5860616edcec88",
+      "transformation": "Byte-for-byte copy; original legend and units retained."
+    },
+    {
+      "asset": "assets/readme/frame--A_20kN_velocity.png",
+      "source_archive_path": "Abaqus_ThreeStory_Dynamics/rerun_20261025/07_figures/A_20kN_velocity.png",
+      "kind": "original_image",
+      "sha256": "6ce1c2d5a8b41c33df0974a61079bbc0b97b50cc3cee2454c1c4eeef5837a4e0",
+      "source_sha256": "6ce1c2d5a8b41c33df0974a61079bbc0b97b50cc3cee2454c1c4eeef5837a4e0",
+      "transformation": "Byte-for-byte copy; original legend and units retained."
+    },
+    {
+      "asset": "assets/readme/frame--A_beam_S11.png",
+      "source_archive_path": "Abaqus_ThreeStory_Dynamics/rerun_20261025/07_figures/A_beam_S11.png",
+      "kind": "original_image",
+      "sha256": "433c73d79e1e12f13b500362dd9d59c02490e009eb746a41fced0773fa8dfb38",
+      "source_sha256": "433c73d79e1e12f13b500362dd9d59c02490e009eb746a41fced0773fa8dfb38",
+      "transformation": "Byte-for-byte copy; original legend and units retained."
+    },
+    {
+      "asset": "assets/readme/frame--A_U_end.png",
+      "source_archive_path": "Abaqus_ThreeStory_Dynamics/rerun_20261025/07_figures/A_U_end.png",
+      "kind": "original_image",
+      "sha256": "52b4fe67fe6f361a20af4515a90760394b23d9ba1d5800aedde3c5cf668cb2cd",
+      "source_sha256": "52b4fe67fe6f361a20af4515a90760394b23d9ba1d5800aedde3c5cf668cb2cd",
+      "transformation": "Byte-for-byte copy; original legend and units retained."
+    },
+    {
+      "asset": "assets/readme/frame--A_U_free_vibration.png",
+      "source_archive_path": "Abaqus_ThreeStory_Dynamics/rerun_20261025/07_figures/A_U_free_vibration.png",
+      "kind": "original_image",
+      "sha256": "b4f618ad7561c704b7ff3a687ba4f5858c97c3876815ad75192af7d8d1f68b95",
+      "source_sha256": "b4f618ad7561c704b7ff3a687ba4f5858c97c3876815ad75192af7d8d1f68b95",
+      "transformation": "Byte-for-byte copy; original legend and units retained."
+    },
+    {
+      "asset": "assets/readme/frame--A_U_pulse_end.png",
+      "source_archive_path": "Abaqus_ThreeStory_Dynamics/rerun_20261025/07_figures/A_U_pulse_end.png",
+      "kind": "original_image",
+      "sha256": "feb9cd6b5d39352ba4d23a0f14d692c6a746e57adeb8d9bc36d6014dbd5b6114",
+      "source_sha256": "feb9cd6b5d39352ba4d23a0f14d692c6a746e57adeb8d9bc36d6014dbd5b6114",
+      "transformation": "Byte-for-byte copy; original legend and units retained."
+    },
+    {
+      "asset": "assets/readme/frame--A_U_pulse_peak.png",
+      "source_archive_path": "Abaqus_ThreeStory_Dynamics/rerun_20261025/07_figures/A_U_pulse_peak.png",
+      "kind": "original_image",
+      "sha256": "22915ac070a70f0d75a55a3f519992bf9f00b1b5df376fef5296f1697a0219fa",
+      "source_sha256": "22915ac070a70f0d75a55a3f519992bf9f00b1b5df376fef5296f1697a0219fa",
+      "transformation": "Byte-for-byte copy; original legend and units retained."
+    },
+    {
+      "asset": "assets/readme/frame--A_U_top_peak.png",
+      "source_archive_path": "Abaqus_ThreeStory_Dynamics/rerun_20261025/07_figures/A_U_top_peak.png",
+      "kind": "original_image",
+      "sha256": "6ca01209e2c48141f7a8c64137651c18daf071e220d999b86e2964ec2e08c585",
+      "source_sha256": "6ca01209e2c48141f7a8c64137651c18daf071e220d999b86e2964ec2e08c585",
+      "transformation": "Byte-for-byte copy; original legend and units retained."
+    },
+    {
+      "asset": "assets/readme/frame--B_30kN_acceleration.png",
+      "source_archive_path": "Abaqus_ThreeStory_Dynamics/rerun_20261025/07_figures/B_30kN_acceleration.png",
+      "kind": "original_image",
+      "sha256": "08177256c131e2ff37c02617ff18be29fe0de0ffd5048ee40e90a66bd46b0f97",
+      "source_sha256": "08177256c131e2ff37c02617ff18be29fe0de0ffd5048ee40e90a66bd46b0f97",
+      "transformation": "Byte-for-byte copy; original legend and units retained."
+    },
+    {
+      "asset": "assets/readme/frame--B_30kN_balance.png",
+      "source_archive_path": "Abaqus_ThreeStory_Dynamics/rerun_20261025/07_figures/B_30kN_balance.png",
+      "kind": "original_image",
+      "sha256": "a970e4289aaa2362204cd0bbccc3b5236c47f65b528d009ba5c4cf1919e08b23",
+      "source_sha256": "a970e4289aaa2362204cd0bbccc3b5236c47f65b528d009ba5c4cf1919e08b23",
+      "transformation": "Byte-for-byte copy; original legend and units retained."
+    },
+    {
+      "asset": "assets/readme/frame--B_30kN_displacement.png",
+      "source_archive_path": "Abaqus_ThreeStory_Dynamics/rerun_20261025/07_figures/B_30kN_displacement.png",
+      "kind": "original_image",
+      "sha256": "93c3393925c9e00a9701c3817a4848c83b1b62148bef79987596ace4f131f2c6",
+      "source_sha256": "93c3393925c9e00a9701c3817a4848c83b1b62148bef79987596ace4f131f2c6",
+      "transformation": "Byte-for-byte copy; original legend and units retained."
+    },
+    {
+      "asset": "assets/readme/frame--B_30kN_energy.png",
+      "source_archive_path": "Abaqus_ThreeStory_Dynamics/rerun_20261025/07_figures/B_30kN_energy.png",
+      "kind": "original_image",
+      "sha256": "ab0bd6952fd919c13a57509c8b045ef09bf9d17d932532fe59a41f953d7b0ae3",
+      "source_sha256": "ab0bd6952fd919c13a57509c8b045ef09bf9d17d932532fe59a41f953d7b0ae3",
+      "transformation": "Byte-for-byte copy; original legend and units retained."
+    },
+    {
+      "asset": "assets/readme/frame--B_30kN_interstory.png",
+      "source_archive_path": "Abaqus_ThreeStory_Dynamics/rerun_20261025/07_figures/B_30kN_interstory.png",
+      "kind": "original_image",
+      "sha256": "2a038ae9035592f3ea23d18d0007b246d2475c8df07496e59b7715622d20f4e6",
+      "source_sha256": "2a038ae9035592f3ea23d18d0007b246d2475c8df07496e59b7715622d20f4e6",
+      "transformation": "Byte-for-byte copy; original legend and units retained."
+    },
+    {
+      "asset": "assets/readme/frame--B_30kN_stress.png",
+      "source_archive_path": "Abaqus_ThreeStory_Dynamics/rerun_20261025/07_figures/B_30kN_stress.png",
+      "kind": "original_image",
+      "sha256": "19170fa260151b2b1cf80c9befd577f1e966fd86b5625b6bf6f8e3d9ff17eed7",
+      "source_sha256": "19170fa260151b2b1cf80c9befd577f1e966fd86b5625b6bf6f8e3d9ff17eed7",
+      "transformation": "Byte-for-byte copy; original legend and units retained."
+    },
+    {
+      "asset": "assets/readme/frame--B_30kN_velocity.png",
+      "source_archive_path": "Abaqus_ThreeStory_Dynamics/rerun_20261025/07_figures/B_30kN_velocity.png",
+      "kind": "original_image",
+      "sha256": "75ccdf1c60dbb74643422388c1dc7d6d4abe3ba8f42d78a3d99137999e0915e9",
+      "source_sha256": "75ccdf1c60dbb74643422388c1dc7d6d4abe3ba8f42d78a3d99137999e0915e9",
+      "transformation": "Byte-for-byte copy; original legend and units retained."
+    },
+    {
+      "asset": "assets/readme/frame--AB_top_comparison.png",
+      "source_archive_path": "Abaqus_ThreeStory_Dynamics/rerun_20261025/07_figures/AB_top_comparison.png",
+      "kind": "original_image",
+      "sha256": "128e49c501389214ba285b9e7a5b565a84215bdd42750c429d567f95f7ad7604",
+      "source_sha256": "128e49c501389214ba285b9e7a5b565a84215bdd42750c429d567f95f7ad7604",
+      "transformation": "Byte-for-byte copy; original legend and units retained."
+    },
+    {
+      "asset": "assets/readme/frame--load_pulse.png",
+      "source_archive_path": "Abaqus_ThreeStory_Dynamics/rerun_20261025/07_figures/load_pulse.png",
+      "kind": "original_image",
+      "sha256": "4a9a7fb5cd391d34a5c2421c76f45b1a2ea418ad281eae579e1ca407f094b467",
+      "source_sha256": "4a9a7fb5cd391d34a5c2421c76f45b1a2ea418ad281eae579e1ca407f094b467",
+      "transformation": "Byte-for-byte copy; original legend and units retained."
+    },
+    {
+      "asset": "assets/readme/frame--mesh_sensitivity.png",
+      "source_archive_path": "Abaqus_ThreeStory_Dynamics/rerun_20261025/07_figures/mesh_sensitivity.png",
+      "kind": "original_image",
+      "sha256": "5426f0932925ef0b552ceaae05f81fe1b93a5d1254ea32ea6f8519136b0a7545",
+      "source_sha256": "5426f0932925ef0b552ceaae05f81fe1b93a5d1254ea32ea6f8519136b0a7545",
+      "transformation": "Byte-for-byte copy; original legend and units retained."
+    },
+    {
+      "asset": "assets/readme/frame--time_sensitivity.png",
+      "source_archive_path": "Abaqus_ThreeStory_Dynamics/rerun_20261025/07_figures/time_sensitivity.png",
+      "kind": "original_image",
+      "sha256": "ab8bf0595de3cb690bf88c22e8f3a452ea6196dc9200cb08e52c6c58fab9e162",
+      "source_sha256": "ab8bf0595de3cb690bf88c22e8f3a452ea6196dc9200cb08e52c6c58fab9e162",
+      "transformation": "Byte-for-byte copy; original legend and units retained."
+    },
+    {
+      "asset": "assets/readme/frame-modal--mode_01.png",
+      "source_archive_path": "Abaqus_ThreeStory_Dynamics/rerun_20261025/07_figures/mode_01.png",
+      "kind": "original_image",
+      "sha256": "2db49fb62e34cef09eea3453c9eec7ecadb279a2760fbd3d153c543b69ab9109",
+      "source_sha256": "2db49fb62e34cef09eea3453c9eec7ecadb279a2760fbd3d153c543b69ab9109",
+      "transformation": "Byte-for-byte copy; original legend and units retained."
+    },
+    {
+      "asset": "assets/readme/frame-modal--mode_02.png",
+      "source_archive_path": "Abaqus_ThreeStory_Dynamics/rerun_20261025/07_figures/mode_02.png",
+      "kind": "original_image",
+      "sha256": "9109381185a4799a6dc2929f13b34663b7bf3649dcbd18c1fd75fea9201f5143",
+      "source_sha256": "9109381185a4799a6dc2929f13b34663b7bf3649dcbd18c1fd75fea9201f5143",
+      "transformation": "Byte-for-byte copy; original legend and units retained."
+    },
+    {
+      "asset": "assets/readme/frame-modal--mode_03.png",
+      "source_archive_path": "Abaqus_ThreeStory_Dynamics/rerun_20261025/07_figures/mode_03.png",
+      "kind": "original_image",
+      "sha256": "c56c0be6243fbe2dd8ac117966d92caea8b4293c7dad7cfc077d971fc06a2ca4",
+      "source_sha256": "c56c0be6243fbe2dd8ac117966d92caea8b4293c7dad7cfc077d971fc06a2ca4",
+      "transformation": "Byte-for-byte copy; original legend and units retained."
+    },
+    {
+      "asset": "assets/readme/frame-modal--mode_04.png",
+      "source_archive_path": "Abaqus_ThreeStory_Dynamics/rerun_20261025/07_figures/mode_04.png",
+      "kind": "original_image",
+      "sha256": "65ee9cbbd2b49ea0d1cb73461c3dbf55d0b560496762af0fb64537b066423579",
+      "source_sha256": "65ee9cbbd2b49ea0d1cb73461c3dbf55d0b560496762af0fb64537b066423579",
+      "transformation": "Byte-for-byte copy; original legend and units retained."
+    },
+    {
+      "asset": "assets/readme/frame-modal--mode_05.png",
+      "source_archive_path": "Abaqus_ThreeStory_Dynamics/rerun_20261025/07_figures/mode_05.png",
+      "kind": "original_image",
+      "sha256": "1e354c8e25e931acac197929c7e4cab2c638875de6a995b7002d033dae34b460",
+      "source_sha256": "1e354c8e25e931acac197929c7e4cab2c638875de6a995b7002d033dae34b460",
+      "transformation": "Byte-for-byte copy; original legend and units retained."
+    },
+    {
+      "asset": "assets/readme/frame-modal--mode_06.png",
+      "source_archive_path": "Abaqus_ThreeStory_Dynamics/rerun_20261025/07_figures/mode_06.png",
+      "kind": "original_image",
+      "sha256": "a91936e8dd816bafb865e99a0ed09c2524fceb6b6b7781c2d2000de8d20663b9",
+      "source_sha256": "a91936e8dd816bafb865e99a0ed09c2524fceb6b6b7781c2d2000de8d20663b9",
+      "transformation": "Byte-for-byte copy; original legend and units retained."
+    },
+    {
+      "asset": "assets/readme/sphere-impact-result.png",
+      "source_archive_path": "models/text-to-cae-sphere-impact/TextToCAE_SphereImpact.odb",
+      "kind": "plot_from_saved_results",
+      "sha256": "64bced27ac0ccc17ce60bab891887e9f264c7205eab39f156aaa6105317bebef",
+      "source_sha256": "de4fbad90bf5bcb9674163746363629ccc4818daaa907110538e966fd1ff0314",
+      "transformation": "Read-only ODB extraction; active-element external corner faces, element-mean Mises; Selected stored time: 0.00125029; deformation scale: 1x"
+    },
+    {
+      "asset": "assets/readme/cutting-result.png",
+      "source_archive_path": "models/text-to-cae-cutting/TextToCAE_OrthogonalCutting.odb",
+      "kind": "plot_from_saved_results",
+      "sha256": "b0d7a0cf9b855813abc22cd93f0745d2a471abb389dfe17e3d9cceae186a910a",
+      "source_sha256": "227d57f2c859dab79584bda391a034ea47de555f6e8ee92faffcd2391d8e11f7",
+      "transformation": "Read-only ODB extraction; active-element external corner faces, element-mean Mises; Selected stored time: 0.00135001; deformation scale: 1x"
+    },
+    {
+      "asset": "assets/readme/milling-result.png",
+      "source_archive_path": "models/text-to-cae-milling-3d/TextToCAE_3D_Milling_Dynamics.odb",
+      "kind": "plot_from_saved_results",
+      "sha256": "aaa39bffaf962aeec0f04bb91bb7bc3c87e462be6e92bf510f8ef9809a878de3",
+      "source_sha256": "beb3067c135a1b96dcd9b6bbd60b780957b39627492ce441aeffa56a53599106",
+      "transformation": "Read-only ODB extraction; active-element external corner faces, element-mean Mises; Selected stored time: 0.000700146; deformation scale: 1x"
+    },
+    {
+      "asset": "assets/readme/bullet-impact-result.png",
+      "source_archive_path": "models/text-to-cae-bullet-plate/TextToCAE_BulletPlate_Penetration_Rigid.odb",
+      "kind": "plot_from_saved_results",
+      "sha256": "450d7cc8d8b17bf36b6e5ef77e9ab85b76d2382e86460152f399179b14d8ea1d",
+      "source_sha256": "82f1d04031147aa2ecd5eeb6165d0c9a0dec427fbbe8519c4e1261260e547238",
+      "transformation": "Read-only ODB extraction; active-element external corner faces, element-mean Mises; Selected stored time: 8e-05; deformation scale: 1x"
+    },
+    {
+      "asset": "assets/readme/elbow--convergence.png",
+      "source_archive_path": "runs/elbow90_water_20261018/figures/convergence.png",
+      "kind": "original_image",
+      "sha256": "80b4aa4b025dc69f360f6f68b777d5a4c17446f2c2e14d68130af015b8d86868",
+      "source_sha256": "80b4aa4b025dc69f360f6f68b777d5a4c17446f2c2e14d68130af015b8d86868",
+      "transformation": "Byte-for-byte copy; original legend and units retained."
+    },
+    {
+      "asset": "assets/readme/elbow--velocity_pressure.png",
+      "source_archive_path": "runs/elbow90_water_20261018/figures/velocity_pressure.png",
+      "kind": "original_image",
+      "sha256": "1219faff50147830403289c1588d45d49df6f51aee4b647a0179e1f88a11f5da",
+      "source_sha256": "1219faff50147830403289c1588d45d49df6f51aee4b647a0179e1f88a11f5da",
+      "transformation": "Byte-for-byte copy; original legend and units retained."
+    },
+    {
+      "asset": "assets/readme/elbow--velocity_profiles.png",
+      "source_archive_path": "runs/elbow90_water_20261018/figures/velocity_profiles.png",
+      "kind": "original_image",
+      "sha256": "92982adaf6182c05102d3445ad63ef857c5c60528f56fca09e6cec066ac27935",
+      "source_sha256": "92982adaf6182c05102d3445ad63ef857c5c60528f56fca09e6cec066ac27935",
+      "transformation": "Byte-for-byte copy; original legend and units retained."
+    },
+    {
+      "asset": "assets/readme/elbow--wall_shear.png",
+      "source_archive_path": "runs/elbow90_water_20261018/figures/wall_shear.png",
+      "kind": "original_image",
+      "sha256": "de625279fc7f791dc5aebaf5d3bb8852d9cb5f45257b1aaf17531599377d6618",
+      "source_sha256": "de625279fc7f791dc5aebaf5d3bb8852d9cb5f45257b1aaf17531599377d6618",
+      "transformation": "Byte-for-byte copy; original legend and units retained."
+    },
+    {
+      "asset": "assets/readme/fep-channel.png",
+      "source_archive_path": "MCP/FEP-Agent-Hub/examples/laminar-channel-flow-2d/flow_metrics.json",
+      "kind": "plot_from_saved_results",
+      "sha256": "285f02c00841a5987026ead11f62b7b5c27b1429efe776fcf1c3c6809bd2840e",
+      "source_sha256": "bd8ed9bd1e02f273c9d979a73dcef3024b9015a4b0ce3714856ab515aca6811e",
+      "transformation": "Bars show the recorded numerical values; no additional solve."
+    },
+    {
+      "asset": "assets/readme/maxwell--B_midplane_30.png",
+      "source_archive_path": "MCP/Ansys/AEDT MCP/test-artifacts/rotational-actuator-20261001-1790841378441/B_midplane_30.png",
+      "kind": "original_image",
+      "sha256": "67aa18b4799da625a11fa9f68912173fd29c920e0830e1644ce5ba4919ea4213",
+      "source_sha256": "67aa18b4799da625a11fa9f68912173fd29c920e0830e1644ce5ba4919ea4213",
+      "transformation": "Byte-for-byte copy; original legend and units retained."
+    },
+    {
+      "asset": "assets/readme/maxwell--B_corner_hotspots.png",
+      "source_archive_path": "MCP/Ansys/AEDT MCP/test-artifacts/rotational-actuator-20261001-1790841378441/B_corner_hotspots.png",
+      "kind": "original_image",
+      "sha256": "b1c4c5738725a53ec6a288e296f8153420d8cbafc0ca6e3898808427b363fb41",
+      "source_sha256": "b1c4c5738725a53ec6a288e296f8153420d8cbafc0ca6e3898808427b363fb41",
+      "transformation": "Byte-for-byte copy; original legend and units retained."
+    },
+    {
+      "asset": "assets/readme/maxwell--B_midplane_0.png",
+      "source_archive_path": "MCP/Ansys/AEDT MCP/test-artifacts/rotational-actuator-20261001-1790841378441/B_midplane_0.png",
+      "kind": "original_image",
+      "sha256": "7e49ba0c93685863efea58eb924ef5296c83f3bc64ed479d78c877bd2cec1b7b",
+      "source_sha256": "7e49ba0c93685863efea58eb924ef5296c83f3bc64ed479d78c877bd2cec1b7b",
+      "transformation": "Byte-for-byte copy; original legend and units retained."
+    },
+    {
+      "asset": "assets/readme/maxwell--B_surface_hotspots.png",
+      "source_archive_path": "MCP/Ansys/AEDT MCP/test-artifacts/rotational-actuator-20261001-1790841378441/B_surface_hotspots.png",
+      "kind": "original_image",
+      "sha256": "414ba724fe5341e8550521b893e609c9d86de8716c5d09e801e7c13e21d3080d",
+      "source_sha256": "414ba724fe5341e8550521b893e609c9d86de8716c5d09e801e7c13e21d3080d",
+      "transformation": "Byte-for-byte copy; original legend and units retained."
+    },
+    {
+      "asset": "assets/readme/maxwell--B_topplane_0.png",
+      "source_archive_path": "MCP/Ansys/AEDT MCP/test-artifacts/rotational-actuator-20261001-1790841378441/B_topplane_0.png",
+      "kind": "original_image",
+      "sha256": "b6486cc94b8a32aef662f4e602ef1a319a6acfe1e7dd43fbb406e3fa6df3a7e6",
+      "source_sha256": "b6486cc94b8a32aef662f4e602ef1a319a6acfe1e7dd43fbb406e3fa6df3a7e6",
+      "transformation": "Byte-for-byte copy; original legend and units retained."
+    },
+    {
+      "asset": "assets/readme/maxwell--B_topplane_30.png",
+      "source_archive_path": "MCP/Ansys/AEDT MCP/test-artifacts/rotational-actuator-20261001-1790841378441/B_topplane_30.png",
+      "kind": "original_image",
+      "sha256": "a9e94050cd0767baec1f24fa1934c1100c97b76fd471e389425643da4e209259",
+      "source_sha256": "a9e94050cd0767baec1f24fa1934c1100c97b76fd471e389425643da4e209259",
+      "transformation": "Byte-for-byte copy; original legend and units retained."
+    },
+    {
+      "asset": "assets/readme/maxwell--B_iron_0.jpg",
+      "source_archive_path": "MCP/Ansys/AEDT MCP/test-artifacts/rotational-actuator-20261001-1790841378441/B_iron_0.jpg",
+      "kind": "original_image",
+      "sha256": "749615fa9ad1a12479f010183376f8e1e645d923de1eea0411b133ddaa29a7d2",
+      "source_sha256": "749615fa9ad1a12479f010183376f8e1e645d923de1eea0411b133ddaa29a7d2",
+      "transformation": "Byte-for-byte copy; original legend and units retained."
+    },
+    {
+      "asset": "assets/readme/maxwell--B_iron_30.jpg",
+      "source_archive_path": "MCP/Ansys/AEDT MCP/test-artifacts/rotational-actuator-20261001-1790841378441/B_iron_30.jpg",
+      "kind": "original_image",
+      "sha256": "19e4f1e56c13abdc7ba06ec06e28233e33b24ea64d4d60cf5b45d975280e90b6",
+      "source_sha256": "19e4f1e56c13abdc7ba06ec06e28233e33b24ea64d4d60cf5b45d975280e90b6",
+      "transformation": "Byte-for-byte copy; original legend and units retained."
+    },
+    {
+      "asset": "assets/readme/maxwell--torque_angle.png",
+      "source_archive_path": "MCP/Ansys/AEDT MCP/test-artifacts/rotational-actuator-20261001-1790841378441/torque_angle.png",
+      "kind": "original_image",
+      "sha256": "e599157cba584846f1daced385b2d7f08edd740daa5920e4abf63039767e68e3",
+      "source_sha256": "e599157cba584846f1daced385b2d7f08edd740daa5920e4abf63039767e68e3",
+      "transformation": "Byte-for-byte copy; original legend and units retained."
+    },
+    {
+      "asset": "assets/readme/maxwell--mutual_inductance_angle.png",
+      "source_archive_path": "MCP/Ansys/AEDT MCP/test-artifacts/rotational-actuator-20261001-1790841378441/mutual_inductance_angle.png",
+      "kind": "original_image",
+      "sha256": "f8d85d9fc53be3ea1a668b818f7d1d7d58bc33508a1858be739a51273a667ddf",
+      "source_sha256": "f8d85d9fc53be3ea1a668b818f7d1d7d58bc33508a1858be739a51273a667ddf",
+      "transformation": "Byte-for-byte copy; original legend and units retained."
+    },
+    {
+      "asset": "assets/readme/maxwell--self_inductance_angle.png",
+      "source_archive_path": "MCP/Ansys/AEDT MCP/test-artifacts/rotational-actuator-20261001-1790841378441/self_inductance_angle.png",
+      "kind": "original_image",
+      "sha256": "5114088e7b7eccda91aa464ec0f8674fbf3d27f7b9008a4d65eed1d4266c500f",
+      "source_sha256": "5114088e7b7eccda91aa464ec0f8674fbf3d27f7b9008a4d65eed1d4266c500f",
+      "transformation": "Byte-for-byte copy; original legend and units retained."
+    },
+    {
+      "asset": "assets/readme/maxwell--geometry_view.jpg",
+      "source_archive_path": "MCP/Ansys/AEDT MCP/test-artifacts/rotational-actuator-20261001-1790841378441/geometry_view.jpg",
+      "kind": "original_image",
+      "sha256": "0c3b62ee2ba2b517862713101af95bd41e0cb000bf38791a1d2634074d8d0baf",
+      "source_sha256": "0c3b62ee2ba2b517862713101af95bd41e0cb000bf38791a1d2634074d8d0baf",
+      "transformation": "Byte-for-byte copy; original legend and units retained."
+    },
+    {
+      "asset": "assets/readme/cst-sparameters.png",
+      "source_archive_path": "MCP/CST/examples/design_studio_cosim_demo_run/fss_rlc_diode_schematic_demo_1783569136_se_il.csv",
+      "kind": "plot_from_saved_results",
+      "sha256": "b310ff5c279e069b6b11517d689451f748be25f7fdf2b0fd01a7cf836a34f311",
+      "source_sha256": "469701c56c4e4a9e77e8e1bc35a14a70fd3c63dfae9140a6f975bbb42c638db5",
+      "transformation": "91 saved circuit frequency points; not 3D shielding effectiveness."
+    },
+    {
+      "asset": "assets/readme/fep-transformer.png",
+      "source_archive_path": "MCP/FEP-Agent-Hub/examples/transformer-induction-2d/induction_metrics.json",
+      "kind": "plot_from_saved_results",
+      "sha256": "7d5289873d61d73844b99ebdbd25d79ad17b899abe2115fc633ec7f8a8fe88f0",
+      "source_sha256": "34d5ece25f2e79efa28fd94ac58deae2125f886fbe68cc83496e6682b132634f",
+      "transformation": "Bars show the recorded numerical values; no additional solve."
+    },
+    {
+      "asset": "assets/readme/fep-lenz.png",
+      "source_archive_path": "MCP/FEP-Agent-Hub/examples/lenz-law-transient-eddy/expected_metrics.json",
+      "kind": "plot_from_saved_results",
+      "sha256": "cd3f4203275d21af1a1f05beed4993fa041f8c949cc564fbcac5189497519463",
+      "source_sha256": "a407f589da286d0ae3b800b88819693a70b62e6bb37303be415942189d50d53b",
+      "transformation": "Bars show the recorded numerical values; no additional solve."
+    },
+    {
+      "asset": "assets/readme/fep-beam.png",
+      "source_archive_path": "MCP/FEP-Agent-Hub/examples/simply-supported-beam-2d/beam_metrics.json",
+      "kind": "plot_from_saved_results",
+      "sha256": "931eb66ee9f816ec0f46d0463ad961679dee9591b36b17f86abc880162e48e71",
+      "source_sha256": "cf20af67976b613d845144b856659fee5ebc153680dbe054422f8a4b479851da",
+      "transformation": "Recorded static load levels; not transient dynamics."
+    },
+    {
+      "asset": "assets/readme/radioss-axial.png",
+      "source_archive_path": "MCP/HyperWorks/workspace/projects/project_20260721_154328_e76033/runs/radioss_20260721_154352_8a370d/input/solid_axial_collision_0001.out",
+      "kind": "plot_from_saved_results",
+      "sha256": "35e3a33c2cd8c460cea9b9ac277367f8d348ac40c3bac8e3a2c78f431276d255",
+      "source_sha256": "37a951d59c02011bcf094ea1d91f30d67e0ecd00684e89c201a6b871f7cc5b22",
+      "transformation": "Native printed samples only; normal termination does not certify contact, energy, or mesh accuracy."
+    },
+    {
+      "asset": "assets/readme/radioss-drop.png",
+      "source_archive_path": "MCP/HyperWorks/workspace/projects/project_20260721_154328_9ab16c/runs/radioss_20260721_154345_b1c162/input/drop_weight_0001.out",
+      "kind": "plot_from_saved_results",
+      "sha256": "fbd39bedbbe0d118132b477cde394c90982554b82a955894a0eb422ca5107ce0",
+      "source_sha256": "d58d84ea169a2d37df1fa899881c1b64fadf3abbbb9c138d0a36b74e076d9893",
+      "transformation": "Native printed samples only; normal termination does not certify contact, energy, or mesh accuracy."
+    },
+    {
+      "asset": "assets/readme/radioss-plate.png",
+      "source_archive_path": "MCP/HyperWorks/workspace/projects/project_20260721_154328_11575f/runs/radioss_20260721_154349_c905c0/input/plate_impact_0001.out",
+      "kind": "plot_from_saved_results",
+      "sha256": "85e100c8e398f7393436aeffcf1d579fa9fc5b7e6d8f2c03413530cbbbce19a9",
+      "source_sha256": "06d8b83a18723bc6e39c498f3f6d657f6749d2b0c6e8a689c0ebf1453cdb3268",
+      "transformation": "Native printed samples only; normal termination does not certify contact, energy, or mesh accuracy."
+    },
+    {
+      "asset": "assets/readme/radioss-block.png",
+      "source_archive_path": "MCP/HyperWorks/workspace/projects/project_20260721_101928_885d35/runs/radioss_20260721_102312_a2454e/input/v090_radioss_block_impact_0001.out",
+      "kind": "plot_from_saved_results",
+      "sha256": "d83cb868fc260f6918241956fcfbf628ce6b854f3ca33e1f366aa795cd6becc2",
+      "source_sha256": "f599d2de4f2768db2c17eb555d0fa11d85cd8f6e0fe93cb6231711443a4be37d",
+      "transformation": "Native printed samples only; normal termination does not certify contact, energy, or mesh accuracy."
+    },
+    {
+      "asset": "assets/readme/optistruct-modal.png",
+      "source_archive_path": "MCP/HyperWorks/workspace/projects/project_20260721_153839_384cf8/runs/optistruct_20260721_153906_55c134/input/modal.out",
+      "kind": "plot_from_saved_results",
+      "sha256": "2d53b95dad7fffad7ac01e019fd56097be0cddd3062a5f9b5f4d8f10544c37f9",
+      "source_sha256": "8d04bfb6f6d55c98bfd6b2599777c33ecbde6c6e18c21bda6e07ee06c60591e0",
+      "transformation": "Bars show the recorded numerical values; no additional solve."
+    },
+    {
+      "asset": "assets/readme/optistruct-buckling.png",
+      "source_archive_path": "MCP/HyperWorks/workspace/projects/project_20260721_155423_a79ec3/runs/optistruct_20260721_155439_597f01/input/buckling_clean.out",
+      "kind": "plot_from_saved_results",
+      "sha256": "ae1af254fbea66ab9ae6fa5e65bf4a5622815c9da685b581263ae8bf99c8af34",
+      "source_sha256": "08ccd1e15cc02e260b6b43bd9fafd4c8ce148a395da7d549cc84f114f8dcc4fb",
+      "transformation": "Bars show the recorded numerical values; no additional solve."
+    },
+    {
+      "asset": "assets/readme/hyperview-bracket--stress_vonmises.png",
+      "source_archive_path": "MCP/HyperWorks/workspace/stress_vonmises.png",
+      "kind": "original_image",
+      "sha256": "ec9138f5f61187a322fef2b5988c7dba6517afbbda8d2013a4d09b5cd50cc103",
+      "source_sha256": "ec9138f5f61187a322fef2b5988c7dba6517afbbda8d2013a4d09b5cd50cc103",
+      "transformation": "Byte-for-byte copy; original legend and units retained."
+    },
+    {
+      "asset": "assets/readme/hyperview-bracket--displacement_mag.png",
+      "source_archive_path": "MCP/HyperWorks/workspace/displacement_mag.png",
+      "kind": "original_image",
+      "sha256": "58299c70219d1e878979be84bc581973e7084b6c6f51ada75505310911dca191",
+      "source_sha256": "58299c70219d1e878979be84bc581973e7084b6c6f51ada75505310911dca191",
+      "transformation": "Byte-for-byte copy; original legend and units retained."
+    },
+    {
+      "asset": "assets/readme/hyperview-bracket--displacement_x.png",
+      "source_archive_path": "MCP/HyperWorks/workspace/displacement_x.png",
+      "kind": "original_image",
+      "sha256": "0d6ee0d142f7d1a85657e8af86ff233b96b89f35feca694965e9d22ced7be44f",
+      "source_sha256": "0d6ee0d142f7d1a85657e8af86ff233b96b89f35feca694965e9d22ced7be44f",
+      "transformation": "Byte-for-byte copy; original legend and units retained."
+    },
+    {
+      "asset": "assets/readme/hyperview-bracket--displacement_y.png",
+      "source_archive_path": "MCP/HyperWorks/workspace/displacement_y.png",
+      "kind": "original_image",
+      "sha256": "80cd0c8aa89a144c6c2ccf3a275370033052768416783dc7ce80b656bc795599",
+      "source_sha256": "80cd0c8aa89a144c6c2ccf3a275370033052768416783dc7ce80b656bc795599",
+      "transformation": "Byte-for-byte copy; original legend and units retained."
+    },
+    {
+      "asset": "assets/readme/hyperview-bracket--displacement_z.png",
+      "source_archive_path": "MCP/HyperWorks/workspace/displacement_z.png",
+      "kind": "original_image",
+      "sha256": "52d1d5e30c45d90a63245ed5ed7a74f966d4b5fb4dde741e4d58f0e92d54f818",
+      "source_sha256": "52d1d5e30c45d90a63245ed5ed7a74f966d4b5fb4dde741e4d58f0e92d54f818",
+      "transformation": "Byte-for-byte copy; original legend and units retained."
+    },
+    {
+      "asset": "assets/readme/hyperview-bracket--stress_principal_max.png",
+      "source_archive_path": "MCP/HyperWorks/workspace/stress_principal_max.png",
+      "kind": "original_image",
+      "sha256": "6125733bc9f8a7d9eebbd25722d1a47675b2eedfbf593c99e62da4e1a6b1af2c",
+      "source_sha256": "6125733bc9f8a7d9eebbd25722d1a47675b2eedfbf593c99e62da4e1a6b1af2c",
+      "transformation": "Byte-for-byte copy; original legend and units retained."
+    },
+    {
+      "asset": "assets/readme/hyperview-bracket--stress_principal_min.png",
+      "source_archive_path": "MCP/HyperWorks/workspace/stress_principal_min.png",
+      "kind": "original_image",
+      "sha256": "5373f10e01e0895f7bf74d5ed5f16340436d7a4349be9cd845a19cb5328b621a",
+      "source_sha256": "5373f10e01e0895f7bf74d5ed5f16340436d7a4349be9cd845a19cb5328b621a",
+      "transformation": "Byte-for-byte copy; original legend and units retained."
+    },
+    {
+      "asset": "assets/readme/hyperview-bracket--spcforce_x.png",
+      "source_archive_path": "MCP/HyperWorks/workspace/spcforce_x.png",
+      "kind": "original_image",
+      "sha256": "976cd735369a57f972d04e410a1b1abf47edc90d1fa22918657057b203ba858e",
+      "source_sha256": "976cd735369a57f972d04e410a1b1abf47edc90d1fa22918657057b203ba858e",
+      "transformation": "Byte-for-byte copy; original legend and units retained."
+    },
+    {
+      "asset": "assets/readme/hyperview-bracket--hole1_spcforce_x_mean.png",
+      "source_archive_path": "MCP/HyperWorks/workspace/hole1_spcforce_x_mean.png",
+      "kind": "original_image",
+      "sha256": "f2804c7790753a293344de121fe5bfbe70670cf297a23d894a729ffb67a39df8",
+      "source_sha256": "f2804c7790753a293344de121fe5bfbe70670cf297a23d894a729ffb67a39df8",
+      "transformation": "Byte-for-byte copy; original legend and units retained."
+    },
+    {
+      "asset": "assets/readme/hyperview-bracket--hole2_spcforce_x_mean.png",
+      "source_archive_path": "MCP/HyperWorks/workspace/hole2_spcforce_x_mean.png",
+      "kind": "original_image",
+      "sha256": "ff5ccb07402d0e8e8ec8ff0a0a1ab004105c4221c7c9ee0b33249ed4b697f2c8",
+      "source_sha256": "ff5ccb07402d0e8e8ec8ff0a0a1ab004105c4221c7c9ee0b33249ed4b697f2c8",
+      "transformation": "Byte-for-byte copy; original legend and units retained."
+    },
+    {
+      "asset": "assets/readme/calculix-static.png",
+      "source_archive_path": "models/text-to-cae-calculix-cantilever/result_mesh.json",
+      "kind": "plot_from_saved_results",
+      "sha256": "08c9cb4b698e61145b1ac084254f9bec0fd14b8ac0ba2e3a15a6af33d4f3bb6f",
+      "source_sha256": "0c273b889c5bd25de57a7af7754bfa49250c392294b9c851e1e89d8e24fa3bca",
+      "transformation": "Rendered saved result export; no fresh solver-completion verification."
+    },
+    {
+      "asset": "assets/readme/calculix-modal.png",
+      "source_archive_path": "models/text-to-cae-calculix-modal/result_mesh.json",
+      "kind": "plot_from_saved_results",
+      "sha256": "03146beb715ef7eaa4b8ac376c3632f6e3de26ac4b93f3ec001fa9ba29808c07",
+      "source_sha256": "181d670854fe841fc2844717b3c5e37447ff32a51fb552ae3009822a7718cb73",
+      "transformation": "Rendered saved result export; no fresh solver-completion verification."
+    },
+    {
+      "asset": "assets/readme/gear-calibration--contact_pressure.png",
+      "source_archive_path": "viewer/dist/ansys-gear-contact/images/contact_pressure.png",
+      "kind": "original_image",
+      "sha256": "c2ee4b996254c06cbc4f8102233991869ece5f9cd51364f5767c5b38e17d7f5c",
+      "source_sha256": "c2ee4b996254c06cbc4f8102233991869ece5f9cd51364f5767c5b38e17d7f5c",
+      "transformation": "Byte-for-byte copy; original legend and units retained."
+    },
+    {
+      "asset": "assets/readme/gear-calibration--contact_status.png",
+      "source_archive_path": "viewer/dist/ansys-gear-contact/images/contact_status.png",
+      "kind": "original_image",
+      "sha256": "9e5e6cc74c1b2a04e72accf84a8674f578088cf3c652c6eeeefb48b0d30e49a4",
+      "source_sha256": "9e5e6cc74c1b2a04e72accf84a8674f578088cf3c652c6eeeefb48b0d30e49a4",
+      "transformation": "Byte-for-byte copy; original legend and units retained."
+    },
+    {
+      "asset": "assets/readme/gear-calibration--equivalent_stress.png",
+      "source_archive_path": "viewer/dist/ansys-gear-contact/images/equivalent_stress.png",
+      "kind": "original_image",
+      "sha256": "e0eb432c3fec1ddcf1ddf3c5e12223d6e2135452798a26d9a7f7b923beadf6ce",
+      "source_sha256": "e0eb432c3fec1ddcf1ddf3c5e12223d6e2135452798a26d9a7f7b923beadf6ce",
+      "transformation": "Byte-for-byte copy; original legend and units retained."
+    },
+    {
+      "asset": "assets/readme/gear-calibration--total_deformation.png",
+      "source_archive_path": "viewer/dist/ansys-gear-contact/images/total_deformation.png",
+      "kind": "original_image",
+      "sha256": "b10bf0cc6e1e48e9ae5d6238366a100ea3bed68a9ecacd24d2f11a1935a97e5f",
+      "source_sha256": "b10bf0cc6e1e48e9ae5d6238366a100ea3bed68a9ecacd24d2f11a1935a97e5f",
+      "transformation": "Byte-for-byte copy; original legend and units retained."
+    },
+    {
+      "asset": "assets/readme/icepak-smoke--temperature-field.jpg",
+      "source_archive_path": "MCP/Ansys/AEDT MCP/test-artifacts/IcepakMcpAcceptance/20260905-134319/temperature-field.jpg",
+      "kind": "original_image",
+      "sha256": "3b28268316d58f8ea0ca5407ee46aad8a16e6acf8285dd3dcfae8e2de3478e32",
+      "source_sha256": "3b28268316d58f8ea0ca5407ee46aad8a16e6acf8285dd3dcfae8e2de3478e32",
+      "transformation": "Byte-for-byte copy; original legend and units retained."
+    }
+  ]
+}

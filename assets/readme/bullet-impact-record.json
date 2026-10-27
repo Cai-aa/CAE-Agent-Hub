@@ -1,0 +1,13 @@
+{
+  "source": "models/text-to-cae-bullet-plate/TextToCAE_BulletPlate_Penetration_Rigid.odb",
+  "instance": "PLATE-1",
+  "step": "Penetration",
+  "frame_time": 7.999999797903001e-05,
+  "final_time": 7.999999797903001e-05,
+  "frame_count": 241,
+  "frame_description": "Increment       506: Step Time =   8.0000E-05",
+  "frequency": null,
+  "modal": false,
+  "job_status": "JOB_STATUS_COMPLETED_SUCCESSFULLY",
+  "max_u": 1.0262368697489237
+}

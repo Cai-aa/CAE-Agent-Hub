@@ -1,0 +1,13 @@
+{
+  "source": "models/text-to-cae-hole-plate/TextToCAE_HolePlate.odb",
+  "instance": "PLATE-1",
+  "step": "Load",
+  "frame_time": 1.0,
+  "final_time": 1.0,
+  "frame_count": 2,
+  "frame_description": "Increment      1: Step Time =    1.000",
+  "frequency": null,
+  "modal": false,
+  "job_status": "JOB_STATUS_COMPLETED_SUCCESSFULLY",
+  "max_u": 0.1300535496629429
+}

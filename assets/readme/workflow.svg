@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="280" viewBox="0 0 1280 280" role="img" aria-labelledby="title desc">
+  <title id="title">CAE Agent Hub workflow</title>
+  <desc id="desc">AI clients connect through MCP and skills to CAE solvers, producing results and validation evidence.</desc>
+  <defs>
+    <linearGradient id="bg" x2="1" y2="1"><stop stop-color="#0b162d"/><stop offset="1" stop-color="#12394a"/></linearGradient>
+    <pattern id="grid" width="32" height="32" patternUnits="userSpaceOnUse"><path d="M32 0H0V32" fill="none" stroke="#b4e5ed" stroke-opacity=".06"/></pattern>
+    <marker id="arrow" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="m0 0 7 4-7 4" fill="none" stroke="#67daca" stroke-width="1.5"/></marker>
+  </defs>
+  <rect width="1280" height="280" rx="18" fill="url(#bg)"/>
+  <rect width="1280" height="280" rx="18" fill="url(#grid)"/>
+  <g font-family="Segoe UI,Arial,sans-serif">
+    <text x="48" y="62" fill="#67daca" font-size="14" letter-spacing="3">FROM INSTRUCTIONS TO SIMULATION EVIDENCE</text>
+    <text x="48" y="108" fill="#f4f8ff" font-size="34" font-weight="700">One hub. Connected CAE workflows.</text>
+    <g fill="#102c42" stroke="#426076">
+      <rect x="48" y="148" width="250" height="86" rx="10"/>
+      <rect x="360" y="148" width="250" height="86" rx="10"/>
+      <rect x="672" y="148" width="250" height="86" rx="10"/>
+      <rect x="984" y="148" width="248" height="86" rx="10"/>
+    </g>
+    <g fill="none" stroke="#67daca" stroke-width="2" marker-end="url(#arrow)"><path d="M312 191h32"/><path d="M624 191h32"/><path d="M936 191h32"/></g>
+    <g fill="#f4f8ff" font-size="21" font-weight="600"><text x="68" y="181">AI clients</text><text x="380" y="181">MCP + Skills</text><text x="692" y="181">CAE solvers</text><text x="1004" y="181">Results + checks</text></g>
+    <g fill="#b3cbdc" font-size="14"><text x="68" y="210">Codex / Claude / Cursor</text><text x="380" y="210">Tools / reusable workflows</text><text x="692" y="210">Model / mesh / solve</text><text x="1004" y="210">Fields / balance / sensitivity</text></g>
+  </g>
+</svg>

@@ -1,83 +1,118 @@
 # CAE Agent Hub
 
-**Language:** English | [中文](README.zh-CN.md)
+<p align="center"><strong>Connect AI to real CAE. Keep the evidence behind every result.</strong></p>
+<p align="center"><strong>English</strong> · <a href="README.zh-CN.md">简体中文</a></p>
 
-CAE Agent Hub is a collection of **MCP servers, reusable agent skills, solver automation workflows, and browser-based result viewers** for engineering simulation. It is designed to let AI coding clients such as **Codex, Cursor, Claude Code, and Claude Desktop** work with installed CAE applications and engineering solvers instead of producing only offline examples.
+![CAE Agent Hub workflow: AI clients → MCP and skills → CAE solvers → results and checks](assets/readme/workflow.svg)
 
-## What is included
+A hub of **MCP tools, reusable skills, and result viewers** for engineering simulation. Connect clients such as Codex, Claude Code, Claude Desktop, and Cursor to modeling, meshing, solving, postprocessing, and validation workflows.
 
-The current repository provides:
+[Simulation gallery](#simulation-gallery) · [Tool index](#tool-index) · [Quick start](#quick-start) · [Result viewer](#text-to-cae-viewer)
 
-- **MCP servers** for Abaqus/CAE, ANSYS Fluent, ANSYS Workbench/Mechanical, Ansys Electronics Desktop/HFSS, Altair HyperWorks, LAMMPS, OVITO, CalculiX, Peridigm, and the FreeCAD → Elmer FEM → ParaView FEP Agent Hub workflow.
-- **Reusable Skills** for Abaqus modeling, setup, analysis, execution, postprocessing, optimization, and reference workflows, together with evidence-oriented workflows for several CAE ecosystems.
-- **Subagent resources** stored under `Subagent/`.
-- **Agentic PD** with a shared Peridigm CLI/MCP workflow, complete Skill and two curated recorded-result demos.
-- **Solver automation and supporting assets/models** stored under `assets/` and `models/`.
-- The original **Text to CAE browser viewer** for inspecting lightweight `result_mesh.json` simulation results.
-- Examples, tests, templates, and documentation intended to keep solver binaries, licenses, private paths, and generated results out of source control.
+Also includes [Subagent](Subagent/) resources and [Agentic PD](MCP/Peridigm) workflows with curated recorded demos.
 
-> The repository still contains some historical `text-to-cae` naming for compatibility with existing viewer cases.
+<a id="simulation-gallery"></a>
 
-## Repository
+## Representative simulation results
 
-```text
-https://github.com/Cai-aa/CAE-Agent-Hub
-```
+One representative case per software module with verifiable results. Modules without a suitable result are omitted for now. Click an image for full size; see the [full atlas](docs/simulation-atlas.md) for additional cases, checks, and provenance.
 
-## Architecture
+<table>
+<tr>
+<td width="50%" valign="top">
+<a href="assets/readme/frame-result.png"><img src="assets/readme/frame-result.png" width="100%" alt="Abaqus · Frame dynamics" loading="lazy"></a><br>
+<strong>Abaqus · Frame dynamics</strong><br>
+20/30 kN pulse response; native ODB displacement contour, scale 300×.<br>
+<a href="docs/simulation-atlas.md#frame">Case and provenance →</a>
+</td>
+<td width="50%" valign="top">
+<a href="assets/readme/cantilever-result.png"><img src="assets/readme/cantilever-result.png" width="100%" alt="Workbench / Mechanical · Cantilever" loading="lazy"></a><br>
+<strong>Workbench / Mechanical · Cantilever</strong><br>
+100 N static load; maximum total deformation 0.79651 mm.<br>
+<a href="docs/simulation-atlas.md#cantilever">Case and provenance →</a>
+</td>
+</tr>
+<tr>
+<td width="50%" valign="top">
+<a href="assets/readme/elbow-result.png"><img src="assets/readme/elbow-result.png" width="100%" alt="Fluent · Laminar elbow flow" loading="lazy"></a><br>
+<strong>Fluent · Laminar elbow flow</strong><br>
+Re≈498; fine-mesh full-pipe static pressure drop 2.93381 Pa.<br>
+<a href="docs/simulation-atlas.md#elbow">Case and provenance →</a>
+</td>
+<td width="50%" valign="top">
+<a href="assets/readme/heatsink-result.png"><img src="assets/readme/heatsink-result.png" width="100%" alt="COMSOL · Heatsink conduction" loading="lazy"></a><br>
+<strong>COMSOL · Heatsink conduction</strong><br>
+30 W fine-mesh peak 80.403 °C; two meshes and heat-balance checks.<br>
+<a href="docs/simulation-atlas.md#heatsink">Case and provenance →</a>
+</td>
+</tr>
+<tr>
+<td width="50%" valign="top">
+<a href="assets/readme/maxwell--B_midplane_30.png"><img src="assets/readme/maxwell--B_midplane_30.png" width="100%" alt="AEDT / Maxwell · Magnetic actuator" loading="lazy"></a><br>
+<strong>AEDT / Maxwell · Magnetic actuator</strong><br>
+Four-angle magnetostatic sweep with field, torque, and inductance results.<br>
+<a href="docs/simulation-atlas.md#maxwell">Case and provenance →</a>
+</td>
+<td width="50%" valign="top">
+<a href="assets/readme/cst-sparameters.png"><img src="assets/readme/cst-sparameters.png" width="100%" alt="CST · Circuit S-parameters" loading="lazy"></a><br>
+<strong>CST · Circuit S-parameters</strong><br>
+Actual Design Studio S21 results over 1–10 GHz.<br>
+<a href="docs/simulation-atlas.md#cst">Case and provenance →</a>
+</td>
+</tr>
+<tr>
+<td width="50%" valign="top">
+<a href="assets/readme/bracket-hex--235_fine_mises_average75.png"><img src="assets/readme/bracket-hex--235_fine_mises_average75.png" width="100%" alt="ANSA → Abaqus · All-hex bracket" loading="lazy"></a><br>
+<strong>ANSA → Abaqus · All-hex bracket</strong><br>
+Native preprocessing and 1000 N static solve with mesh and stress checks.<br>
+<a href="docs/simulation-atlas.md#bracket-hex">Case and provenance →</a>
+</td>
+<td width="50%" valign="top">
+<a href="assets/readme/optistruct-beam--P05_Stress_VonMises.png"><img src="assets/readme/optistruct-beam--P05_Stress_VonMises.png" width="100%" alt="HyperWorks · Solid beam stress" loading="lazy"></a><br>
+<strong>HyperWorks · Solid beam stress</strong><br>
+OptiStruct solve and HyperView postprocessing; native completion record.<br>
+<a href="docs/simulation-atlas.md#optistruct-beam">Case and provenance →</a>
+</td>
+</tr>
+<tr>
+<td width="50%" valign="top">
+<a href="assets/readme/fep-transient.png"><img src="assets/readme/fep-transient.png" width="100%" alt="FEP · Transient heat conduction" loading="lazy"></a><br>
+<strong>FEP · Transient heat conduction</strong><br>
+FreeCAD → Elmer → ParaView; 20 physical time steps.<br>
+<a href="docs/simulation-atlas.md#fep-transient">Case and provenance →</a>
+</td>
+</tr>
+</table>
 
-```text
-AI client
-   │
-   ├── MCP server
-   │      │
-   │      └── live CAE application / solver
-   │
-   └── Skill / Subagent
-          │
-          └── modeling / setup / solving / validation workflow
-                         │
-                         ▼
-                  native solver results
-                         │
-                         ▼
-                lightweight result export
-                         │
-                         ▼
-                browser viewer / report workflow
-```
+Case notes document image types, units, display scales, and validation scope. Engineering use requires the relevant engineer’s review.
 
-The repository separates responsibilities:
+<a id="tool-index"></a>
 
-- **MCP servers** provide tool access to installed CAE applications and solvers.
-- **Skills** provide reusable instructions for modeling, setup, solving, postprocessing, optimization, and validation.
-- **Subagent resources** support task decomposition and specialized agent workflows.
-- **CAE applications and solvers** perform the actual engineering calculations.
-- **Viewer modules** inspect exported result data without requiring the solver to remain open.
+## Tools and workflow navigation
 
-## MCP Index
+Choose an adapter by application. Each README covers installation, client configuration, and limitations. This is a source index; runtime availability depends on local software, versions, licenses, and bridge state.
 
-[Adams MCP](MCP/Adams/README.md) adds a standalone Windows Adams/View 2024.1
-bridge with 16 tools, private configuration templates and bounded batch jobs.
-Native smoke and driven-box numerical checks passed; live integration remains
-unverified. See its [validation record](MCP/Adams/VALIDATION.md).
+| Application / toolchain | Workflow entry point |
+| --- | --- |
+| [Abaqus](MCP/Abaqus) | CAE kernel scripts, job submission, ODBs, and viewport exports |
+| [Fluent](MCP/Ansys/Fluent%20MCP) | Batch journals, job logs, and PyFluent sessions |
+| [Workbench / Mechanical](MCP/Ansys/Workbench%20MCP) | Workbench automation and a Mechanical ACT bridge |
+| [AEDT](MCP/Ansys/AEDT%20MCP) | Electronics Desktop projects and electromagnetics automation |
+| [COMSOL](MCP/COMSOL) | Multiphysics models, parameters, solving, and result export |
+| [CST Studio Suite](MCP/CST) | EM modeling, solving, 1D results, and Touchstone export |
+| [HyperWorks](MCP/HyperWorks) | HyperMesh sessions, entity inspection, and solver jobs |
+| [CalculiX](MCP/CalculiX) | Open-source FEM, modal analysis, and sizing optimization |
+| [LAMMPS](MCP/LAMMPS) | Molecular dynamics input execution and job evidence |
+| [OVITO](MCP/OVITO) | Scripted atomistic postprocessing and visualization |
+| [FreeCAD → Elmer → ParaView](MCP/FEP-Agent-Hub) | An open-source CAD, mesh, solve, and postprocessing chain |
+| [PyAnsys MCP collection](MCP/Ansys/PyAnsys) | Specialized PyAnsys adapters with individual documentation |
+| [Adams](MCP/Adams/README.md) | Rigid-body mechanisms and bounded batch jobs; native numeric checks passed, live integration unverified ([validation](MCP/Adams/VALIDATION.md)) |
+| [Peridigm](MCP/Peridigm) | Prototype with verified profiles for peridynamics and damage-result replay |
 
-| MCP | Status | Purpose | Main entry points | Trigger keywords |
-| --- | --- | --- | --- | --- |
-| [Abaqus MCP](MCP/Abaqus) | Active | Connect MCP clients to a live Abaqus/CAE session through a local TCP bridge; run Python in the Abaqus kernel, inspect models, submit jobs, monitor status, inspect ODB files, and capture viewport images. | `mcp_server.py`, `abaqus_mcp_plugin.py`, `abaqus_plugins/mcp_control/` | Abaqus MCP, Abaqus/CAE, ODB, viewport, submit job, live Abaqus |
-| [ANSYS Fluent MCP](MCP/Ansys/Fluent%20MCP) | Active | Detect Fluent, launch batch journals, track jobs/logs, and optionally manage live PyFluent sessions for Scheme, TUI, and Python probes. | `server.py`, `tools/fluent_bridge.py`, `tools/pyfluent_session.py` | Fluent, PyFluent, journal, TUI, CFD, Scheme |
-| [ANSYS Workbench MCP](MCP/Ansys/Workbench%20MCP) | Active | Control Workbench and Mechanical through Python helpers plus an ACT bridge, with file-queue and socket-timer communication modes. | `server.py`, `tools/`, `workbench_plugin/` | Workbench, Mechanical, ACT, LS-DYNA, socket timer |
-| [Ansys AEDT MCP](MCP/Ansys/AEDT%20MCP) | Active | Connect MCP clients to Ansys Electronics Desktop / HFSS through a raw TCP JSON bridge; inspect projects, create HFSS designs, save projects, and run small AEDT Python snippets. | `mcp_server.py`, `aedt_mcp_bridge.py`, `scripts/install_aedt_toolkit_button.ps1` | AEDT, HFSS, Electronics Desktop, antenna, S-parameters |
-| [Altair HyperWorks MCP](MCP/HyperWorks) | Active | Control HyperWorks and a live HyperMesh session through typed, workspace-scoped tools plus an authenticated in-application Python bridge; inspect models and entities, run screened batch Tcl, and manage solver jobs. | `src/hyperworks_mcp/server.py`, `hyperworks_extension/`, `install_hyperworks_extension.ps1` | HyperWorks, HyperMesh, HyperView, OptiStruct, Radioss, live Python bridge |
-| [LAMMPS MCP](MCP/LAMMPS) | Active | Detect a local LAMMPS executable, run explicit input decks, and retain job evidence. | `server.py`, `tools/atomistic_bridge.py` | LAMMPS, molecular dynamics, trajectory |
-| [OVITO MCP](MCP/OVITO) | Active | Detect OVITO scripting support and run explicit postprocessing scripts with evidence logs. | `server.py`, `tools/atomistic_bridge.py` | OVITO, atomistic, visualization |
-| [CalculiX MCP](MCP/CalculiX) | Active | Wrap the open-source CalculiX FEM solver (`ccx`): parse `.inp` decks, edit design variables, run `ccx`, read `.dat` results, export `result_mesh.json`, extract natural frequencies and viewer-renderable mode shapes, and run two-stage sizing optimization. | `mcp_server.py`, `tools/inp_parser.py`, `tools/solver.py`, `tools/result_exporter.py`, `tools/optimizer.py` | CalculiX, FEM, ccx, `.inp`, `.dat`, `.frd`, von Mises, design variables, sizing optimization, modal analysis, resonance |
-| [Peridigm MCP](MCP/Peridigm) | Prototype · verified profiles | Confirm a structured CaseSpec, enforce build-specific PD rules, run bounded real jobs and independently verify elastic or synthetic damage results. Includes offline replay demos. | `server.py`, `pd.py`, `core.py`, `fracture.py` | Peridigm, peridynamics, Agentic PD, damage, crack advance |
-| [FEP Agent Hub](MCP/FEP-Agent-Hub) | Active | Coordinate independent FreeCAD CAD, Elmer FEM, and ParaView postprocessing MCP servers. Includes verified thermal, electromagnetic, structural, and laminar-flow profiles with evidence gates. | `mcp/*/src/*_mcp/server.py`, `scripts/protocol_smoke.py`, `scripts/mcp_full_validation.py` | FreeCAD, Elmer FEM, ParaView, FEP, heat, transformer, beam, laminar flow, Lenz law |
+**Skills:** [Full index](Skill/README.md) · [Abaqus workflows](Skill/abaqus/README.md) · [Ansys structural workflow](Skill/Ansys/ansys-structural-workbench) · [Cylinder O-grid](Skill/General/cylinder-o-grid)
 
-> Adding a new MCP should follow the repository pattern: keep reusable source, examples, tests, and bilingual README files together, while excluding virtual environments, solver results, private paths, licenses, and generated project data.
-
-## Skill Index
+<details>
+<summary>Expand the detailed skill catalog</summary>
 
 - [adams-evidence-mbd](Skill/Adams/adams-evidence-mbd/SKILL.md): rigid-body
   mechanism modeling, transient View batch execution and numeric reaction evidence.
@@ -133,9 +168,13 @@ The repository contains an Abaqus master router and specialized workflow skills,
 
 > Adding a new Skill should keep the complete skill directory together with `SKILL.md`, `metadata.json` when available, upstream attribution, references, assets, and workflow scripts.
 
-## Installation
+</details>
 
-### 1. Clone the repository
+<a id="quick-start"></a>
+
+## Quick start
+
+### Clone
 
 ```powershell
 git clone https://github.com/Cai-aa/CAE-Agent-Hub.git
@@ -148,43 +187,32 @@ If you cloned the repository before the rename, the old `text-to-cae` remote may
 git remote set-url origin https://github.com/Cai-aa/CAE-Agent-Hub.git
 ```
 
-### 2. Use an MCP server
+### Use an MCP server
 
-Each MCP folder has its own README and environment template. The common local pattern is:
+Each adapter has its own dependencies and launch command; open its README from the table above. Install the required CAE application and confirm its license, then follow that adapter’s environment, dependency, and MCP registration steps. Install the in-application bridge where required.
 
-```powershell
-Set-Location ".\MCP\<vendor>\<server folder>"
-py -m venv .venv
-.\.venv\Scripts\python.exe -m pip install -U pip
-.\.venv\Scripts\python.exe -m pip install -e .
-```
+Start with environment detection or a read-only model query, then run an example. Use a separate output directory and retain inputs, solver logs, and validation records.
 
-Then register the server with your MCP-capable client using the example configuration provided by that MCP.
-
-> Installing an MCP server does not install the underlying commercial CAE software or provide a solver license. The required CAE application, executable, license, bridge, and local environment must be available separately where applicable.
-
-### 3. Use Skills
+### Use skills
 
 Skills are instruction modules, not solver binaries. Copy the complete skill directory into your agent's skill directory or attach the relevant `SKILL.md` as project context.
 
-For Codex:
+Codex example:
 
 ```powershell
 New-Item -ItemType Directory -Force -Path "$env:USERPROFILE\.codex\skills" | Out-Null
 Copy-Item -Recurse -Force ".\Skill\abaqus\analysis\abaqus-static-analysis" "$env:USERPROFILE\.codex\skills\abaqus-static-analysis"
 ```
 
-Example prompt:
+Suggested prompt:
 
 ```text
-Use the abaqus-static-analysis, abaqus-mesh, abaqus-job, and abaqus-odb skills.
-Build a complete Abaqus static-analysis workflow, run it if the Abaqus MCP
-or local Abaqus CLI is available, and report the exact files and commands used.
+Use the abaqus-static-analysis, abaqus-mesh, abaqus-job, and abaqus-odb skills. Check the Abaqus environment and inspect the current session first. Build a cantilever static-analysis case in a separate directory, mesh and solve it, extract ODB results, check force balance, and report the actual files, commands, and incomplete checks.
 ```
 
 ## Text to CAE Viewer
 
-The original viewer remains the browser-based result-inspection layer. It can display cases containing `result_mesh.json` even when the original solver is not installed.
+The viewer is still included as the browser result-inspection layer. It can display cases that contain `result_mesh.json` even when the solver is not installed.
 
 ```powershell
 Set-Location .\viewer
@@ -210,7 +238,6 @@ http://127.0.0.1:4178/?case=gear-mesh
 http://127.0.0.1:4178/?case=bullet-plate
 ```
 
-
 ### Agentic PD recorded demos
 
 Run the viewer as above, then open [the Peridigm entry](viewer/peridigm.html) at `/peridigm.html`. Choose either demo:
@@ -224,32 +251,38 @@ Replay requires neither Peridigm nor SSH. `npm run build` bundles both datasets 
 
 ```text
 CAE-Agent-Hub/
-├── .github/
-│   └── workflows/
-├── MCP/
-│   ├── Abaqus/
-│   ├── CalculiX/
-│   ├── HyperWorks/
-│   ├── LAMMPS/
-│   ├── OVITO/
-│   ├── Peridigm/
-│   ├── FEP-Agent-Hub/
-│   └── Ansys/
-│       ├── AEDT MCP/
-│       ├── Fluent MCP/
-│       └── Workbench MCP/
-├── Skill/
-├── Subagent/
-├── assets/
-├── models/
-├── viewer/
-├── .gitignore
-├── LICENSE
-├── README.md
-└── README.zh-CN.md
+  MCP/
+    Abaqus/
+    CalculiX/
+    Adams/
+    Peridigm/
+    COMSOL/
+    CST/
+    FEP-Agent-Hub/
+    HyperWorks/
+    LAMMPS/
+    OVITO/
+    Ansys/
+      AEDT MCP/
+      Fluent MCP/
+      Workbench MCP/
+      PyAnsys/
+  Skill/
+    abaqus/
+      core/
+      modeling/
+      setup/
+      analysis/
+      execution/
+      postprocessing/
+      optimization/
+      reference/
+  Subagent/
+  models/
+  viewer/
+  assets/readme/   # Curated figures and provenance
+  docs/           # Case notes and training material
 ```
-
-The repository root currently contains the MCP, Skill, Subagent, assets, models, viewer, workflow, licensing, and bilingual documentation areas shown above. Individual MCP and Skill directories contain their own implementation and documentation structures.
 
 ## Source Control Policy
 
@@ -260,8 +293,10 @@ It should not include:
 - CAE software binaries or licenses.
 - Private machine paths or credentials.
 - Virtual environments and package caches.
-- Generated solver outputs such as ODB, case/data, AEDT results, Workbench projects, logs, and screenshots.
+- Raw solver outputs such as ODB, case/data, AEDT results, Workbench projects, and runtime logs.
 - Large local result artifacts that can be regenerated.
+
+Curated documentation images may live in `assets/readme/` with provenance, case definitions, and scope notes.
 
 ## Build
 
@@ -277,7 +312,7 @@ npm.cmd run build
 The hub is designed to grow toward more mainstream simulation ecosystems:
 
 - More solver-specific MCP servers.
-- More productized Skill packs for repeatable modeling and validation workflows.
+- More productized skill packs for repeatable modeling and validation workflows.
 - Shared result export formats for viewer and report generation.
 - Safer install prompts and verification scripts for each CAE application.
 

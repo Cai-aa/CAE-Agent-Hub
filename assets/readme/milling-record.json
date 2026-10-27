@@ -1,0 +1,13 @@
+{
+  "source": "models/text-to-cae-milling-3d/TextToCAE_3D_Milling_Dynamics.odb",
+  "instance": "WORKPIECE-1",
+  "step": "Milling",
+  "frame_time": 0.0007001464255154133,
+  "final_time": 0.00139999995008111,
+  "frame_count": 241,
+  "frame_description": "Increment      3334: Step Time =   7.0015E-04",
+  "frequency": null,
+  "modal": false,
+  "job_status": "JOB_STATUS_COMPLETED_SUCCESSFULLY",
+  "max_u": 0.0016223363573582234
+}

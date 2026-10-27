@@ -1,0 +1,13 @@
+{
+  "source": "models/text-to-cae-sphere-impact/TextToCAE_SphereImpact.odb",
+  "instance": "PLATE-1",
+  "step": "Impact",
+  "frame_time": 0.001250289031304419,
+  "final_time": 0.0024999999441206455,
+  "frame_count": 21,
+  "frame_description": "Increment      2012: Step Time =   1.2503E-03",
+  "frequency": null,
+  "modal": false,
+  "job_status": "JOB_STATUS_COMPLETED_SUCCESSFULLY",
+  "max_u": 0.8674259829474982
+}

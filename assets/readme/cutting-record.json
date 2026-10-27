@@ -1,0 +1,13 @@
+{
+  "source": "models/text-to-cae-cutting/TextToCAE_OrthogonalCutting.odb",
+  "instance": "WORKPIECE-1",
+  "step": "Cut",
+  "frame_time": 0.001350007951259613,
+  "final_time": 0.0017999999690800905,
+  "frame_count": 21,
+  "frame_description": "Increment      8099: Step Time =   1.3500E-03",
+  "frequency": null,
+  "modal": false,
+  "job_status": "JOB_STATUS_COMPLETED_SUCCESSFULLY",
+  "max_u": 0.005011312077611705
+}

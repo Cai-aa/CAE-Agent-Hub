@@ -1,65 +1,118 @@
-# CAE Agent Hub 使用教程
+# CAE Agent Hub
 
-**语言：** [English](README.md) | 中文
+<p align="center"><strong>让 AI 连接真实 CAE，让仿真留下可核查的证据。</strong></p>
+<p align="center"><a href="README.md">English</a> · <strong>简体中文</strong></p>
 
-CAE Agent Hub 是一个面向主流工程仿真软件的 MCP server、Agent Skill、求解器自动化脚本和浏览器结果查看器集合。目标是让 Codex、Cursor、Claude Code、Claude Desktop 等 AI 客户端连接真实 CAE 软件，而不是只生成离线示例。
+![CAE Agent Hub workflow: AI clients → MCP and skills → CAE solvers → results and checks](assets/readme/workflow.svg)
 
-当前仓库包含：
+面向工程仿真的 **MCP 工具、可复用 Skills 与结果查看器**。连接 Codex、Claude Code、Claude Desktop、Cursor 等客户端，将建模、网格、求解、后处理与校核串成可追溯的工作流。
 
-- Abaqus/CAE、ANSYS Fluent、ANSYS Workbench Mechanical、Ansys Electronics Desktop / HFSS 的 MCP server。
-- Peridigm 近场动力学的共享 CLI/MCP、完整 Skill、弹性与合成损伤裂纹结果回放 Demo。
-- 按工作流阶段组织的 Abaqus 有限元 skill。
-- 原 Text to CAE 浏览器 viewer，用于查看导出的 `result_mesh.json` 仿真结果。
-- 示例工作流和模板；求解器二进制文件、许可证、私有路径和生成结果不进入源码仓库。
+[结果展示](#simulation-gallery) · [工具导航](#tool-index) · [快速开始](#quick-start) · [结果查看器](#text-to-cae-viewer)
 
-## 仓库地址
+另提供 [Subagent](Subagent/) 资源及 [Agentic PD](MCP/Peridigm) 工作流与已归档回放示例。
 
-```text
-https://github.com/Cai-aa/CAE-Agent-Hub
-```
+<a id="simulation-gallery"></a>
 
-部分示例目录仍保留旧名称 `text-to-cae`，用于兼容已有 viewer 案例。
+## 代表性仿真结果
 
-## 架构
+为已有可核实结果的软件模块各选一个代表案例；暂无合适结果的模块暂不展示。点击图片查看大图；更多工况、校核图和来源记录见[完整图集](docs/simulation-atlas.md)。
 
-```text
-AI client
-  -> MCP server 或 skill instruction
-  -> 正在运行的 CAE 应用或求解器脚本
-  -> 原生求解结果
-  -> 轻量 viewer 数据
-  -> 浏览器检查或报告工作流
-```
+<table>
+<tr>
+<td width="50%" valign="top">
+<a href="assets/readme/frame-result.png"><img src="assets/readme/frame-result.png" width="100%" alt="Abaqus · 框架动力学" loading="lazy"></a><br>
+<strong>Abaqus · 框架动力学</strong><br>
+20/30 kN脉冲响应；原生ODB位移云图，变形放大300倍。<br>
+<a href="docs/simulation-atlas.md#frame">案例与来源 →</a>
+</td>
+<td width="50%" valign="top">
+<a href="assets/readme/cantilever-result.png"><img src="assets/readme/cantilever-result.png" width="100%" alt="Workbench / Mechanical · 悬臂梁" loading="lazy"></a><br>
+<strong>Workbench / Mechanical · 悬臂梁</strong><br>
+100 N静力载荷；最大总变形0.79651 mm。<br>
+<a href="docs/simulation-atlas.md#cantilever">案例与来源 →</a>
+</td>
+</tr>
+<tr>
+<td width="50%" valign="top">
+<a href="assets/readme/elbow-result.png"><img src="assets/readme/elbow-result.png" width="100%" alt="Fluent · 弯管层流" loading="lazy"></a><br>
+<strong>Fluent · 弯管层流</strong><br>
+Re≈498；细网格全管静压降2.93381 Pa。<br>
+<a href="docs/simulation-atlas.md#elbow">案例与来源 →</a>
+</td>
+<td width="50%" valign="top">
+<a href="assets/readme/heatsink-result.png"><img src="assets/readme/heatsink-result.png" width="100%" alt="COMSOL · 散热片传热" loading="lazy"></a><br>
+<strong>COMSOL · 散热片传热</strong><br>
+30 W细网格最高温度80.403 °C；两级网格与热平衡核查。<br>
+<a href="docs/simulation-atlas.md#heatsink">案例与来源 →</a>
+</td>
+</tr>
+<tr>
+<td width="50%" valign="top">
+<a href="assets/readme/maxwell--B_midplane_30.png"><img src="assets/readme/maxwell--B_midplane_30.png" width="100%" alt="AEDT / Maxwell · 电磁执行器" loading="lazy"></a><br>
+<strong>AEDT / Maxwell · 电磁执行器</strong><br>
+四角度静磁扫描；展示磁场、转矩与电感结果。<br>
+<a href="docs/simulation-atlas.md#maxwell">案例与来源 →</a>
+</td>
+<td width="50%" valign="top">
+<a href="assets/readme/cst-sparameters.png"><img src="assets/readme/cst-sparameters.png" width="100%" alt="CST · 电路S参数" loading="lazy"></a><br>
+<strong>CST · 电路S参数</strong><br>
+Design Studio实际S21结果，覆盖1–10 GHz。<br>
+<a href="docs/simulation-atlas.md#cst">案例与来源 →</a>
+</td>
+</tr>
+<tr>
+<td width="50%" valign="top">
+<a href="assets/readme/bracket-hex--235_fine_mises_average75.png"><img src="assets/readme/bracket-hex--235_fine_mises_average75.png" width="100%" alt="ANSA → Abaqus · 全六面体支架" loading="lazy"></a><br>
+<strong>ANSA → Abaqus · 全六面体支架</strong><br>
+原生前处理与1000 N静力求解；保留网格及应力校核。<br>
+<a href="docs/simulation-atlas.md#bracket-hex">案例与来源 →</a>
+</td>
+<td width="50%" valign="top">
+<a href="assets/readme/optistruct-beam--P05_Stress_VonMises.png"><img src="assets/readme/optistruct-beam--P05_Stress_VonMises.png" width="100%" alt="HyperWorks · 三维梁应力" loading="lazy"></a><br>
+<strong>HyperWorks · 三维梁应力</strong><br>
+OptiStruct求解、HyperView后处理；日志确认计算完成。<br>
+<a href="docs/simulation-atlas.md#optistruct-beam">案例与来源 →</a>
+</td>
+</tr>
+<tr>
+<td width="50%" valign="top">
+<a href="assets/readme/fep-transient.png"><img src="assets/readme/fep-transient.png" width="100%" alt="FEP · 瞬态热传导" loading="lazy"></a><br>
+<strong>FEP · 瞬态热传导</strong><br>
+FreeCAD → Elmer → ParaView；20个真实物理时间步。<br>
+<a href="docs/simulation-atlas.md#fep-transient">案例与来源 →</a>
+</td>
+</tr>
+</table>
 
-职责划分：
+图像类型、单位、显示倍率及验证范围见各案例说明；工程应用需由对应专业工程师复核。
 
-- **MCP servers**：给 AI 客户端提供真实 CAE 软件的 live tool access。
-- **Skills**：提供可复用的建模、设置、求解、后处理和验证指令。
-- **CAE applications**：执行真实求解。
-- **Viewer modules**：在不打开求解器的情况下查看导出的结果数据。
+<a id="tool-index"></a>
 
-## MCP Index
+## 工具与工作流导航
 
-[Adams MCP](MCP/Adams/README.zh-CN.md) 提供独立的 Windows Adams/View 2024.1
-桥接服务，含 16 个工具、私有配置模板和有界批处理。原生 smoke 与箱形连杆数值验证
-已通过，live 连接尚未验证，详见[验证记录](MCP/Adams/VALIDATION.md)。
+按软件选择适配器；各目录的 README 说明安装、客户端配置与限制。下表为源码入口索引，实际可用性取决于本地软件、版本、许可证和桥接状态。
 
-| MCP | 状态 | 用途 | 主要入口 | 触发关键词 |
-| --- | --- | --- | --- | --- |
-| [Abaqus MCP](MCP/Abaqus) | Active | 通过本地 TCP bridge 连接 live Abaqus/CAE；可在 Abaqus kernel 中运行 Python、检查模型、提交 job、监控状态、读取 ODB、截图 viewport。 | `mcp_server.py`, `abaqus_mcp_plugin.py`, `abaqus_plugins/mcp_control/` | Abaqus MCP, Abaqus/CAE, ODB, viewport, submit job |
-| [ANSYS Fluent MCP](MCP/Ansys/Fluent%20MCP) | Active | 检测 Fluent、启动 batch journal、跟踪 job/log，并可管理 live PyFluent session 执行 Scheme、TUI 和 Python 探测。 | `server.py`, `tools/fluent_bridge.py`, `tools/pyfluent_session.py` | Fluent, PyFluent, journal, TUI, CFD |
-| [ANSYS Workbench MCP](MCP/Ansys/Workbench%20MCP) | Active | 通过 Python helper 和 Mechanical ACT bridge 控制 Workbench / Mechanical，支持 file queue 和 socket timer 两种通信方式。 | `server.py`, `tools/`, `workbench_plugin/` | Workbench, Mechanical, ACT, LS-DYNA |
-| [Ansys AEDT MCP](MCP/Ansys/AEDT%20MCP) | Active | 通过 raw TCP JSON bridge 连接 Ansys Electronics Desktop / HFSS；可查看工程、创建 HFSS design、保存工程、执行小段 AEDT Python。 | `mcp_server.py`, `aedt_mcp_bridge.py`, `scripts/install_aedt_toolkit_button.ps1` | AEDT, HFSS, Electronics Desktop, antenna |
-| [Altair HyperWorks MCP](MCP/HyperWorks) | Active | 通过类型化、工作区隔离的工具和经过认证的应用内 Python bridge 控制 HyperWorks 与 live HyperMesh 会话；支持模型与实体检查、受控 batch Tcl 和求解任务管理。 | `src/hyperworks_mcp/server.py`, `hyperworks_extension/`, `install_hyperworks_extension.ps1` | HyperWorks, HyperMesh, HyperView, OptiStruct, Radioss, live Python bridge |
-| [LAMMPS MCP](MCP/LAMMPS) | Active | 检测本地 LAMMPS、运行明确输入文件并保存作业证据。 | `server.py`, `tools/atomistic_bridge.py` | LAMMPS, 分子动力学, trajectory |
-| [OVITO MCP](MCP/OVITO) | Active | 检测 OVITO 脚本能力、运行明确后处理脚本并保存证据日志。 | `server.py`, `tools/atomistic_bridge.py` | OVITO, 原子尺度, visualization |
-| [CalculiX MCP](MCP/CalculiX) | Active | 包装开源有限元求解器 CalculiX（`ccx`，GPLv2，无需 license）：解析 `.inp`、原位修改设计变量、fire-and-forget 运行 ccx、读取 `.dat` 文本结果，并把 `.dat` 结果导出为 viewer 的 `result_mesh.json`，提取固有频率（`*FREQUENCY`）与可在 viewer 渲染的振型，并跑两阶段尺寸优化（LHS + 坐标下降），在应力/位移或频率约束（避共振）下最小化质量。 | `mcp_server.py`, `tools/inp_parser.py`, `tools/solver.py`, `tools/result_exporter.py`, `tools/optimizer.py` | CalculiX, FEM, ccx, .inp, .dat, .frd, von Mises, 设计变量, 尺寸优化, 模态分析, 共振 |
-| [Peridigm MCP](MCP/Peridigm) | 原型 · 限定模板已验证 | 渐进需求补全、CaseSpec确认、PD规则检查、受限修复、真实求解与独立验证；包含弹性与合成裂纹回放Demo。 | `server.py`, `pd.py`, `core.py`, `fracture.py` | Peridigm, 近场动力学, Agentic PD, 损伤, 裂纹扩展 |
-| [FEP Agent Hub](MCP/FEP-Agent-Hub) | Active | 通过三个独立、工作区隔离的 STDIO MCP 协同 FreeCAD 建模、Elmer FEM 网格/求解与 ParaView 后处理；包含 6 个经门禁验证的热、电磁、结构和层流 profile。 | `mcp/*/src/*_mcp/server.py`, `scripts/protocol_smoke.py`, `scripts/mcp_full_validation.py` | FreeCAD, Elmer FEM, ParaView, FEP, 热传导, 变压器, 简支梁, 层流, 楞次定律 |
+| 软件 / 工具链 | 工作流入口 |
+| --- | --- |
+| [Abaqus](MCP/Abaqus) | CAE内核脚本、任务提交、ODB与视口后处理 |
+| [Fluent](MCP/Ansys/Fluent%20MCP) | 批处理journal、作业日志与PyFluent会话 |
+| [Workbench / Mechanical](MCP/Ansys/Workbench%20MCP) | Workbench自动化与Mechanical ACT桥接 |
+| [AEDT](MCP/Ansys/AEDT%20MCP) | Electronics Desktop工程与电磁自动化 |
+| [COMSOL](MCP/COMSOL) | 多物理场模型、参数、求解与结果导出 |
+| [CST Studio Suite](MCP/CST) | 电磁建模、求解、1D结果与Touchstone导出 |
+| [HyperWorks](MCP/HyperWorks) | HyperMesh会话、实体检查与求解任务管理 |
+| [CalculiX](MCP/CalculiX) | 开源有限元、模态分析与尺寸优化 |
+| [LAMMPS](MCP/LAMMPS) | 分子动力学输入执行与作业证据 |
+| [OVITO](MCP/OVITO) | 原子尺度脚本后处理与可视化 |
+| [FreeCAD → Elmer → ParaView](MCP/FEP-Agent-Hub) | 开源建模、网格、求解与后处理链路 |
+| [PyAnsys MCP collection](MCP/Ansys/PyAnsys) | 各PyAnsys专用适配器及其独立说明 |
+| [Adams](MCP/Adams/README.zh-CN.md) | 刚体机构与有界批处理；原生数值检查通过，live连接尚未验证（[验证记录](MCP/Adams/VALIDATION.md)） |
+| [Peridigm](MCP/Peridigm) | 原型；限定模板已验证的近场动力学与损伤结果回放 |
 
-> 新增 MCP 时，建议保留可复用源码、示例、测试和中英文 README；不要提交虚拟环境、求解结果、私有路径、许可证或生成的工程数据。
+**Skills：** [完整索引](Skill/README.zh-CN.md) · [Abaqus分析流程](Skill/abaqus/README.zh-CN.md) · [Ansys结构工作流](Skill/Ansys/ansys-structural-workbench) · [通用圆柱O-grid](Skill/General/cylinder-o-grid)
 
-## Skill Index
+<details>
+<summary>展开完整 Skill 明细</summary>
 
 - [adams-evidence-mbd](Skill/Adams/adams-evidence-mbd/SKILL.md)：刚体机构建模、
   View 瞬态批处理和数值反力证据检查。
@@ -106,7 +159,11 @@ AI client
 
 > 新增 skill 时，请保留完整 skill 目录，包括 `SKILL.md`、可用的 `metadata.json`、上游来源、references、assets 和工作流脚本。
 
-## 安装
+</details>
+
+<a id="quick-start"></a>
+
+## 快速开始
 
 ### 克隆仓库
 
@@ -123,16 +180,9 @@ git remote set-url origin https://github.com/Cai-aa/CAE-Agent-Hub.git
 
 ### 使用 MCP server
 
-每个 MCP 目录都有自己的 README 和环境变量模板。通用本地安装方式：
+每个适配器有自己的依赖和启动方式，请按上方软件链接打开对应 README。先安装相应 CAE 软件并确认许可证，再按该目录说明创建 Python 环境、安装依赖和注册 MCP；需要应用内插件的适配器还须安装桥接插件。
 
-```powershell
-Set-Location ".\MCP\<vendor>\<server folder>"
-py -m venv .venv
-.\.venv\Scripts\python.exe -m pip install -U pip
-.\.venv\Scripts\python.exe -m pip install -e .
-```
-
-然后根据该 MCP 目录中的示例配置，把 server 注册到支持 MCP 的客户端。
+配置后，先做环境检测或只读模型查询，再执行示例算例。工程应使用独立输出目录，保留输入、求解日志和结果校核记录。
 
 ### 使用 skills
 
@@ -148,7 +198,9 @@ Copy-Item -Recurse -Force ".\Skill\abaqus\analysis\abaqus-static-analysis" "$env
 示例提示词：
 
 ```text
-Use the abaqus-static-analysis, abaqus-mesh, abaqus-job, and abaqus-odb skills. Build a complete Abaqus static-analysis workflow, run it if the Abaqus MCP or local Abaqus CLI is available, and report the exact files and commands used.
+使用 abaqus-static-analysis、abaqus-mesh、abaqus-job 和 abaqus-odb skills。
+先检查 Abaqus 环境并回读当前会话；在独立目录建立悬臂梁静力算例，
+完成网格、求解、ODB 提取与力平衡检查，报告实际文件、命令和未完成项。
 ```
 
 ## Text to CAE Viewer
@@ -179,7 +231,6 @@ http://127.0.0.1:4178/?case=gear-mesh
 http://127.0.0.1:4178/?case=bullet-plate
 ```
 
-
 ### Agentic PD 真实结果回放
 
 按上文启动Viewer后，打开 `/peridigm.html`，选择：
@@ -196,11 +247,19 @@ CAE-Agent-Hub/
   MCP/
     Abaqus/
     CalculiX/
+    Adams/
     Peridigm/
+    COMSOL/
+    CST/
+    FEP-Agent-Hub/
+    HyperWorks/
+    LAMMPS/
+    OVITO/
     Ansys/
       AEDT MCP/
       Fluent MCP/
       Workbench MCP/
+      PyAnsys/
   Skill/
     calculix/
     abaqus/
@@ -212,8 +271,11 @@ CAE-Agent-Hub/
       postprocessing/
       optimization/
       reference/
+  Subagent/
   models/
   viewer/
+  assets/readme/   # 精选结果图与来源记录
+  docs/           # 算例说明与教程
 ```
 
 ## 源码管理规则
@@ -225,8 +287,10 @@ CAE-Agent-Hub/
 - CAE 软件二进制文件或许可证。
 - 私有机器路径或凭据。
 - 虚拟环境和包缓存。
-- 生成的求解器输出，例如 ODB、case/data、AEDT results、Workbench project、日志和截图。
+- 原始求解器输出，例如 ODB、case/data、AEDT results、Workbench project 和运行日志。
 - 可以重新生成的大型本地结果文件。
+
+精选文档插图可放入 `assets/readme/`，并记录来源、工况及适用范围。
 
 ## 构建
 

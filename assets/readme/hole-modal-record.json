@@ -1,0 +1,13 @@
+{
+  "source": "models/text-to-cae-hole-plate-modal/TextToCAE_HolePlate_Modal.odb",
+  "instance": "PLATE-1",
+  "step": "Modal",
+  "frame_time": 1.0,
+  "final_time": 6.0,
+  "frame_count": 7,
+  "frame_description": "Mode         1: Value =  1.15065E+06 Freq =   170.72     (cycles/time)",
+  "frequency": 170.72,
+  "modal": true,
+  "job_status": "JOB_STATUS_COMPLETED_SUCCESSFULLY",
+  "max_u": 296.4818440780496
+}

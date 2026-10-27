@@ -1,0 +1,628 @@
+[
+  {
+    "key": "heatsink",
+    "group": "thermal",
+    "cn": "COMSOL · 散热片稳态传热",
+    "en": "COMSOL · Steady heatsink",
+    "cnnote": "20/30 W与两级网格；30 W细网格 Tmax=80.403 °C。",
+    "ennote": "Two powers and two meshes; 30 W fine-mesh Tmax=80.403 °C.",
+    "main": "assets/readme/heatsink-result.png",
+    "pics": [
+      "assets/readme/heatsink-result.png",
+      "assets/readme/heatsink--fine_20W_base_temperature.png",
+      "assets/readme/heatsink--fine_20W_convection_flux.png",
+      "assets/readme/heatsink--fine_20W_fin_temperature.png",
+      "assets/readme/heatsink--fine_20W_heat_flux.png",
+      "assets/readme/heatsink--fine_20W_heat_flux_vectors.png",
+      "assets/readme/heatsink--fine_20W_temperature.png",
+      "assets/readme/heatsink--fine_30W_base_temperature.png",
+      "assets/readme/heatsink--fine_30W_convection_flux.png",
+      "assets/readme/heatsink--fine_30W_fin_temperature.png",
+      "assets/readme/heatsink--fine_30W_heat_flux.png",
+      "assets/readme/heatsink--fine_30W_heat_flux_vectors.png",
+      "assets/readme/heatsink--fine_30W_temperature.png",
+      "assets/readme/heatsink--fine_mesh.png",
+      "assets/readme/heatsink--coarse_20W_base_temperature.png",
+      "assets/readme/heatsink--coarse_20W_fin_temperature.png",
+      "assets/readme/heatsink--coarse_20W_temperature.png",
+      "assets/readme/heatsink--coarse_30W_base_temperature.png",
+      "assets/readme/heatsink--coarse_30W_fin_temperature.png",
+      "assets/readme/heatsink--coarse_30W_temperature.png",
+      "assets/readme/heatsink--coarse_mesh.png",
+      "assets/readme/heatsink--fin_centerline_comparison.png",
+      "assets/readme/heatsink--fin_root_heat_flux_comparison.png",
+      "assets/readme/heatsink--power_temperature_comparison.png",
+      "assets/readme/heatsink--base_bottom_hotspots.png"
+    ],
+    "record": "COMSOL_Heatsink_Analysis/rerun_20261025_1545/06_validation/validation_summary.json",
+    "level": "saved-solve"
+  },
+  {
+    "key": "cpu",
+    "group": "thermal",
+    "cn": "Icepak · 65 W CPU风冷",
+    "en": "Icepak · 65 W CPU cooling",
+    "cnnote": "30/40/50 CFM三工况；50 CFM CPU最高温度51.7194 °C。固定流量入口等效风扇。",
+    "ennote": "30/40/50 CFM; 50 CFM CPU peak=51.7194 °C. Prescribed-flow fan equivalent.",
+    "main": "assets/readme/cpu--50cfm_temperature_cpu_ihs_tim.jpg",
+    "pics": [
+      "assets/readme/cpu--50cfm_temperature_cpu_ihs_tim.jpg",
+      "assets/readme/cpu--50cfm_pressure_xz.jpg",
+      "assets/readme/cpu--50cfm_speed_fin_channel.jpg",
+      "assets/readme/cpu--50cfm_speed_xz.jpg",
+      "assets/readme/cpu--50cfm_temperature_heatsink.jpg",
+      "assets/readme/cpu--50cfm_temperature_xz.jpg",
+      "assets/readme/cpu--50cfm_velocity_vector_fin_channel.jpg"
+    ],
+    "record": "simulations/icepak_cpu_air_cooling/evidence/engineering_report.md",
+    "level": "saved-solve"
+  },
+  {
+    "key": "comsol2d",
+    "group": "thermal",
+    "cn": "COMSOL · 二维稳态热传导",
+    "en": "COMSOL · 2D heat conduction",
+    "cnnote": "300–400 K矩形板；面积平均350 K，解析解误差约3.35×10⁻¹¹ K。",
+    "ennote": "300–400 K rectangle; area mean=350 K; analytical error ≈3.35e-11 K.",
+    "main": "assets/readme/comsol2d--temperature.png",
+    "pics": [
+      "assets/readme/comsol2d--temperature.png"
+    ],
+    "record": "MCP/COMSOL/comsol_runs/shared_desktop/pde2d_live_20261025/README.md",
+    "level": "saved-solve"
+  },
+  {
+    "key": "fep-steady",
+    "group": "open",
+    "cn": "Elmer · 立方体稳态导热",
+    "en": "Elmer · Steady heat cube",
+    "cnnote": "已归档基准指标：Tmid≈350.270 K；图由结果清单绘制。",
+    "ennote": "Archived benchmark Tmid≈350.270 K; plotted from the result manifest.",
+    "main": "assets/readme/fep-steady.png",
+    "pics": [
+      "assets/readme/fep-steady.png"
+    ],
+    "record": "MCP/FEP-Agent-Hub/examples/heat-conduction-cube/result_manifest.json",
+    "level": "saved-solve"
+  },
+  {
+    "key": "fep-transient",
+    "group": "open",
+    "cn": "Elmer · 真实瞬态导热",
+    "en": "Elmer · Transient heat conduction",
+    "cnnote": "20个BDF1物理时间步；20 s中点温度349.643 K。",
+    "ennote": "20 BDF1 steps; midpoint=349.643 K at 20 s; a physical transient.",
+    "main": "assets/readme/fep-transient.png",
+    "pics": [
+      "assets/readme/fep-transient.png"
+    ],
+    "record": "MCP/FEP-Agent-Hub/examples/transient-heat-cube/transient_heat_metrics.json",
+    "level": "saved-solve"
+  },
+  {
+    "key": "cantilever",
+    "group": "structural",
+    "cn": "Mechanical · 100 N悬臂梁",
+    "en": "Mechanical · 100 N cantilever",
+    "cnnote": "最大总变形0.79651 mm；三档网格与力、力矩、功—能核查。",
+    "ennote": "Max total deformation=0.79651 mm; three meshes and balance checks.",
+    "main": "assets/readme/cantilever-result.png",
+    "pics": [
+      "assets/readme/cantilever-result.png",
+      "assets/readme/cantilever--stress_fine.png",
+      "assets/readme/cantilever--z_deformation_fine.png",
+      "assets/readme/cantilever--reaction_force.png",
+      "assets/readme/cantilever--reaction_moment.png",
+      "assets/readme/cantilever--mesh_coarse.png",
+      "assets/readme/cantilever--mesh_fine.png",
+      "assets/readme/cantilever--mesh_medium.png",
+      "assets/readme/cantilever--mesh_sensitivity.png"
+    ],
+    "record": "workspace/cantilever_visible_20261018_1133/review_20261018/audit_results.json",
+    "level": "saved-solve"
+  },
+  {
+    "key": "bracket-hex",
+    "group": "structural",
+    "cn": "ANSA → Abaqus · 原生全六面体支架",
+    "en": "ANSA → Abaqus · Native all-hex bracket",
+    "cnnote": "1000 N；细网格111万C3D8I；区域应力与整体响应通过预声明敏感性检查，角度警告保留。",
+    "ennote": "1000 N; 1.11M C3D8I elements; scoped response checks pass; angle warnings retained.",
+    "main": "assets/readme/bracket-hex--235_fine_mises_average75.png",
+    "pics": [
+      "assets/readme/bracket-hex--235_fine_mises_average75.png",
+      "assets/readme/bracket-hex--232_fine_U3_scale1.png",
+      "assets/readme/bracket-hex--233_fine_U3_scale100.png",
+      "assets/readme/bracket-hex--234_fine_mises_no_node_average.png",
+      "assets/readme/bracket-hex--204_internal_hex_cut.png",
+      "assets/readme/bracket-hex--288_final_fine_mesh.png"
+    ],
+    "record": "ansa_runs/bracket_native_hex_20260927/VALIDATION_REPORT.md",
+    "level": "saved-solve"
+  },
+  {
+    "key": "bracket-tet",
+    "group": "structural",
+    "cn": "ANSA → Abaqus · 二次四面体支架",
+    "en": "ANSA → Abaqus · Quadratic tet bracket",
+    "cnnote": "三档有效C3D10网格；细网格最大位移0.203937 mm。外部CAD几何，ANSA前处理。",
+    "ennote": "Three valid C3D10 meshes; fine max displacement=0.203937 mm; external CAD geometry.",
+    "main": "assets/readme/bracket-tet--refined_mises_nodal_average_75_30x.png",
+    "pics": [
+      "assets/readme/bracket-tet--refined_mises_nodal_average_75_30x.png",
+      "assets/readme/bracket-tet--refined_mises_unaveraged_element_nodal_30x.png",
+      "assets/readme/bracket-tet--refined_U3_30x.png",
+      "assets/readme/bracket-tet--refined_U_magnitude_true_scale.png",
+      "assets/readme/bracket-tet--fine_mises_nodal_average_75_30x.png",
+      "assets/readme/bracket-tet--fine_mises_unaveraged_element_nodal_30x.png",
+      "assets/readme/bracket-tet--coarse_v2_U3_30x_full.png"
+    ],
+    "record": "ansa_runs/bracket_dual_rib_20260927_0029/验证报告.md",
+    "level": "saved-solve"
+  },
+  {
+    "key": "optistruct-beam",
+    "group": "structural",
+    "cn": "OptiStruct / HyperView · 三维梁",
+    "en": "OptiStruct / HyperView · 3D beam",
+    "cnnote": "原生日志 ANALYSIS COMPLETED；保留位移、应力和支反力云图。",
+    "ennote": "Native ANALYSIS COMPLETED record; displacement, stress, and reaction contours.",
+    "main": "assets/readme/optistruct-beam--P05_Stress_VonMises.png",
+    "pics": [
+      "assets/readme/optistruct-beam--P05_Stress_VonMises.png",
+      "assets/readme/optistruct-beam--P05_Displacement_Magnitude.png",
+      "assets/readme/optistruct-beam--P05_Displacement_Z.png",
+      "assets/readme/optistruct-beam--P05_SPCF_Z.png"
+    ],
+    "record": "MCP/HyperWorks/workspace/projects/project_20260917_204357_4b552e/runs/optistruct_20260917_205006_1071a5/input/HW_3D_Cantilever_Beam_P04_Solved.out",
+    "level": "saved-solve"
+  },
+  {
+    "key": "abaqus-beam",
+    "group": "structural",
+    "cn": "Abaqus · 早期三维悬臂梁",
+    "en": "Abaqus · Solid cantilever",
+    "cnnote": "只读原始ODB，完成状态已回读；场图由真实单元结果重新绘制。",
+    "ennote": "Completed status read from the original ODB; newly plotted actual element fields.",
+    "main": "assets/readme/abaqus-beam-result.png",
+    "pics": [
+      "assets/readme/abaqus-beam-result.png"
+    ],
+    "record": "assets/readme/abaqus-beam-record.json",
+    "level": "saved-solve"
+  },
+  {
+    "key": "beam500",
+    "group": "structural",
+    "cn": "Abaqus · 500 N梁静力与模态",
+    "en": "Abaqus · 500 N static/modal beam",
+    "cnnote": "同一Job先模态后静力；f1≈16.7386 Hz，端部|U2|≈29.6812 mm。",
+    "ennote": "One job, frequency then static; f1≈16.7386 Hz; tip |U2|≈29.6812 mm.",
+    "main": "assets/readme/beam500-reference.png",
+    "pics": [
+      "assets/readme/beam500-reference.png"
+    ],
+    "record": "abaqus_runs/cantilever_500N_20261025/REPORT.zh-CN.md",
+    "level": "saved-solve"
+  },
+  {
+    "key": "hole-static",
+    "group": "structural",
+    "cn": "Abaqus · 带孔板应力集中",
+    "en": "Abaqus · Plate with a hole",
+    "cnnote": "实际ODB静力场；外表面颜色为单元积分点Mises均值，非原生节点平均图。",
+    "ennote": "Actual static ODB; surface color uses element-mean integration-point Mises.",
+    "main": "assets/readme/hole-static-result.png",
+    "pics": [
+      "assets/readme/hole-static-result.png"
+    ],
+    "record": "assets/readme/hole-static-record.json",
+    "level": "saved-solve"
+  },
+  {
+    "key": "hole-modal",
+    "group": "structural",
+    "cn": "Abaqus · 带孔板第一阶振型",
+    "en": "Abaqus · First plate mode",
+    "cnnote": "ODB第一正频率约170.72 Hz；归一化振型，不代表受载位移。",
+    "ennote": "First positive ODB frequency≈170.72 Hz; normalized mode, not loaded displacement.",
+    "main": "assets/readme/hole-modal-result.png",
+    "pics": [
+      "assets/readme/hole-modal-result.png"
+    ],
+    "record": "assets/readme/hole-modal-record.json",
+    "level": "saved-solve"
+  },
+  {
+    "key": "frame",
+    "group": "dynamic",
+    "cn": "Abaqus · 三层框架动力响应",
+    "en": "Abaqus · Three-story frame dynamics",
+    "cnnote": "20/30 kN；20 kN层顶最大绝对平均位移1.476 mm。原生云图变形放大300倍。",
+    "ennote": "20/30 kN; 20 kN roof peak mean=1.476 mm. Native contour scale: 300×.",
+    "main": "assets/readme/frame-result.png",
+    "pics": [
+      "assets/readme/frame-result.png",
+      "assets/readme/frame--A_20kN_acceleration.png",
+      "assets/readme/frame--A_20kN_balance.png",
+      "assets/readme/frame--A_20kN_displacement.png",
+      "assets/readme/frame--A_20kN_energy.png",
+      "assets/readme/frame--A_20kN_interstory.png",
+      "assets/readme/frame--A_20kN_stress.png",
+      "assets/readme/frame--A_20kN_velocity.png",
+      "assets/readme/frame--A_beam_S11.png",
+      "assets/readme/frame--A_U_end.png",
+      "assets/readme/frame--A_U_free_vibration.png",
+      "assets/readme/frame--A_U_pulse_end.png",
+      "assets/readme/frame--A_U_pulse_peak.png",
+      "assets/readme/frame--A_U_top_peak.png",
+      "assets/readme/frame--B_30kN_acceleration.png",
+      "assets/readme/frame--B_30kN_balance.png",
+      "assets/readme/frame--B_30kN_displacement.png",
+      "assets/readme/frame--B_30kN_energy.png",
+      "assets/readme/frame--B_30kN_interstory.png",
+      "assets/readme/frame--B_30kN_stress.png",
+      "assets/readme/frame--B_30kN_velocity.png",
+      "assets/readme/frame--AB_top_comparison.png",
+      "assets/readme/frame--load_pulse.png",
+      "assets/readme/frame--mesh_sensitivity.png",
+      "assets/readme/frame--time_sensitivity.png"
+    ],
+    "record": "Abaqus_ThreeStory_Dynamics/rerun_20261025/06_validation/validation_summary.json",
+    "level": "saved-solve"
+  },
+  {
+    "key": "frame-modal",
+    "group": "structural",
+    "cn": "Abaqus · 框架六阶模态",
+    "en": "Abaqus · Six frame modes",
+    "cnnote": "同一框架的六阶模态结果；归一化特征向量，非动力位移幅值。",
+    "ennote": "Six modes of the same frame; normalized eigenvectors, not dynamic amplitudes.",
+    "main": "assets/readme/frame-modal--mode_01.png",
+    "pics": [
+      "assets/readme/frame-modal--mode_01.png",
+      "assets/readme/frame-modal--mode_02.png",
+      "assets/readme/frame-modal--mode_03.png",
+      "assets/readme/frame-modal--mode_04.png",
+      "assets/readme/frame-modal--mode_05.png",
+      "assets/readme/frame-modal--mode_06.png"
+    ],
+    "record": "Abaqus_ThreeStory_Dynamics/rerun_20261025/06_validation/modal_mesh_convergence.json",
+    "level": "saved-solve"
+  },
+  {
+    "key": "sphere-impact",
+    "group": "dynamic",
+    "cn": "Abaqus/Explicit · 球撞板",
+    "en": "Abaqus/Explicit · Sphere impact",
+    "cnnote": "板件真实位移/应力场；从原始ODB提取，未使用浏览器合成接触动画。",
+    "ennote": "Actual plate ODB fields; synthetic browser contact animation is not used.",
+    "main": "assets/readme/sphere-impact-result.png",
+    "pics": [
+      "assets/readme/sphere-impact-result.png"
+    ],
+    "record": "assets/readme/sphere-impact-record.json",
+    "level": "saved-solve"
+  },
+  {
+    "key": "cutting",
+    "group": "dynamic",
+    "cn": "Abaqus/Explicit · 正交切削算例",
+    "en": "Abaqus/Explicit · Orthogonal cutting",
+    "cnnote": "真实保存的工件场结果；展示范围不等同于切屑分离或切削模型精度验证。",
+    "ennote": "Saved workpiece fields; chip separation and cutting accuracy are not certified.",
+    "main": "assets/readme/cutting-result.png",
+    "pics": [
+      "assets/readme/cutting-result.png"
+    ],
+    "record": "assets/readme/cutting-record.json",
+    "level": "saved-solve"
+  },
+  {
+    "key": "milling",
+    "group": "dynamic",
+    "cn": "Abaqus/Explicit · 三维铣削载荷响应",
+    "en": "Abaqus/Explicit · Milling load response",
+    "cnnote": "真实工件ODB应力；不包含浏览器刀具/切屑装饰，不宣称材料去除验证。",
+    "ennote": "Actual workpiece ODB stress; no decorative tool/chips or material-removal claim.",
+    "main": "assets/readme/milling-result.png",
+    "pics": [
+      "assets/readme/milling-result.png"
+    ],
+    "record": "assets/readme/milling-record.json",
+    "level": "saved-solve"
+  },
+  {
+    "key": "bullet-impact",
+    "group": "dynamic",
+    "cn": "Abaqus/Explicit · 弹丸冲击板件",
+    "en": "Abaqus/Explicit · Projectile/plate impact",
+    "cnnote": "真实板件应力场快照；求解完成不等于穿透、失效或防护性能获验证。",
+    "ennote": "Actual plate stress snapshot; no certification of penetration, failure, or protection.",
+    "main": "assets/readme/bullet-impact-result.png",
+    "pics": [
+      "assets/readme/bullet-impact-result.png"
+    ],
+    "record": "assets/readme/bullet-impact-record.json",
+    "level": "saved-solve"
+  },
+  {
+    "key": "elbow",
+    "group": "flow",
+    "cn": "Fluent · 90°弯管层流",
+    "en": "Fluent · Laminar 90° elbow",
+    "cnnote": "Re≈498；细网格全管静压降2.93381 Pa。场数据本地插值绘图。",
+    "ennote": "Re≈498; fine full-pipe static drop=2.93381 Pa. Plotted solver field exports.",
+    "main": "assets/readme/elbow-result.png",
+    "pics": [
+      "assets/readme/elbow-result.png",
+      "assets/readme/elbow--convergence.png",
+      "assets/readme/elbow--velocity_pressure.png",
+      "assets/readme/elbow--velocity_profiles.png",
+      "assets/readme/elbow--wall_shear.png"
+    ],
+    "record": "runs/elbow90_water_20261017/REPORT.md",
+    "level": "saved-solve"
+  },
+  {
+    "key": "fep-channel",
+    "group": "open",
+    "cn": "Elmer · 平面通道层流",
+    "en": "Elmer · Planar laminar channel",
+    "cnnote": "Re=100；实际平均速度0.0492233 m/s；与Poiseuille基准比对。",
+    "ennote": "Re=100; measured mean speed=0.0492233 m/s; Poiseuille comparison.",
+    "main": "assets/readme/fep-channel.png",
+    "pics": [
+      "assets/readme/fep-channel.png"
+    ],
+    "record": "MCP/FEP-Agent-Hub/examples/laminar-channel-flow-2d/flow_metrics.json",
+    "level": "saved-solve"
+  },
+  {
+    "key": "maxwell",
+    "group": "em",
+    "cn": "Maxwell 3D · 旋转电磁执行器",
+    "en": "Maxwell 3D · Rotational actuator",
+    "cnnote": "0/10/20/30°静磁位置扫描；磁场、转矩及表观电感。非机械运动仿真。",
+    "ennote": "0/10/20/30° magnetostatic sweep; fields, torque, apparent inductance; no motion solve.",
+    "main": "assets/readme/maxwell--B_midplane_30.png",
+    "pics": [
+      "assets/readme/maxwell--B_midplane_30.png",
+      "assets/readme/maxwell--B_corner_hotspots.png",
+      "assets/readme/maxwell--B_midplane_0.png",
+      "assets/readme/maxwell--B_surface_hotspots.png",
+      "assets/readme/maxwell--B_topplane_0.png",
+      "assets/readme/maxwell--B_topplane_30.png",
+      "assets/readme/maxwell--B_iron_0.jpg",
+      "assets/readme/maxwell--B_iron_30.jpg",
+      "assets/readme/maxwell--torque_angle.png",
+      "assets/readme/maxwell--mutual_inductance_angle.png",
+      "assets/readme/maxwell--self_inductance_angle.png",
+      "assets/readme/maxwell--geometry_view.jpg"
+    ],
+    "record": "MCP/Ansys/AEDT MCP/test-artifacts/rotational-actuator-20261001-1790841378441/中文验证报告.md",
+    "level": "saved-solve"
+  },
+  {
+    "key": "cst",
+    "group": "em",
+    "cn": "CST Design Studio · 电路S参数",
+    "en": "CST Design Studio · Circuit S-parameters",
+    "cnnote": "1–10 GHz、91频点；由实际S21导出数据绘图，不是三维屏蔽效能。",
+    "ennote": "91 points over 1–10 GHz, from saved S21; not 3D shielding effectiveness.",
+    "main": "assets/readme/cst-sparameters.png",
+    "pics": [
+      "assets/readme/cst-sparameters.png"
+    ],
+    "record": "MCP/CST/examples/design_studio_cosim_demo_run/fss_rlc_diode_schematic_demo_1783569136/Result/DS/Model.log",
+    "level": "saved-solve"
+  },
+  {
+    "key": "fep-transformer",
+    "group": "open",
+    "cn": "Elmer · 二维谐波变压器",
+    "en": "Elmer · 2D harmonic transformer",
+    "cnnote": "50 Hz开路次级感应电压；基线、半电流与细网格对比。",
+    "ennote": "50 Hz open-circuit induction; baseline, half-current, and fine-mesh comparison.",
+    "main": "assets/readme/fep-transformer.png",
+    "pics": [
+      "assets/readme/fep-transformer.png"
+    ],
+    "record": "MCP/FEP-Agent-Hub/examples/transformer-induction-2d/induction_metrics.json",
+    "level": "saved-solve"
+  },
+  {
+    "key": "fep-lenz",
+    "group": "open",
+    "cn": "Elmer · 楞次定律瞬态涡流",
+    "en": "Elmer · Transient eddy currents",
+    "cnnote": "40步真实瞬态，半时间步/细网格专项指标；图为归档敏感性值。",
+    "ennote": "40-step transient; archived time/mesh sensitivity metrics, not reconstructed fields.",
+    "main": "assets/readme/fep-lenz.png",
+    "pics": [
+      "assets/readme/fep-lenz.png"
+    ],
+    "record": "MCP/FEP-Agent-Hub/examples/lenz-law-transient-eddy/expected_metrics.json",
+    "level": "saved-solve"
+  },
+  {
+    "key": "fep-beam",
+    "group": "open",
+    "cn": "Elmer · 简支梁应力应变",
+    "en": "Elmer · Simply supported beam",
+    "cnnote": "10个独立准静态载荷级；满载跨中挠度0.633804 mm；不是结构动力学。",
+    "ennote": "Ten independent static load levels; full-load midspan deflection=0.633804 mm.",
+    "main": "assets/readme/fep-beam.png",
+    "pics": [
+      "assets/readme/fep-beam.png"
+    ],
+    "record": "MCP/FEP-Agent-Hub/examples/simply-supported-beam-2d/beam_metrics.json",
+    "level": "saved-solve"
+  },
+  {
+    "key": "radioss-axial",
+    "group": "solver",
+    "cn": "Radioss · 实体轴向碰撞",
+    "en": "Radioss · Axial solid collision",
+    "cnnote": "原生Engine日志正常结束；展示内能、平动动能与带符号能量误差，不据此认证工程精度。",
+    "ennote": "Normal engine termination; printed internal/kinetic energy and signed error; accuracy not certified.",
+    "main": "assets/readme/radioss-axial.png",
+    "pics": [
+      "assets/readme/radioss-axial.png"
+    ],
+    "record": "MCP/HyperWorks/workspace/projects/project_20260721_154328_e76033/runs/radioss_20260721_154352_8a370d/input/solid_axial_collision_0001.out",
+    "level": "saved-solve"
+  },
+  {
+    "key": "radioss-drop",
+    "group": "solver",
+    "cn": "Radioss · 落锤算例",
+    "en": "Radioss · Drop-weight benchmark",
+    "cnnote": "原生Engine日志正常结束；展示内能、平动动能与带符号能量误差，不据此认证工程精度。",
+    "ennote": "Normal engine termination; printed internal/kinetic energy and signed error; accuracy not certified.",
+    "main": "assets/readme/radioss-drop.png",
+    "pics": [
+      "assets/readme/radioss-drop.png"
+    ],
+    "record": "MCP/HyperWorks/workspace/projects/project_20260721_154328_9ab16c/runs/radioss_20260721_154345_b1c162/input/drop_weight_0001.out",
+    "level": "saved-solve"
+  },
+  {
+    "key": "radioss-plate",
+    "group": "solver",
+    "cn": "Radioss · 板件冲击",
+    "en": "Radioss · Plate impact",
+    "cnnote": "原生Engine日志正常结束；展示内能、平动动能与带符号能量误差，不据此认证工程精度。",
+    "ennote": "Normal engine termination; printed internal/kinetic energy and signed error; accuracy not certified.",
+    "main": "assets/readme/radioss-plate.png",
+    "pics": [
+      "assets/readme/radioss-plate.png"
+    ],
+    "record": "MCP/HyperWorks/workspace/projects/project_20260721_154328_11575f/runs/radioss_20260721_154349_c905c0/input/plate_impact_0001.out",
+    "level": "saved-solve"
+  },
+  {
+    "key": "radioss-block",
+    "group": "solver",
+    "cn": "Radioss · 块体碰撞",
+    "en": "Radioss · Block impact",
+    "cnnote": "原生Engine日志正常结束；展示内能、平动动能与带符号能量误差，不据此认证工程精度。",
+    "ennote": "Normal engine termination; printed internal/kinetic energy and signed error; accuracy not certified.",
+    "main": "assets/readme/radioss-block.png",
+    "pics": [
+      "assets/readme/radioss-block.png"
+    ],
+    "record": "MCP/HyperWorks/workspace/projects/project_20260721_101928_885d35/runs/radioss_20260721_102312_a2454e/input/v090_radioss_block_impact_0001.out",
+    "level": "saved-solve"
+  },
+  {
+    "key": "optistruct-modal",
+    "group": "solver",
+    "cn": "OptiStruct · 固有频率谱",
+    "en": "OptiStruct · Frequency spectrum",
+    "cnnote": "实际完成日志中的六阶频率，未补造振型。",
+    "ennote": "Six frequencies from the completed native run; mode shapes are not reconstructed.",
+    "main": "assets/readme/optistruct-modal.png",
+    "pics": [
+      "assets/readme/optistruct-modal.png"
+    ],
+    "record": "MCP/HyperWorks/workspace/projects/project_20260721_153839_384cf8/runs/optistruct_20260721_153906_55c134/input/modal.out",
+    "level": "saved-solve"
+  },
+  {
+    "key": "optistruct-buckling",
+    "group": "solver",
+    "cn": "OptiStruct · 线性屈曲特征值",
+    "en": "OptiStruct · Linear buckling eigenvalues",
+    "cnnote": "保留原始负特征值符号，需结合预载方向解释，不能直接作为许用载荷。",
+    "ennote": "Original negative eigenvalue signs retained; interpret with preload direction, not as allowable loads.",
+    "main": "assets/readme/optistruct-buckling.png",
+    "pics": [
+      "assets/readme/optistruct-buckling.png"
+    ],
+    "record": "MCP/HyperWorks/workspace/projects/project_20260721_155423_a79ec3/runs/optistruct_20260721_155439_597f01/input/buckling_clean.out",
+    "level": "saved-solve"
+  },
+  {
+    "key": "hyperview-bracket",
+    "group": "archive",
+    "cn": "HyperView · 1000 N L形支架归档",
+    "en": "HyperView · Archived 1000 N L-bracket",
+    "cnnote": "已有H3D与云图；未在本轮找到对应完成日志，按历史后处理结果展示。",
+    "ennote": "Saved H3D and contours; matching completion logs were not located in this review.",
+    "main": "assets/readme/hyperview-bracket--stress_vonmises.png",
+    "pics": [
+      "assets/readme/hyperview-bracket--stress_vonmises.png",
+      "assets/readme/hyperview-bracket--displacement_mag.png",
+      "assets/readme/hyperview-bracket--displacement_x.png",
+      "assets/readme/hyperview-bracket--displacement_y.png",
+      "assets/readme/hyperview-bracket--displacement_z.png",
+      "assets/readme/hyperview-bracket--stress_principal_max.png",
+      "assets/readme/hyperview-bracket--stress_principal_min.png",
+      "assets/readme/hyperview-bracket--spcforce_x.png",
+      "assets/readme/hyperview-bracket--hole1_spcforce_x_mean.png",
+      "assets/readme/hyperview-bracket--hole2_spcforce_x_mean.png"
+    ],
+    "record": "MCP/HyperWorks/workspace/L_bracket_static_1000N.h3d",
+    "level": "archived-export"
+  },
+  {
+    "key": "calculix-static",
+    "group": "archive",
+    "cn": "CalculiX · 悬臂梁静力归档",
+    "en": "CalculiX · Archived static beam",
+    "cnnote": "从已保存result_mesh导出绘制；原始ccx日志未随附，本次不追加收敛认证。",
+    "ennote": "Rendered saved result_mesh export; original ccx logs are not bundled; no added convergence claim.",
+    "main": "assets/readme/calculix-static.png",
+    "pics": [
+      "assets/readme/calculix-static.png"
+    ],
+    "record": "models/text-to-cae-calculix-cantilever/result_mesh.json",
+    "level": "archived-export"
+  },
+  {
+    "key": "calculix-modal",
+    "group": "archive",
+    "cn": "CalculiX · 第一阶振型归档",
+    "en": "CalculiX · Archived first mode",
+    "cnnote": "从已保存result_mesh导出绘制；原始ccx日志未随附，本次不追加收敛认证。",
+    "ennote": "Rendered saved result_mesh export; original ccx logs are not bundled; no added convergence claim.",
+    "main": "assets/readme/calculix-modal.png",
+    "pics": [
+      "assets/readme/calculix-modal.png"
+    ],
+    "record": "models/text-to-cae-calculix-modal/result_mesh.json",
+    "level": "archived-export"
+  },
+  {
+    "key": "gear-calibration",
+    "group": "diagnostic",
+    "cn": "Mechanical · 齿轮接触校准工况",
+    "en": "Mechanical · Gear contact calibration",
+    "cnnote": "真实无摩擦校准解；未达到目标扭矩，不代表最终μ=0.08工况。",
+    "ennote": "Actual frictionless calibration; target torque not reached; not the final μ=0.08 case.",
+    "main": "assets/readme/gear-calibration--contact_pressure.png",
+    "pics": [
+      "assets/readme/gear-calibration--contact_pressure.png",
+      "assets/readme/gear-calibration--contact_status.png",
+      "assets/readme/gear-calibration--equivalent_stress.png",
+      "assets/readme/gear-calibration--total_deformation.png"
+    ],
+    "record": "viewer/dist/ansys-gear-contact/index.html",
+    "level": "partial-calibration"
+  },
+  {
+    "key": "icepak-smoke",
+    "group": "diagnostic",
+    "cn": "Icepak · 热块接口验收算例",
+    "en": "Icepak · Heat-block interface acceptance",
+    "cnnote": "接口验收保存解，温度约571.5 °C；仅展示技术流程，不是合格散热设计。",
+    "ennote": "Saved acceptance-test solution, ≈571.5 °C; a technical smoke test, not a qualified thermal design.",
+    "main": "assets/readme/icepak-smoke--temperature-field.jpg",
+    "pics": [
+      "assets/readme/icepak-smoke--temperature-field.jpg"
+    ],
+    "record": "MCP/Ansys/AEDT MCP/test-artifacts/IcepakMcpAcceptance/20260905-134319/result.json",
+    "level": "technical-smoke"
+  }
+]
