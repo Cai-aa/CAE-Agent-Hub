@@ -54,32 +54,18 @@ Four-angle magnetostatic sweep with field, torque, and inductance results.<br>
 <a href="docs/simulation-atlas.md#maxwell">Case and provenance →</a>
 </td>
 <td width="50%" valign="top">
-<a href="assets/readme/cst-sparameters.png"><img src="assets/readme/cst-sparameters.png" width="100%" alt="CST · Circuit S-parameters" loading="lazy"></a><br>
-<strong>CST · Circuit S-parameters</strong><br>
-Actual Design Studio S21 results over 1–10 GHz.<br>
-<a href="docs/simulation-atlas.md#cst">Case and provenance →</a>
-</td>
-</tr>
-<tr>
-<td width="50%" valign="top">
 <a href="assets/readme/bracket-hex--235_fine_mises_average75.png"><img src="assets/readme/bracket-hex--235_fine_mises_average75.png" width="100%" alt="ANSA → Abaqus · All-hex bracket" loading="lazy"></a><br>
 <strong>ANSA → Abaqus · All-hex bracket</strong><br>
 Native preprocessing and 1000 N static solve with mesh and stress checks.<br>
 <a href="docs/simulation-atlas.md#bracket-hex">Case and provenance →</a>
 </td>
+</tr>
+<tr>
 <td width="50%" valign="top">
 <a href="assets/readme/optistruct-beam--P05_Stress_VonMises.png"><img src="assets/readme/optistruct-beam--P05_Stress_VonMises.png" width="100%" alt="HyperWorks · Solid beam stress" loading="lazy"></a><br>
 <strong>HyperWorks · Solid beam stress</strong><br>
 OptiStruct solve and HyperView postprocessing; native completion record.<br>
 <a href="docs/simulation-atlas.md#optistruct-beam">Case and provenance →</a>
-</td>
-</tr>
-<tr>
-<td width="50%" valign="top">
-<a href="assets/readme/fep-transient.png"><img src="assets/readme/fep-transient.png" width="100%" alt="FEP · Transient heat conduction" loading="lazy"></a><br>
-<strong>FEP · Transient heat conduction</strong><br>
-FreeCAD → Elmer → ParaView; 20 physical time steps.<br>
-<a href="docs/simulation-atlas.md#fep-transient">Case and provenance →</a>
 </td>
 </tr>
 </table>
@@ -224,18 +210,6 @@ Open the Vite URL, usually:
 
 ```text
 http://127.0.0.1:4178/
-```
-
-Example cases:
-
-```text
-http://127.0.0.1:4178/?case=cantilever
-http://127.0.0.1:4178/?case=hole-plate
-http://127.0.0.1:4178/?case=hole-plate-modal
-http://127.0.0.1:4178/?case=sphere-impact
-http://127.0.0.1:4178/?case=milling-3d
-http://127.0.0.1:4178/?case=gear-mesh
-http://127.0.0.1:4178/?case=bullet-plate
 ```
 
 ### Agentic PD recorded demos

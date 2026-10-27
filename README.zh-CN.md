@@ -54,32 +54,18 @@ Re≈498；细网格全管静压降2.93381 Pa。<br>
 <a href="docs/simulation-atlas.md#maxwell">案例与来源 →</a>
 </td>
 <td width="50%" valign="top">
-<a href="assets/readme/cst-sparameters.png"><img src="assets/readme/cst-sparameters.png" width="100%" alt="CST · 电路S参数" loading="lazy"></a><br>
-<strong>CST · 电路S参数</strong><br>
-Design Studio实际S21结果，覆盖1–10 GHz。<br>
-<a href="docs/simulation-atlas.md#cst">案例与来源 →</a>
-</td>
-</tr>
-<tr>
-<td width="50%" valign="top">
 <a href="assets/readme/bracket-hex--235_fine_mises_average75.png"><img src="assets/readme/bracket-hex--235_fine_mises_average75.png" width="100%" alt="ANSA → Abaqus · 全六面体支架" loading="lazy"></a><br>
 <strong>ANSA → Abaqus · 全六面体支架</strong><br>
 原生前处理与1000 N静力求解；保留网格及应力校核。<br>
 <a href="docs/simulation-atlas.md#bracket-hex">案例与来源 →</a>
 </td>
+</tr>
+<tr>
 <td width="50%" valign="top">
 <a href="assets/readme/optistruct-beam--P05_Stress_VonMises.png"><img src="assets/readme/optistruct-beam--P05_Stress_VonMises.png" width="100%" alt="HyperWorks · 三维梁应力" loading="lazy"></a><br>
 <strong>HyperWorks · 三维梁应力</strong><br>
 OptiStruct求解、HyperView后处理；日志确认计算完成。<br>
 <a href="docs/simulation-atlas.md#optistruct-beam">案例与来源 →</a>
-</td>
-</tr>
-<tr>
-<td width="50%" valign="top">
-<a href="assets/readme/fep-transient.png"><img src="assets/readme/fep-transient.png" width="100%" alt="FEP · 瞬态热传导" loading="lazy"></a><br>
-<strong>FEP · 瞬态热传导</strong><br>
-FreeCAD → Elmer → ParaView；20个真实物理时间步。<br>
-<a href="docs/simulation-atlas.md#fep-transient">案例与来源 →</a>
 </td>
 </tr>
 </table>
@@ -217,18 +203,6 @@ npm.cmd run dev
 
 ```text
 http://127.0.0.1:4178/
-```
-
-示例案例：
-
-```text
-http://127.0.0.1:4178/?case=cantilever
-http://127.0.0.1:4178/?case=hole-plate
-http://127.0.0.1:4178/?case=hole-plate-modal
-http://127.0.0.1:4178/?case=sphere-impact
-http://127.0.0.1:4178/?case=milling-3d
-http://127.0.0.1:4178/?case=gear-mesh
-http://127.0.0.1:4178/?case=bullet-plate
 ```
 
 ### Agentic PD 真实结果回放
