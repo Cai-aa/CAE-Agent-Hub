@@ -624,5 +624,47 @@
     ],
     "record": "MCP/Ansys/AEDT MCP/test-artifacts/IcepakMcpAcceptance/20260905-134319/result.json",
     "level": "technical-smoke"
+  },
+  {
+    "key": "cst-radar77",
+    "group": "electromagnetics",
+    "cn": "CST · 77 GHz雷达阵列电场",
+    "en": "CST · 77 GHz radar-array electric field",
+    "cnnote": "端口1，77 GHz电场幅值（V/m）；原生时域六面体结果。",
+    "ennote": "Port 1, 77 GHz electric-field amplitude (V/m); native time-domain hex results.",
+    "main": "assets/readme/cst-radar77-field.png",
+    "pics": [
+      "assets/readme/cst-radar77-field.png"
+    ],
+    "record": "automotive_77ghz_radar_20260704/exports/solver_Model.log",
+    "level": "saved-native-result"
+  },
+  {
+    "key": "mechanical-clevis",
+    "group": "structural",
+    "cn": "Mechanical · 耳板销轴接触",
+    "en": "Mechanical · Clevis-pin contact",
+    "cnnote": "30 kN；M2–M3加载端平均UX变化0.729%。",
+    "ennote": "30 kN; M2–M3 loaded-end mean UX change 0.729%.",
+    "main": "assets/readme/mechanical-clevis-deformation.png",
+    "pics": [
+      "assets/readme/mechanical-clevis-deformation.png"
+    ],
+    "record": "CLEVIS_PIN_DSJ_V1/M3_results.json",
+    "level": "saved-native-result"
+  },
+  {
+    "key": "radioss-cylinder",
+    "group": "impact",
+    "cn": "Radioss · 圆柱冲击钢板",
+    "en": "Radioss · Cylinder-plate impact",
+    "cnnote": "0.12 ms，Mises峰值0.3086 GPa；最大绝对能量误差13.8%。",
+    "ennote": "0.12 ms, peak Mises 0.3086 GPa; max absolute energy error 13.8%.",
+    "main": "assets/readme/radioss-cylinder-impact.png",
+    "pics": [
+      "assets/readme/radioss-cylinder-impact.png"
+    ],
+    "record": "cylinder_plate_impact_report/仿真报告.md",
+    "level": "saved-native-result"
   }
 ]

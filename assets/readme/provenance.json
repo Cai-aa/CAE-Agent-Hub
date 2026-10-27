@@ -1,8 +1,8 @@
 {
   "assembled_on": "2026-10-27",
   "description": "Copied original figures and explicitly identified plots from saved solver data. Archive-relative paths do not imply full source archives are bundled.",
-  "result_views": 37,
-  "image_count": 149,
+  "result_views": 40,
+  "image_count": 152,
   "files": [
     {
       "asset": "assets/readme/heatsink-result.png",
@@ -1187,6 +1187,47 @@
       "sha256": "3b28268316d58f8ea0ca5407ee46aad8a16e6acf8285dd3dcfae8e2de3478e32",
       "source_sha256": "3b28268316d58f8ea0ca5407ee46aad8a16e6acf8285dd3dcfae8e2de3478e32",
       "transformation": "Byte-for-byte copy; original legend and units retained."
+    },
+    {
+      "asset": "assets/readme/cst-radar77-field.png",
+      "source_archive_path": "automotive_77ghz_radar_20260704/automotive_77ghz_radar_array_lite/Result/e-field (f=77)_1,1.m3d",
+      "kind": "native_application_export",
+      "source_sha256": "6d780171ed0b265336ac0cf99af1580bb6dace79644d02011baeb8f696c117eb",
+      "source_record_path": "automotive_77ghz_radar_20260704/exports/solver_Model.log",
+      "source_record_sha256": "27bd732ca6cff049939c20f0bac3ee96b92a76dec19c9f15763657d5d3b2b501",
+      "transformation": "CST 2026 Plot2D3D.ExportImage at 1600x1000 from saved native result; contour, Abs, amplitude, zoomed monitor region. No solve or project save.",
+      "result_tree": "2D/3D Results\\E-Field\\e-field (f=77) [1]",
+      "frequency_ghz": 77,
+      "excitation_port": 1,
+      "unit": "V/m",
+      "plot_attribute": "Maximum",
+      "solver": "HF Time Domain (Hex)",
+      "metadata_sha256": "001152f402a0fdf62e5083be7fe6e9435cb7dcd246024f1b8604c3145974f0ea",
+      "sha256": "7927501b9901b0a48922485c508a856e975631afbaa70e513d848a25367a80e4"
+    },
+    {
+      "asset": "assets/readme/mechanical-clevis-deformation.png",
+      "source_archive_path": "CLEVIS_PIN_DSJ_V1/M3_total_deformation.png",
+      "kind": "original_image",
+      "source_sha256": "00f2b9711a185243216d3f33ff797d18f5acfc4b3cadf608d1ece7d158ca0066",
+      "source_record_path": "CLEVIS_PIN_DSJ_V1/M3_results.json",
+      "source_record_sha256": "e70f6cce9f706d16a0469b5450bbebc4635363d28f9a515a2ab06a5c0c97aa8b",
+      "report_sha256": "d917cd1f6d9d97b47ff86af0633be6c47b4de6f1f057d3a967fca7f40eb07357",
+      "transformation": "Byte-for-byte copy; original legend, units, and displayed deformation retained. View scale not independently recorded.",
+      "sha256": "00f2b9711a185243216d3f33ff797d18f5acfc4b3cadf608d1ece7d158ca0066"
+    },
+    {
+      "asset": "assets/readme/radioss-cylinder-impact.png",
+      "source_archive_path": "cylinder_plate_impact_report/von_mises_last_frame.png",
+      "kind": "original_image",
+      "source_sha256": "168105b186ed27801b065d6b14ea0964cfdc2b3526ef6a3bd6e983fad275f7a5",
+      "source_record_path": "cylinder_plate_impact_report/仿真报告.md",
+      "source_record_sha256": "f79661ab0330df4de82d60dc1b71912807b62b58d91885702cb34f4da9dcbb7a",
+      "transformation": "Byte-for-byte copy of native HyperView export; GPa from source report kg-mm-ms unit system.",
+      "unit": "GPa",
+      "time_ms": 0.12,
+      "max_absolute_energy_error_percent": 13.8,
+      "sha256": "168105b186ed27801b065d6b14ea0964cfdc2b3526ef6a3bd6e983fad275f7a5"
     }
   ]
 }

@@ -2,7 +2,7 @@
 
 [中文主页](../README.zh-CN.md) · [English homepage](../README.md) · [详细校核说明](simulation-showcase.md)
 
-共 **37 项结果展示**，涵盖多工况与同一模型的不同结果视图；不把这些条目数当作独立工程数量。原生图片逐字节复制，新图仅使用已保存的求解数据或归档指标。
+共 **40 项结果展示**，涵盖多工况与同一模型的不同结果视图；不把这些条目数当作独立工程数量。原生图片逐字节复制，新增 CST 云图由原生应用导出，其他新图仅使用已保存的求解数据或归档指标。
 
 This atlas covers result views, not a count of independent engineering projects. Original images are copied unchanged. New plots use saved solver fields, native logs, or archived metrics; no new solve was run for this update.
 
@@ -10,12 +10,15 @@ This atlas covers result views, not a count of independent engineering projects.
 
 Seven original Abaqus ODBs were opened read-only in this review and reported successful completion. Replotted fields use external corner faces and element-mean integration-point Mises; modes are normalized separately. These are simplified field renderings, not native Abaqus contours or independent engineering validation.
 
-CST为Design Studio电路S参数；Elmer图来自集成仓库自带的已验证基准指标。Radioss曲线保留原生日志误差的符号，正常退出不等于能量或接触已通过全部工程检查。
+CST包含Design Studio电路S参数及77 GHz雷达阵列原生电场；后者为时域六面体求解结果。Elmer图来自集成仓库自带的已验证基准指标。Radioss曲线保留原生日志误差的符号，正常退出不等于能量或接触已通过全部工程检查。
 
-CST plots describe circuit S-parameters. Elmer plots use the integration repository’s recorded benchmark metrics. Radioss charts preserve the signed native energy error; normal termination alone does not certify energy or contact accuracy.
+CST results include circuit S-parameters and a native 77 GHz radar-array electric field from the time-domain hexahedral solver. Elmer plots use the integration repository’s recorded benchmark metrics. Radioss charts preserve the signed native energy error; normal termination alone does not certify energy or contact accuracy.
 
 ## 目录 / Contents
 
+- [CST · 77 GHz雷达阵列电场 / CST · 77 GHz radar-array electric field](#cst-radar77)
+- [Mechanical · 耳板销轴接触 / Mechanical · Clevis-pin contact](#mechanical-clevis)
+- [Radioss · 圆柱冲击钢板 / Radioss · Cylinder-plate impact](#radioss-cylinder)
 - [COMSOL · 散热片稳态传热 / COMSOL · Steady heatsink](#heatsink)
 - [Icepak · 65 W CPU风冷 / Icepak · 65 W CPU cooling](#cpu)
 - [COMSOL · 二维稳态热传导 / COMSOL · 2D heat conduction](#comsol2d)
@@ -53,6 +56,66 @@ CST plots describe circuit S-parameters. Elmer plots use the integration reposit
 - [CalculiX · 第一阶振型归档 / CalculiX · Archived first mode](#calculix-modal)
 - [Mechanical · 齿轮接触校准工况 / Mechanical · Gear contact calibration](#gear-calibration)
 - [Icepak · 热块接口验收算例 / Icepak · Heat-block interface acceptance](#icepak-smoke)
+
+## 新增主页代表案例 / Additional homepage representatives
+
+以下图片来自已有求解归档，本次未重新求解。外部归档未随仓库发布；原图及来源记录的 SHA-256 见 [provenance.json](../assets/readme/provenance.json)。
+
+These images use existing solved archives; no new solve was run. External project archives are not bundled. Image and source-record hashes are retained in the provenance manifest.
+
+<a id="cst-radar77"></a>
+
+### CST · 77 GHz雷达阵列电场 / CST · 77 GHz radar-array electric field
+
+![CST native electric-field amplitude at 77 GHz, port 1, V/m](../assets/readme/cst-radar77-field.png)
+
+1×4微带贴片阵列，带塑料保险杠/天线罩；端口1激励。图为已保存的 `e-field (f=77) [1]` 电场幅值，单位 V/m，原生显示属性为 `Maximum`。为看清贴片与馈线，视图放大到场监视器的局部区域；其余几何部分超出画面。颜色为真实场结果，未作图像补绘。
+
+A 1×4 microstrip patch array with a plastic bumper/radome, excited at port 1. CST exports the saved `e-field (f=77) [1]` amplitude in V/m with the native `Maximum` plot attribute. The camera is zoomed to the local field-monitor region; surrounding geometry extends beyond the image. The contour is a native result export.
+
+| 核对项 / Check | 已有记录 / Saved evidence |
+| --- | --- |
+| 工程 / Project | `automotive_77ghz_radar_20260704/automotive_77ghz_radar_array_lite.cst` |
+| 求解器 / Solver | HF Time Domain (Hex), 15,805,580 cells; **时域六面体，非频域FEM / time-domain hex, not frequency-domain FEM** |
+| 完成状态 / Completion | `Steady state energy criterion met, solver finished successfully.` |
+| 导出 / Export | CST 2026 `Plot2D3D.ExportImage`, 1600×1000; 原项目未保存 / original project not saved |
+| 来源 / Source | `exports/solver_Model.log`, `exports/engineering_summary.md`, `Result/e-field (f=77)_1,1.m3d` 与 / and `_m3d.rex` |
+
+验证范围：带罩基准工况已完成；归档记录26条警告，主要涉及内存和材料/端口近似。77 GHz的S11约−2.44 dB，最佳匹配约在79.63 GHz（−13.12 dB），因此不能将这张场图解释为77 GHz天线设计已达标。无罩对比、相位扫描及表面电流结果未完成，不作相应展示或性能承诺。
+
+Scope: the with-radome baseline completed, with 26 archived warnings mainly about memory and material/port approximations. S11 is about −2.44 dB at 77 GHz; the best match is near 79.63 GHz (−13.12 dB). This field image does not establish an acceptable 77 GHz antenna design. No-radome comparison, phase-scan studies, and surface-current results remain incomplete.
+
+<a id="mechanical-clevis"></a>
+
+### Mechanical · 耳板销轴接触 / Mechanical · Clevis-pin contact
+
+![Mechanical native M3 total-deformation contour, mm](../assets/readme/mechanical-clevis-deformation.png)
+
+30 kN无摩擦接触静力算例；M3原生总变形云图，单位mm。图中2 s为静力加载步终点参数，不表示冲击过程；保留原图显示形状，变形显示倍率未单独归档。
+
+A 30 kN frictionless static-contact case, shown as the native M3 total-deformation contour in mm. The displayed 2 s is the static load-step endpoint, not an impact duration. The original displayed shape is retained; its deformation display scale was not separately archived.
+
+M1/M2/M3三档二次四面体网格完成，M3为199,596节点、132,063个实体单元。M2–M3加载端平均UX变化0.729%；M3接触压力峰值223.500 MPa、最大穿透0.000626 mm。最终记录 `RUN COMPLETED`，7条警告、0错误、0次二分；局部孔边应力仍需结合接触和网格敏感性审查。
+
+Three quadratic-tetrahedral meshes completed. M3 has 199,596 nodes and 132,063 solid elements. The M2–M3 loaded-end mean UX change is 0.729%; peak contact pressure is 223.500 MPa and maximum penetration is 0.000626 mm. The final record reports `RUN COMPLETED`, seven warnings, zero errors and zero bisections. Local hole-edge stresses still require contact and mesh-sensitivity review.
+
+来源 / Sources: `CLEVIS_PIN_DSJ_V1/M3_total_deformation.png`, `M3_results.json`, `CLEVIS_PIN_DSJ_V1_final_acceptance_report.md`。M1/M2数值和图片已归档，但独立已求解数据库未保留 / M1/M2 numeric and image records exist, but separate solved databases were not retained.
+
+<a id="radioss-cylinder"></a>
+
+### Radioss · 圆柱冲击钢板 / Radioss · Cylinder-plate impact
+
+![HyperView native final-frame cylinder-plate Mises stress, GPa](../assets/readme/radioss-cylinder-impact.png)
+
+钢圆柱以22 m/s冲击四边固支钢板；图为正式12,240单元模型在0.12 ms的HyperView原生Mises应力云图。单位制为kg–mm–ms，色标单位为 **GPa**；峰值0.3086 GPa，约308.6 MPa。
+
+A steel cylinder strikes an edge-clamped steel plate at 22 m/s. The native HyperView contour shows Mises stress at 0.12 ms for the actual 12,240-element solve. The kg–mm–ms unit system gives stress in **GPa**; the peak is 0.3086 GPa, approximately 308.6 MPa.
+
+已有报告记录 `NORMAL TERMINATION`、返回码0、附加质量0%，但最大绝对能量误差为 **13.8%**，接近该演示15%的阈值；这不是充分的工程精度证明。材料未定义断裂判据，不据此判断断裂或穿透。图中H3D标题的 `Err. 0.01%` 不应当作求解能量误差。
+
+The saved report records `NORMAL TERMINATION`, return code zero and zero added mass. However, maximum absolute energy error is **13.8%**, close to the demo's 15% threshold; this is not sufficient engineering-accuracy evidence. The material has no fracture criterion, so no fracture or penetration claim is made. The H3D title's `Err. 0.01%` must not be read as solver energy error.
+
+来源 / Sources: `cylinder_plate_impact_report/von_mises_last_frame.png`, `cylinder_plate_impact_report/仿真报告.md`；作业 / job `job_20260722_174641_162760`。本页复核了归档图片与报告，未重新读取完整H3D或重跑求解 / This update reviewed the saved image and report; it did not re-read the full H3D or rerun the solve.
 
 ## 热管理与传热 / Thermal management
 

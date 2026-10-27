@@ -26,10 +26,10 @@ One representative case per software module with verifiable results. Modules wit
 <a href="docs/simulation-atlas.md#frame">Case and provenance →</a>
 </td>
 <td width="50%" valign="top">
-<a href="assets/readme/cantilever-result.png"><img src="assets/readme/cantilever-result.png" width="100%" alt="Workbench / Mechanical · Cantilever" loading="lazy"></a><br>
-<strong>Workbench / Mechanical · Cantilever</strong><br>
-100 N static load; maximum total deformation 0.79651 mm.<br>
-<a href="docs/simulation-atlas.md#cantilever">Case and provenance →</a>
+<a href="assets/readme/mechanical-clevis-deformation.png"><img src="assets/readme/mechanical-clevis-deformation.png" width="100%" alt="Workbench / Mechanical · Clevis-pin contact" loading="lazy"></a><br>
+<strong>Workbench / Mechanical · Clevis-pin contact</strong><br>
+30 kN static contact; M3 deformation contour and three-mesh displacement check.<br>
+<a href="docs/simulation-atlas.md#mechanical-clevis">Case and provenance →</a>
 </td>
 </tr>
 <tr>
@@ -54,18 +54,24 @@ Four-angle magnetostatic sweep with field, torque, and inductance results.<br>
 <a href="docs/simulation-atlas.md#maxwell">Case and provenance →</a>
 </td>
 <td width="50%" valign="top">
+<a href="assets/readme/cst-radar77-field.png"><img src="assets/readme/cst-radar77-field.png" width="100%" alt="CST · 77 GHz radar-array electric field" loading="lazy"></a><br>
+<strong>CST · 77 GHz radar-array electric field</strong><br>
+Port 1 excitation; native electric-field amplitude (V/m), time-domain hex solve.<br>
+<a href="docs/simulation-atlas.md#cst-radar77">Case and provenance →</a>
+</td>
+</tr>
+<tr>
+<td width="50%" valign="top">
 <a href="assets/readme/bracket-hex--235_fine_mises_average75.png"><img src="assets/readme/bracket-hex--235_fine_mises_average75.png" width="100%" alt="ANSA → Abaqus · All-hex bracket" loading="lazy"></a><br>
 <strong>ANSA → Abaqus · All-hex bracket</strong><br>
 Native preprocessing and 1000 N static solve with mesh and stress checks.<br>
 <a href="docs/simulation-atlas.md#bracket-hex">Case and provenance →</a>
 </td>
-</tr>
-<tr>
 <td width="50%" valign="top">
-<a href="assets/readme/optistruct-beam--P05_Stress_VonMises.png"><img src="assets/readme/optistruct-beam--P05_Stress_VonMises.png" width="100%" alt="HyperWorks · Solid beam stress" loading="lazy"></a><br>
-<strong>HyperWorks · Solid beam stress</strong><br>
-OptiStruct solve and HyperView postprocessing; native completion record.<br>
-<a href="docs/simulation-atlas.md#optistruct-beam">Case and provenance →</a>
+<a href="assets/readme/radioss-cylinder-impact.png"><img src="assets/readme/radioss-cylinder-impact.png" width="100%" alt="HyperWorks / Radioss · Cylinder-plate impact" loading="lazy"></a><br>
+<strong>HyperWorks / Radioss · Cylinder-plate impact</strong><br>
+Mises stress (GPa) at 0.12 ms; energy error and scope documented in case notes.<br>
+<a href="docs/simulation-atlas.md#radioss-cylinder">Case and provenance →</a>
 </td>
 </tr>
 </table>
