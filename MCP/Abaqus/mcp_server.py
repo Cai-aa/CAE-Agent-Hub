@@ -18,6 +18,7 @@ import os
 import asyncio
 
 from mcp.server.fastmcp import FastMCP
+from part_mesh import mesh_query
 
 
 DEFAULT_HOST = os.environ.get("ABAQUS_MCP_HOST", "127.0.0.1")
@@ -298,6 +299,26 @@ result = {
 }
 """
     return _json_string((await run_python(code, timeout)).get("return_value"))
+
+
+@mcp.tool()
+async def inspect_part_mesh(
+    model_name: str,
+    part_name: str,
+    analysis_checks: bool = False,
+    label_limit: int = 20,
+    timeout: float | None = None,
+) -> dict[str, Any]:
+    """Read part mesh counts, element types, seed size and optional Abaqus analysis checks.
+
+    Uses the named model and part in the open CAE session. Does not remesh,
+    create sets or submit a job. Quality checks do not establish convergence.
+    """
+    reply = await run_python(mesh_query(model_name, part_name, analysis_checks, label_limit), timeout)
+    result = reply.get("return_value")
+    if not isinstance(result, dict):
+        raise ProtocolError("Abaqus mesh query did not return an object")
+    return result
 
 
 @mcp.tool()

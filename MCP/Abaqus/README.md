@@ -111,6 +111,7 @@ Set `ABAQUS_MCP_HOME=<repo>`, restart Abaqus/CAE, then start the bridge from the
 - `execute_script`: compatibility wrapper around `run_python`.
 - `set_workdir`: change Abaqus working directory before creating jobs.
 - `get_model_info`: inspect models, parts, sets, surfaces, jobs, and viewports.
+- `inspect_part_mesh`: inspect counts, element types, global seed size, and optional element checks for a named part.
 - `list_jobs`: list jobs in the current CAE session.
 - `submit_job`: submit an existing job and wait for completion.
 - `monitor_job_status`: list jobs or tail `.sta`/`.msg` diagnostics.
@@ -141,3 +142,16 @@ The socket dispatcher and GUI-thread execution model are inspired by `Whfkl/Abaq
 ## Notes
 
 This project requires a licensed Abaqus/CAE installation on the user's machine. It does not include Abaqus binaries, analysis results, ODB files, or private local configuration.
+## Inspecting a part mesh
+
+`inspect_part_mesh(model_name, part_name, analysis_checks=false, label_limit=20)`
+reads a named part in the current CAE session. It returns element and node
+counts, an element type breakdown, and the global seed size in the model's
+length units. No seed is reported for an orphan mesh. A zero seed on a
+native part means a global size was not assigned.
+
+Set `analysis_checks=true` to run Abaqus's element checks and retrieve warning,
+failure and not-applicable counts with a bounded sample of element labels.
+An empty mesh is reported separately. The tool leaves parts and jobs
+unchanged. Use it to record each mesh before running a comparison; element
+checks cannot by themselves establish mesh convergence.
