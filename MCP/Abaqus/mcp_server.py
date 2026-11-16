@@ -21,6 +21,9 @@ from mcp.server.fastmcp import FastMCP
 from part_mesh import mesh_query
 
 
+from job_files import inspect_job_files as _inspect_job_files
+
+
 DEFAULT_HOST = os.environ.get("ABAQUS_MCP_HOST", "127.0.0.1")
 DEFAULT_PORT = int(os.environ.get("ABAQUS_MCP_PORT", "48152"))
 DEFAULT_TIMEOUT = float(os.environ.get("ABAQUS_MCP_TIMEOUT", "60"))
@@ -361,6 +364,28 @@ job.waitForCompletion()
 result = {"success": True, "job": job_name, "status": str(getattr(job, "status", "UNKNOWN"))}
 """.replace("__JOB_NAME__", json.dumps(job_name.strip()))
     return _json_string((await run_python(code, timeout or 3600.0)).get("return_value"))
+
+
+@mcp.tool()
+async def inspect_job_files(
+    job_name: str,
+    job_directory: str,
+    encoding: str = "utf-8-sig",
+    tail_lines: int = 8,
+    diagnostic_limit: int = 12,
+) -> dict[str, Any]:
+    """Read local .sta/.msg/.dat/.log without a live CAE connection.
+
+    job_directory must be an existing absolute path on the MCP server host,
+    including for CLI jobs absent from mdb.jobs. Data-check completion differs
+    from analysis completion. Read errors and lock-file evidence are explicit;
+    file state is not proof of a running process or engineering acceptance.
+    Use encoding='gb18030' for logs written with that encoding.
+    """
+    return await asyncio.to_thread(
+        _inspect_job_files, job_name, job_directory, encoding=encoding,
+        tail_lines=tail_lines, diagnostic_limit=diagnostic_limit,
+    )
 
 
 @mcp.tool()

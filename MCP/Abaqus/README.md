@@ -115,6 +115,7 @@ Set `ABAQUS_MCP_HOME=<repo>`, restart Abaqus/CAE, then start the bridge from the
 - `list_jobs`: list jobs in the current CAE session.
 - `submit_job`: submit an existing job and wait for completion.
 - `monitor_job_status`: list jobs or tail `.sta`/`.msg` diagnostics.
+- `inspect_job_files`: inspect local job logs from an explicit directory without contacting the CAE session.
 - `inspect_odb`: inspect ODB metadata and available outputs.
 - `get_odb_info`: compatibility wrapper around `inspect_odb`.
 - `capture_viewport`: capture viewport image as structured base64 data.
@@ -125,6 +126,18 @@ Resources:
 - `abaqus://status`
 - `abaqus://session-telemetry`
 - `abaqus://agent-instructions`
+
+### Inspect job files without a CAE session
+
+Call `inspect_job_files` with a job name and an existing absolute directory on
+the MCP server, for example `job_name="Example"` and
+`job_directory="C:/analysis/example"`. The tool reads that job's
+`.sta`, `.msg`, `.dat`, and `.log`, so it also works for jobs launched
+from the command line. Pass `encoding="gb18030"` for files written in that
+encoding. The response reports a bounded tail, diagnostic messages, file
+read errors, and the evidence for distinguishing a data check from a
+completed analysis. An Explicit success footer at increment zero is not\naccepted as full analysis completion. A lock file or an incomplete log alone cannot establish
+that the solver is still running.
 
 ## Recommended Workflow
 
