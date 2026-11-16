@@ -1,0 +1,4 @@
+ ***WARNING: Example input warning.
+             Example continuation line.
+ ***WARNING: Example secondary warning.
+ ANALYSIS DATACHECK COMPLETE

@@ -1,0 +1,4 @@
+ ***ERROR: The solver encountered insufficient memory.
+           Example continuation line.
+ ***ERROR: The solver could not write an intermediate file.
+*** ERROR: The solver exited with an internal error.
