@@ -3,7 +3,10 @@ from __future__ import annotations
 
 from typing import Any
 
-from mcp.server.fastmcp import FastMCP
+try:
+    from mcp.server.mcpserver import MCPServer
+except ImportError:  # pragma: no cover - mcp 1.x compatibility
+    from mcp.server.fastmcp import FastMCP as MCPServer
 
 from cst_automation import CSTSessionManager, dumps
 from cst_parameter_sweep import CSTParameterSweepRunner, preview_sweep
@@ -29,7 +32,7 @@ solver setup so the CST history tree remains understandable. Save projects
 before long solves, and read the message log and result tree after every solve.
 """
 
-mcp = FastMCP("cst-studio-suite-mcp", instructions=INSTRUCTIONS)
+mcp = MCPServer("cst-studio-suite-mcp", instructions=INSTRUCTIONS)
 session = CSTSessionManager()
 sweep_runner = CSTParameterSweepRunner(session)
 
