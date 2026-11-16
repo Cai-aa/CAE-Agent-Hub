@@ -111,6 +111,7 @@ Copy-Item -Recurse "<repo>\abaqus_plugins\mcp_control" "$env:USERPROFILE\abaqus_
 - `execute_script`：兼容旧版工具名，底层调用 `run_python`。
 - `set_workdir`：在建模或提交作业前切换 Abaqus 工作目录。
 - `get_model_info`：查看模型、部件、集合、表面、作业和视口。
+- `inspect_part_mesh`：读取指定部件的节点和单元数量、单元类型、全局种子尺寸；可选读取 Abaqus 单元检查结果，不修改模型。
 - `list_jobs`：列出当前 CAE session 中的作业。
 - `submit_job`：提交已有作业并等待完成。
 - `monitor_job_status`：列出作业，或读取 `.sta`、`.msg` 的尾部诊断。
