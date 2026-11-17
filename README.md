@@ -3,6 +3,8 @@
 <p align="center"><strong>Connect AI to real CAE. Keep the evidence behind every result.</strong></p>
 <p align="center"><strong>English</strong> · <a href="README.zh-CN.md">简体中文</a></p>
 
+**Non-commercial use only.** Material covered by the [root license](LICENSE) may be used for non-commercial learning, teaching, and research. Commercial use requires separate written permission. Separately licensed components retain their own terms.
+
 ![CAE Agent Hub workflow: AI clients → MCP and skills → CAE solvers → results and checks](assets/readme/workflow.svg)
 
 A hub of **MCP tools, reusable skills, and result viewers** for engineering simulation. Connect clients such as Codex, Claude Code, Claude Desktop, and Cursor to modeling, meshing, solving, postprocessing, and validation workflows.
@@ -309,7 +311,11 @@ When extending the hub:
 
 ## License
 
-This repository is released under the **MIT License**. See [LICENSE](LICENSE) for details.
+Material covered by the root license is released under the **CAE Agent Hub Non-Commercial License 1.0**, a custom source-available license. It is not the MIT License or an OSI-approved open-source license. See [LICENSE](LICENSE) for the full terms.
+
+Commercial use is prohibited without a separate written license from the relevant copyright holders. This includes enterprise internal business use, commercial R&D, paid consulting or training, SaaS/API services, and integration into commercial products. Non-commercial use, modification, and redistribution are permitted subject to the license, including retention of its notices and restrictions.
+
+Components with their own licenses or third-party notices remain under those terms. This change does not revoke rights already granted for earlier copies or versions under MIT or other licenses.
 
 ## Peridigm development module
 

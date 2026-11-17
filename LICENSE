@@ -1,16 +1,57 @@
-MIT License
+CAE Agent Hub Non-Commercial License 1.0
 
 Copyright (c) 2026 Thompson Labs
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
+This is a custom source-available license, not the MIT License or an
+OSI-approved open-source license.
 
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
+1. Scope
+
+This license applies to the software and associated documentation in this
+repository (the "Software"), except for components covered by a separate
+license or third-party notice. Such components remain governed by their own
+licenses. This license does not replace or restrict rights granted under
+those licenses, and does not revoke permissions already granted for earlier
+copies or versions under the MIT License or another license.
+
+2. Non-commercial permission
+
+Permission is granted, free of charge, to use, copy, modify, merge, publish,
+and distribute the Software and derivative works solely for non-commercial
+purposes, subject to all terms of this license. Non-commercial purposes
+include personal learning, teaching, and academic research only when they
+are not directed toward commercial advantage or monetary compensation.
+
+3. Commercial use prohibited
+
+Commercial use means use primarily intended for or directed toward
+commercial advantage or monetary compensation, whether direct or indirect.
+It includes, without limitation:
+
+- Selling, licensing for a fee, or otherwise monetizing the Software or
+  derivative works.
+- Providing paid services, consulting, training, hosted services, SaaS, or
+  APIs using the Software or derivative works.
+- Integrating the Software or derivative works into commercial products,
+  services, or solutions.
+- Using the Software or derivative works for internal business operations,
+  commercial research and development, production, or work for customers.
+
+Use by a nonprofit or academic institution is not automatically
+non-commercial; paid consulting and commercial contract research are
+commercial uses. Commercial use requires a separate written license from
+the relevant copyright holders and is not authorized by this license.
+
+4. Notices and redistribution
+
+All copies or substantial portions of the Software and derivative works
+must retain the applicable copyright notices and this complete license.
+Redistribution of the Software and derivative works must preserve these
+non-commercial restrictions; no recipient may be granted broader rights
+under this license. These requirements apply only to material covered by
+this license, not to separately licensed components described in Section 1.
+
+5. Disclaimer
 
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -19,3 +60,61 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+
+6. Language
+
+The English text above governs. The Chinese translation below is provided
+for convenience.
+
+----------------------------------------------------------------------
+
+CAE Agent Hub 非商业许可证 1.0（中文译文）
+
+版权所有 (c) 2026 Thompson Labs
+
+本许可证为自定义源码可用许可证，并非 MIT 许可证，也不是经 OSI 批准的
+开源许可证。
+
+1. 适用范围
+
+本许可证适用于本仓库的软件及相关文档（以下简称“软件”），但具有独立
+许可证或第三方声明的组件除外。此类组件仍适用其各自的许可证。本许可证
+不替代或限制这些许可证已授予的权利，也不撤销此前副本或版本依据 MIT
+或其他许可证已经授予的许可。
+
+2. 非商业使用授权
+
+在遵守本许可证全部条款的前提下，免费允许仅出于非商业目的使用、复制、
+修改、合并、发布和分发本软件及其衍生作品。个人学习、教学和学术研究，
+仅在不以商业利益或金钱报酬为目的时，属于非商业用途。
+
+3. 禁止商业用途
+
+商业用途是指主要旨在获取直接或间接商业利益或金钱报酬的使用，包括但不限于：
+
+- 销售、收费许可本软件或其衍生作品，或以其他方式将其变现。
+- 利用本软件或其衍生作品提供收费服务、咨询、培训、托管服务、SaaS 或 API。
+- 将本软件或其衍生作品集成到商业产品、服务或解决方案中。
+- 将本软件或其衍生作品用于企业内部业务、商业研发、生产或客户项目。
+
+非营利机构或学术机构的使用并不自动属于非商业用途；收费咨询和商业委托
+研究属于商业用途。商业使用必须另行取得相关著作权人的书面许可，本许可
+证不授予该权利。
+
+4. 声明与再分发
+
+本软件及其衍生作品的所有副本或实质性部分，必须保留适用的版权声明和
+本许可证全文。再分发时必须保留上述非商业限制，不得依据本许可证向
+接收者授予更宽泛的权利。这些要求仅适用于本许可证覆盖的材料，不适用于
+第 1 条所述的独立许可组件。
+
+5. 免责声明
+
+本软件按“原样”提供，不提供任何明示或默示担保，包括但不限于适销性、
+特定用途适用性和不侵权担保。在任何情况下，作者或著作权人均不对因本
+软件、其使用或其他相关行为引起或与之有关的任何索赔、损害或其他责任
+承担责任，无论其依据合同、侵权或其他法律理论提出。
+
+6. 语言
+
+以上英文文本为准，中文译文仅供理解。
