@@ -116,6 +116,7 @@ Copy-Item -Recurse "<repo>\abaqus_plugins\mcp_control" "$env:USERPROFILE\abaqus_
 - `submit_job`：提交已有作业并等待完成。
 - `monitor_job_status`：列出作业，或读取 `.sta`、`.msg` 的尾部诊断。
 - `inspect_odb`：读取 ODB 元数据和可用输出变量。
+- `read_odb_history`：按分析步、区域和变量读取结果库中保存的历史曲线原始点，支持分页。
 - `get_odb_info`：兼容旧版工具名，底层调用 `inspect_odb`。
 - `capture_viewport`：以结构化 base64 数据返回视口截图。
 - `get_viewport_image`：兼容旧版工具名，返回 data URI。

@@ -18,6 +18,9 @@ import os
 import asyncio
 
 from mcp.server.fastmcp import FastMCP
+from mcp.types import CallToolResult, TextContent
+
+from odb_history import history_query
 from part_mesh import mesh_query
 
 
@@ -497,10 +500,10 @@ try:
                     })
             except Exception:
                 pass
-            try:
-                history_outputs = list(step.historyRegions.keys())
-            except Exception:
-                pass
+        try:
+            history_outputs = list(step.historyRegions.keys())
+        except Exception:
+            pass
 
         steps.append({
             "name": step_name,
@@ -524,6 +527,34 @@ finally:
         odb.close()
 """.replace("__ODB_PATH__", json.dumps(odb_path.strip()))
     return (await run_python(code, timeout or 120.0)).get("return_value")
+
+
+@mcp.tool()
+async def read_odb_history(
+    odb_path: str,
+    step_name: str,
+    region_name: str,
+    variable: str,
+    offset: int = 0,
+    limit: int = 1000,
+    timeout: float | None = None,
+) -> CallToolResult:
+    """Read one real-valued history output from an ODB on the Abaqus/CAE host.
+
+    Supply an absolute path and exact step, region, and variable names.
+    Returns original [x, value] pairs in stored order and the Abaqus step domain.
+    Use next_offset to continue the same series. A null next_offset marks the
+    end of the data currently in the ODB. At most 10,000 points per call.
+    """
+    try:
+        code = history_query(odb_path, step_name, region_name, variable, offset, limit)
+        page = (await run_python(code, timeout or 120.0))["return_value"]
+    except (ValueError, RuntimeError) as exc:
+        return CallToolResult(isError=True, content=[TextContent(type="text", text=str(exc))])
+    return CallToolResult(
+        content=[TextContent(type="text", text=_json_string(page))],
+        structuredContent=page,
+    )
 
 
 @mcp.tool()
