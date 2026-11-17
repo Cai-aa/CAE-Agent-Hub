@@ -117,6 +117,7 @@ Set `ABAQUS_MCP_HOME=<repo>`, restart Abaqus/CAE, then start the bridge from the
 - `monitor_job_status`: list jobs or tail `.sta`/`.msg` diagnostics.
 - `inspect_job_files`: inspect local job logs from an explicit directory without contacting the CAE session.
 - `inspect_odb`: inspect ODB metadata and available outputs.
+- `read_odb_history`: read original data points for one history variable, with pagination.
 - `get_odb_info`: compatibility wrapper around `inspect_odb`.
 - `capture_viewport`: capture viewport image as structured base64 data.
 - `get_viewport_image`: compatibility wrapper returning a data URI.
@@ -138,6 +139,33 @@ encoding. The response reports a bounded tail, diagnostic messages, file
 read errors, and the evidence for distinguishing a data check from a
 completed analysis. An Explicit success footer at increment zero is not\naccepted as full analysis completion. A lock file or an incomplete log alone cannot establish
 that the solver is still running.
+
+### Read history output from an ODB
+
+Call `inspect_odb` to find the step and history region names. Then call
+`read_odb_history` with the exact names and an absolute ODB path on the machine
+running Abaqus/CAE:
+
+```json
+{
+  "odb_path": "C:/analysis/cantilever.odb",
+  "step_name": "Load",
+  "region_name": "Node BEAM-1.1",
+  "variable": "RF1",
+  "limit": 1000
+}
+```
+
+The tool opens the ODB read-only. It returns original `[x, value]` pairs in
+`points`, plus `domain`, `total_points`, `offset`, and `next_offset`. The
+domain comes from Abaqus (for example, `TIME` uses **step time**, and
+`FREQUENCY` uses frequency). The tool preserves the stored values and order.
+Pass `next_offset` as `offset` to retrieve the next page with the same selection.
+A null `next_offset` means there are no more recorded points. For repeatable
+paging, use an unchanged ODB. The default page is 1,000 points, with a maximum
+of 10,000. Missing step, region, or variable names return an error with a sample
+of available names. Complex histories and non-finite values are reported as
+errors. Use `inspect_job_files` separately to check analysis completion.
 
 ## Recommended Workflow
 
