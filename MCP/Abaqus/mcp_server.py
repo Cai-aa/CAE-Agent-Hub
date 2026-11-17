@@ -17,7 +17,13 @@ from typing import Any
 import os
 import asyncio
 
-from mcp.server.fastmcp import FastMCP
+try:
+    from mcp.server.mcpserver import MCPServer
+except ModuleNotFoundError as exc:
+    if exc.name != "mcp.server.mcpserver":
+        raise
+    from mcp.server.fastmcp import FastMCP as MCPServer
+
 from part_mesh import mesh_query
 
 
@@ -38,7 +44,7 @@ assignments, and interactions. When API behavior is uncertain, inspect the live
 Abaqus objects first with run_python before continuing.
 """
 
-mcp = FastMCP("abaqus-mcp-server", instructions=INSTRUCTIONS)
+mcp = MCPServer("abaqus-mcp-server", instructions=INSTRUCTIONS)
 
 
 class ProtocolError(RuntimeError):
